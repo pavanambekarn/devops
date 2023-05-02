@@ -1,6 +1,6 @@
 CLASS 1 
 ---------------------------------------------------------------------------------------------------
-GIT Version : 2.27.0.windows.1 ( to track the version of file)
+GIT Version : 3.6.3 ( to track the version of file)
 ( basically git is not going to copy it will find out the differance and append it)[[sync]]
 
 ==> Repositoty : used to store the data or files to share commonly.
