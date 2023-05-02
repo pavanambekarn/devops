@@ -1,0 +1,67 @@
+
+my name is so and so
+i am working as a devops engineer 
+i take care of ci cd in the project that i am working in.
+
+i have been the part of the team that has setup cicd from scratch
+Jenkins is our CICD Tool,which has all the jobs as pipelines.
+
+As soon as the development team pushes the code to GIT repository 
+our jenkins pipeline will get triggered.
+Overall our pipelines has three stages Build,Deploy and Test.
+
+Once the code is pushed to GIT repository Build Stage of the pipeline will get 
+Triggered, which will pull the source code from GIT and compile the source code 
+and generates Binary.
+Further using this Binary docker images are created and pushed to an Artifactory.
+In the next stage which is Deploy, the docker images from the Artifactory are 
+deployed into kubernetes cluster.
+
+Once the deploy stage is completed, the Test stage of the pipeline will get triggered.
+In this stage, test cases are run on the deployments which are given by the testing
+team. 
+In case of any test failures, the Devops team in collaboration with the Testing team
+will take care of the issues.
+
+I work on shell scripts which i used to automate manual and repititive tasks.
+I am responsible for Docker and Kubernetes operations in my team, I have written a 
+Dockerfile and reduced docker image size using Multi-stage build.
+I am responsible for deploying and managing application pods using kubernetes.
+
+I also take care of Cloud-infrastructure,AWS is our cloud provider in my previous 
+project.
+I take care of AWS operations related to services like EC2,S3,VPC,Load-balancing,
+Auto-scaling,Cloudwatch,CloudTrail,IAM etc
+
+I have also worked on Terraform and Ansible.I have used Terraform, to sanction 
+Infrastructure in the form of IAC on AWS cloud.
+
+I have also used configuration management tool Ansible to manage the
+configuration of AWS cloud services.
+I take care of releases in the project.We have releases frequenctly , at the time of release
+i create release branches, merge different bracnhes and resolve merge conflicts
+with the help of Development Team.
+We use GIT as our source code repository.
+
+These are the overall tools i have worked on, and my roles and responsibilities in brief.
+
+
+DAY TO DAY ACTIVITIES:
+
+
+On a daily basis i work on tickets,We get tickets related to build issues, deployment issues,
+GIT issues and Jenkins issues.Jira is our ticketing tool.
+We work on those tickets based on priority.Some tickets are crucial we need to close 
+those tickets in few hours.
+
+I also play the role of Admin in my team for GIT and Jenkins, i get more tickets related 
+to these tools.
+I also get tickets related to branching strategy, creating branches, merging branches 
+and deleting branches.
+
+Apart from tickets, we have automation work. I will be taking care of automation,as
+automation is a never ending process.
+
+
+
+

@@ -1,0 +1,74 @@
+resource "aws_instance" "web" {
+  ami                    = "${var.ami}"
+  instance_type          = "t3.micro"
+  availability_zone      = "us-east-1a"                                       //either this or subnet id 
+  key_name               = "${key_name}"
+  vpc_security_group_ids = ["sd-id"]  //["${aws_key_pair.dovekey.id}"]
+  iam_instance_profile   = "${aws_iam_instance_profile.test_profile.name}"    
+  tags = {
+    Name = "web-application"
+  }
+}
+
+resource "aws_s3_bucket" "my_bucket" {
+  bucket = "bucket_name"
+  region = "region"
+  force_destroy = true      //once you delete the object in the bucket then you can able to delete the bucket 
+  tags = {
+    Name        = "bucket" 
+  }
+}
+
+resource "aws_iam_role_policy" "S3_bucket_full_access" {
+  name = "test_policy"
+  role = aws_iam_role.test_role.id
+  
+  policy = jsonencode({
+  
+  })
+}
+
+resource "aws_iam_role" "test_role" {
+  name = "test_role"
+
+  assume_role_policy = jsonencode({
+   
+  })
+}
+
+resource "aws_iam_instance_profile" "test_profile" {
+  name = "test_profile"
+  role = "${aws_iam_role.test_role.name}"
+}
+
+------------------------------------------------------------------------------
+ policy = jsonencode({
+    "Version": "2012-10-17",
+    "Statement": [
+    {
+      "Sid": "Stmt1662298186571",
+      "Action": "s3:*",
+      "Effect": "Allow",
+      "Resource": " arn:aws:s3:::${BucketName}/*"
+      "Principal": "*"
+    }
+                 ] 
+})
+-----------------------------------------------------------------------------
+assume_role_policy = jsonencode({
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "sts:AssumeRole"
+            ],
+            "Principal": {
+                "Service": [
+                    "ec2.amazonaws.com"
+                ]
+            }
+        }
+    ]
+})
+--------------------------------------------------------------------------

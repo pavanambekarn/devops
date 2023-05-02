@@ -1,0 +1,136 @@
+pipeline{
+agent any 
+environment{
+  VERSION = "${env.BUILD_ID}"
+}
+stages{
+  stage("sonar quality check"){
+    agent {
+      docker {
+        image 'openjdk:11'
+             }
+    }  
+    steps{
+      script{
+        withSonarQubeEnv(credentialsId: 'sonar-token') {
+           sh 'chmod +x gradlew'
+           sh './gradlew sonarqube'
+        }
+
+        timeout(time: 1, unit: 'HOURS') {
+           def qg = waitForQualityGate()
+           if (qg.status != 'OK') {
+            error "Pipeline aborted due to quality gate failure: ${qg.status}"
+           }
+        }		
+      }
+    }
+  }
+  stage("docker build & docker push"){
+    steps{
+      script{
+        withCredentials([string(credentialsId: 'docker_pass', variable: 'docker_password')]) { 
+          sh '''
+            docker build -t 34.125.214.226:8083/springapp:${VERSION} .
+            docker login -u admin -p $docker_password 34.125.214.226:8083 
+            docker push  34.125.214.226:8083/springapp:${VERSION}
+            docker rmi 34.125.214.226:8083/springapp:${VERSION}
+          '''
+        }
+      }
+    }
+  }		
+  stage('DEPLOY IMAGE') {
+    agent{label 'kubernetes'}
+	  steps {
+	    script{
+		  sh 'kubectl set image deploy webapp-deployment nodejs="34.125.214.226:8083/springapp:${VERSION}" --record' 
+		}
+	  }
+  }
+}
+post {
+  always {
+    mail bcc: '', body: "<br>Project:
+  }
+}
+}
+---------------------------------------------------------------------------------------------------------------------
+steps {
+  script{
+    withCredentials([kubeconfigFile(credentialsId: 'kubernetes-config', variable: 'KUBECONFIG')]) {
+      dir('kubernetes/') {
+        sh 'helm upgrade --install --set image.repository="34.125.214.226:8083/springapp" --set image.tag="${VERSION}" myjavaapp myapp/ ' 
+      }
+    }
+  }
+}
+------------------------------------------------------------------------------------------------------------------
+pipeline {
+  agent {label 'linux-1'}
+  stages {
+    stage('GIT Checkout') {
+      steps{
+        git branch: "branch", url: 'url'
+        sh 'mvn clean install'
+	    sh 'sudo cp target/*.war /opt/apache-tomcat-9.0.64/webapps'
+		sh 'sudo sh /opt/apache-tomcat-9.0.64/bin/startup.sh' 
+	  }
+    }
+  }
+}
+---------------------------------------------------------------------------------------------------------
+Terraform environment:-----------
+
+pipeline{
+  agent any
+  environment {
+    PATH = "${PATH}:${getTerraformPath()}"
+  }
+  stages{
+    stage('S3 - create bucket'){
+      steps{
+	    script{
+		  createS3Bucket('javahome-tf-1212')
+		}
+      }
+    }
+    stage('terraform init and apply - dev'){
+      steps{
+        sh returnStatus: true, script: 'terraform workspace new dev'
+        sh "terraform init"
+        sh "terraform apply -var-file=prod.tfvars -auto-approve"
+      }
+    }
+  }
+}
+def getTerraformPath(){
+  def tfHome = tool name: 'terraform-12', type: 'org.jenkinsci.plugins.terraform.TerraformInstallation'
+  return tfHome
+}
+
+def createS3Bucket(bucketName){
+  sh returnStatus: true, script: "aws s3 mb ${bucketName} --region=us-east-1" 
+}
+--------------------------------------------------------------------------------------------------------
+Q) Write a Pipeline Code to validate a SSH with Private Key?
+stage(connection){
+  step{
+    sshagent(credentails:['deploy-dev']){
+	  sh 'ssh -o StrictHostKeyChecking=no ec2-user@IP'
+	}
+  }
+}
+-------------------------------------------------------------------------------------------------------
+Q)vy script to checkout code from git, use variables, and to deploy to different environments on conditions.
+
+properties([parameters([choice(choices: ['master','feature-1','feature-2'],
+           description: 'Select the branch to build', name: 'branch')])])
+		   
+stage(git){
+  step{
+    echo "Pulling images from the branch ${params.branch}"
+	git branch: "${params.branch}", url: 'url'
+  }
+}
+-------------------------------------------------------------------------------------------------------

@@ -1,0 +1,548 @@
+
+Pythoholic -> leran from this 
+----------------------------------------------------------------------------------------------------------
+Ansible (version 2.9) (Configuration managment tool)
+- push based (Aquired by redhat -> sudo yum install ansible)
+- written in python it will take lot of dependency from python 2 
+
+If you not created your own inventary file it will use /etc/ansible/hosts (default inventory)
+- config file= /etc/ansible/ansible.cfg (ansible global configuration file) 
+- [host_key_checking = False]
+  * it will not do host key checking when log it for first time for non-interactive logen. 
+  
+Ansible-Architecture:
+
+----------------------------------------------------------------------------------------------------------
+08-03-2022 Class - 1
+----------------------------------------------------------------------------------------------------------
+Installation:
+
+Redhat:
+sudo yum update
+sudo yum install ansible
+
+Ubuntu:
+sudo apt add-repository ppa:ansible/ansible   //adding repository 
+sudo apt update
+sudo apt install ansible
+----------------------------------------------------------------------------------------------------------
+Inventory: (/etc/ansible/hosts)
+
+Static Inventory:
+
+Syntax:
+
+[group_name]
+<ip_address> ansible_user=<user_name> ansible_become_user=root
+----------------------------------------------------------------------------------------------------------
+AD-Hoc Commands:
+
+ansible <hosts> -m <module> -a <arguments>
+
+Example:
+
+ansible all -m ping -> to ping all the host machines 
+ansible <group_name> -m shell -a "mkdir test"/ -a uptime/ -a "df -sh"
+----------------------------------------------------------------------------------------------------------
+Ansible Playbooks:
+
+Simple Playbook:
+
+- name: simple-playbook
+  hosts: all
+  become: true 
+  tasks:      
+  - name: Install Git
+	yum:
+	  name: git
+	  state: present
+	  update_cache: yes
+	  
+State:
+  - Present: make sure that wgat is present
+  - latest: if it present older version and it will update 
+  - absent: remove the package from the server
+  - build-dep: 
+----------------------------------------------------------------------------------------------------------  
+Multiple Tasks:
+
+- name: simple-playbook
+  hosts: all
+  tasks:
+  - name: Install Git
+    become: true
+    dnf:
+      name: git
+      state: present
+      update_cache: yes
+  - name: Install wget
+    become: true
+    dnf:
+      name: wget
+      state: present
+      update_cache: yes
+----------------------------------------------------------------------------------------------------------  
+Installing Multiple Packages within single Task
+    
+- name: simple-playbook
+  hosts: all
+  tasks:
+  - name: Multi Install
+    become: true
+    dnf:
+      name: ['git', 'wget', 'unzip']
+      state: present
+      update_cache: yes
+----------------------------------------------------------------------------------------------------------
+Ansible Facts:  
+
+gathering Fact :
+- information about the all of host machine
+- which invoke setup module 
+------------------------------------------------
+- name: simple-playbook
+  hosts: all
+  tasks:
+  - name: Multi Install
+    become: true
+    apt:
+      name: ['git', 'wget', 'unzip']
+      state: present
+      update_cache: yes
+	when:
+	- ansible_distribution == "Ubuntu"
+	- ansible_pkg_mgr == "apt"
+  - name: Multi Install
+    become: true
+    dnf:
+      name: ['git', 'wget', 'unzip']
+      state: present
+      update_cache: yes
+	when:
+	- ansible_distribution == "RedHat"
+	- ansible_pkg_mgr == "dnf"
+	
+ansible all -m setup --> To gather all Ansible facts
+----------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------
+CLASS 2
+----------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------
+Ansible Register and Debugging: (-vvvv while exicuting playbook)[v-verbocity level]
+
+- name: simple-playbook
+  hosts: frontend
+  tasks:
+  - name: Multi Install
+    become: true
+    dnf:
+      name: ['git', 'wget', 'unzip']
+      state: present
+      update_cache: yes
+    register: test           //store the output in a variable (the output should be in json formate) 
+	
+  - name: Print Debug Message
+    debug:
+	  var: test
+	  verbocity:              //10min
+--------------------------------------------------------------------	  
+To run an Ansible Task only if the previous task has made some changes to host machines
+
+- name: simple-playbook
+  hosts: frontend
+  tasks:
+  - name: Install wget 
+    become: true
+    dnf:
+      name: wget
+      state: present
+      update_cache: yes
+	register: result
+	
+  - name: Install unzip 
+    become: true
+    dnf:
+      name: unzip 
+      state: present
+      update_cache: yes
+	when: result is changed
+----------------------------------------------------------------------------------------------------------	
+Ansible Tags:
+
+- name: simple-playbook
+  hosts: backend
+  tasks:
+  - name: Install Git
+    become: true
+    dnf:
+      name: git
+      state: present
+      update_cache: yes
+	tags: git
+	
+  - name: Install wget
+    become: true
+    dnf294     
+      name: wget
+      state: present
+      update_cache: yes
+    tags: wget	
+	
+  - name: Install unzip
+    become: true
+    dnf:
+      name: unzip
+      state: present
+      update_cache: yes	
+	tags: unzip
+	
+ansible-playbook <playbook_name> --tags="<tag_name>"  // if you want to perform only git tag 
+ansible-playbook <playbook_name> --tags="<tag_name1>, <tag_name2>"
+
+ansible-playbook <playbook_name> --skip-tags="<tag_name1>, <tag_name2>"
+----------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------
+Dynamic Inventory: (javahomecloud 20min)
+- we deal with virtual machines in cloud and it provide autoscalling because of autoscalling VM come-up and go-off 
+  automatically and ip's is changing always so how we can keep track of those ip's, for example if i want to run a 
+  playbook of ec2 instances on autoscalling group that's where dynamic inventory concept comes into the picture.
+- when i run a playbook at that time it connects to cloud provider, it get the available VM and it's IP dynamically
+  and it runs on them we can't have them statically in inventory because of autoscalling the Ip whould change
+- https://docs.ansible.com/ansible/latest/collections/amazon/aws/aws_ec2_inventory.html#examples  
+- https://pip.pypa.io/en/stable/installation/ 
+
+Pre-requisites
+1. install p     => ansible-galaxy collection install amazon.aws
+2. Install Python and Boto3[software developmet kit(SDK)]
+
+sudo yum install python36                    //install pyhton > 3.0 version  
+python3 -m pip install --user --upgrade pip  // installing pip and it is a pyhton module (package manager)
+pip install boto3                            //basically it will get the information of EC2 in aws
+                                               and it also install botocore 
+*** if you want to manually write scrits to do changes in aws-resources you can use boto3 scripting lang it is written in python 
+
+3. Install AWS CLI and configure your AWS access key and secret key or create role attach to this ansible-instance 
+-------------------------------------------------------------
+* create yaml document with this name in directory : aws_ec2.yaml 
+
+plugin: aws_ec2
+
+regions:
+- ap-southeast-1
+ 	
+filters:
+ tag:Env:              // tag name Env for that we have value dev and qa in aws instance (2 instances)   
+  - dev
+  - prod    
+
+------------------------------------------------------------------------ 
+* Configuration changes in ansible.cfg => [inventory] 
+                                          enable_plgins = aws_ec2
+------------------------------------------------------------------------
+commands:
+
+* ansible-inventory -i aws_ec2.yaml --list    //all the details of host with json formate  
+* ansible -i aws_ec2.yaml -m ping aws_ec2  
+//aws_ec2 = group in inventory file and it is created dynamically by aws_ec2 plugin 
+* ansible -i aws_ec2.yaml -m yum -a "name=git state=present" aws_ec2 --private-key=ec2.pem --become  
+----------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------
+Ansible Roles:
+- distributing playbook content in diff directory 
+- modular structure to your ansible playbook 
+- this is very specifically used for reusability
+- creating role from scratch could be challenge so first writting a playbook and improving the playbook
+  and then for reusability converting that playbook into roles. 
+
+Default Path: /etc/ansible/roles/ [Create the folder if not present]
+
+ansible-galaxy init <role_name>
+
+<role_name>
+├── defaults
+│   └── main.yml
+├── files
+├── handlers               //secondary task that get only exicuted when 
+│   └── main.yml
+├── meta                   // all the information about role 
+│   └── main.yml
+├── README.md
+├── tasks
+│   └── main.yml
+├── templates              // jinja2 to formating (dynamic varible while copy from local to host) 
+├── tests
+│   ├── inventory
+│   └── test.yml
+└── vars
+    └── main.yml
+-----------------------------------------
+/tasks/main.yaml
+
+- name: Install Package
+  become: true
+  yum:
+	name: "{{ application }}"       
+	state: "{{ state }}"
+    update_cache: yes
+----------------------------------	
+/vars/main.yaml
+
+application: git
+state: present
+-------------------------------------------
+
+Docker Role: https://github.com/adhig93/docker-install-ubuntu-role
+Tomcat Role: https://github.com/adhig93/tomcat-role
+----------------------------------------------------------------------------------------------------------
+Ansible-galaxy: It is a community-repository of ansible 
+- here you will have lot's of pre-defined roles	which you can use (ex:System, Cloud, Databases, Security)
+- ansible-galaxy search elasticsearch --auther geerling (list out the role)
+- ansible-galaxy install geerlingguy.elasticsearch
+- ansible-galaxy list  
+- once you done with role add it to github and in ansible-galaxy -> add content -> import role from github 
+---------------------------------------------------------------------------------------------------------
+Assignment:
+
+Ansible Vault
+Ansible Tower
+----------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------
+to find some extra module : https://github.com/devopshydclub/vprofile-project/tree/cd-ansible-jenkins/ansible 
+- shell and command module diff ?
+
+ - name: copy ROOT dir with old_ROOT name
+   shell:                               // if you want to exicute cli command in remote host  
+      cmd: cp -r ROOT old_ROOT
+      chdir: /usr/local/tomcat8/webapps/
+--------------------------------------------------------------------------	  
+---
+- name: handlers
+  hosts: all
+  become: yes
+  tasks: 
+  - name: Write the apache config file
+    template:
+        src: /srv/httpd.j2
+        dest: /etc/httpd.conf
+    notify:
+    - Restart apache
+	
+  handlers:
+  - name: Restart apache
+    command: echo "succesfully exicuted the task"
+-------------------------------------------------------------------------
+ansible localhost -m shell -a "ps -ef | wl -l"      //exicute for localhost 
+ansible localhost -m shell -a "whoami > p1.log" 
+command module only exicute command we can not use redirect and we can not use pipe as well (special character)
+--------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------------------
+*** one of the bug in ansible is we cann't remove git server in host machine by using yum module (it will not work)
+--------------------------------------------------------------------------------------------------------------
+How to run ansible playbook from jenkins pipeline job (javahomecloud)
+--------------------------------------------------------------------------------------------------------------
+Ansible vault: (valaxy)
+- allows you to keep sensitive data such as passwords or keys in encryped files, rather than as plaintext in playbook 
+ * create  -> to create ansible vault file in the encrypted format (ansible-vault create vault-pass.yaml)
+   [you will going to provide a passwd here any command you want to exicute under this file you have to remember that passwd]
+   view    -> to view data of encrypted file (ansible-vault view vault-pass.yaml)
+   edit    -> to edit encrypted file (ansible-vault edit vault-pass.yaml)
+   encrypt -> to encrypt an unencrypted file (ansible-vault encrypt vault-pass.yaml)
+   decrypt -> to decrypt an encrypted file (ansible-vault decrypt vault-pass.yaml) 
+   
+ * --ask-vault-pass -> to provide password while running playbook
+ * --vault-password-file -> to pass a vault password through a file.  
+ 
+real time example: 
+
+---
+- name: ansible-vault
+  hosts: all
+  become: true
+  vars_files:
+  - vault-pass.yaml
+  tasks:
+  - name: clone a repository
+    git:
+	  repo: https://ankils:{{ passwd }}@github.com/yenkils/vault.git
+	  dest: /opt/test-vault 
+----------------------------------------------------------------------------------------------------------------
+Ansible Tower:
+- GUI mood
+- it is perticularly ment for redhat machine it is not supported in debain environment
+----------------------------------------------------------------------------------------------------------------
+Q) jenkins-ansible scenario (https://github.com/devopshydclub/vprofile-project/tree/cd-ansible-jenkins)
+
+jenkins pipeline 
+build  (using maven tool build it)
+test (sonar)
+nexus (sent the artifact to nexus repo)
+ansble [is installed in jenkins machine]
+- build tomcat environment 
+- deploy the artifact from nexus place it to tomcat environment
+- stop the tomcat take the backup of privious build and apply a new build in webapps folder in tomcat
+- start the tomcat  
+----------------------------------------------------------------------------------------------------------------
+Q) jenkins - ansible - docker (https://github.com/javahometech/dockeransiblejenkins)
+
+---
+- hosts: dev
+  become: True
+  tasks:
+  - name: Start the container
+    docker_container:
+        name: hariapp
+        image: "kammana/hariapp:{{DOCKER_TAG}}"
+        state: started
+        published_ports:
+          - 0.0.0.0:8080:8080
+-------------------------------------------------------------------------------------------------------------------
+Q) how to copy file from host to host?
+for that we can use fetch module copy the file from host to ansible then use copy 
+module to past it in diff host
+
+---
+- name: transfer from host to host
+  hosts: all
+  become:
+  tasks:
+  - name: fetch module
+    fetch:
+        src: /tmp/file1 
+        dest: /tmp
+		owner: root 
+		group: root
+		mode: 700
+		
+  - name: copy module
+    copy:
+	    src: /tmp/file1
+		dest: /tmp
+--------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------------------
+https://gitlab.com/xavki/devopsland/-/tree/master/ansible => ansible course 
+Node exporter and prometheus using ansible: (practical)
+* ansible-galaxy init node-exporter 
+
+-------------------------------------------------
+playbook.yaml:-
+- name: install node-exporter  
+  hosts: all
+  become: yes
+  roles:
+  - node-exporter
+----------------------------
+* defaults -> main.yaml
+
+node_exporter_version: "1.0.1"
+node_exporter_bin: /usr/local/bin/node_exporter
+node_exporter_user: node-exporter
+node_exporter_group: "{{ node_exporter_user }}"
+node_exporter_dir_conf: /etc/node_exporter
+---------------------------
+* tasks -> main.yaml
+
+- name: check if node exporter exist
+  stat:
+    path: "{{ node_exporter_bin }}"
+  register: __check_node_exporter_present
+  
+- name: create node exporter user
+  user:
+    name: "{{ node_exporter_user }}"
+	append: true
+	shell: /usr/sbin/nologin
+	system: true
+	create_home: false
+	
+- name: create node exporter config dir
+  file:
+    path: "{{ node_exporter_dir_conf }}"
+	state: directory
+	owner: "{{ node_exporter_user }}"
+	group: "{{ node_exporter_group }}"
+	
+- name: download and unzip node exporter if not exist
+  unarchive:
+    src: "https://github.com/prometheus/node_exporter/releases/download/v{{ node_exporter_version }}/node_exporter-{{ node_exporter_version }}.linux-amd64.tar.gz"
+    dest: /tmp/
+	remote_src: yes
+	validate_certs: no
+  when: __check_node_exporter_present.stat.exists == false 
+  
+- name: move the binary to the final destination
+  copy:
+    src: "/tmp/node_exporter-{{ node_exporter_version }}.linux-amd64/node_exporter"
+	dest: "{{ node_exporter_bin }}"
+	owner: "{{ node_exporter_user }}"
+	group: "{{ node_exporter_group }}"
+	mode: 0755
+	remote_src: yes 
+  when: __check_node_exporter_present.stat.exists == false 
+  
+- name: clean
+  file:
+    path: /tmp/node_exporter-{{ node_exporter_version }}.linux-amd64/
+	state: absent
+	
+- name: install service
+  template:
+    src: node_exporter.service.j2    //systemd service 
+	dest: /etc/systemd/system/node_exporter.service
+	owner: root
+	group: root
+	mode: 0755
+  notify: reload_daemon_and_restart_node_exporter
+  
+- meta: flush_handlers
+
+- name: service always started
+  systemd:
+    name: node_exporter
+	state: started
+	enabled: yes 
+  
+--------------------------------------------------------------------
+* handlers -> main.yaml
+
+- name: reload_daemon_and_restart_node_exporter
+  systemd:
+    name: node_exporter
+	state: restarted 
+	daemon_reload: yes
+	enabled: yes
+-------------------------------------------------------------------
+* templates -> node_exporter.service.j2
+
+[unit]
+Description=Node Exporter
+After=etwork-online.target
+
+[Service]
+User={{ node_exporter_user }}
+Group={{ node_exporter_user }}
+Type=simple
+ExecStart={{ node_exporter_bin }}
+
+[Install]
+WantedBy=multi-user.target
+-----------------------------------------------------------------
+ansible-playbook -i inventory.yaml playbook.yaml 
+((curl 172.17.0.2:9100/metrics))
+----------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------- 
+If the first task is not going to exicuted how will you exicute second task?
+ignore-error:
+
+- name: 'demo'
+  hosts: all
+  tasks:
+  - name: 'first task'
+    command: touch /tmp/task/task1.txt
+	ignore_errors: True
+	
+  - name: 'second task'
+    command: touch /tmp/task2.txt 
+---------------------------------------------------------------------------------------------------------
+ 

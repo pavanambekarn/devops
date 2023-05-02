@@ -1,0 +1,85 @@
+java install -- 
+sudo yum install java-1.8.0-openjdk.x86_64 -y
+                
+sudo yum install git wget -y
+cd /tmp
+TOMURL="https://dlcdn.apache.org/tomcat/tomcat-9/v9.0.64/bin/apache-tomcat-9.0.64.tar.gz"
+wget $TOMURL -O tomcatbin.tar.gz               
+EXTOUT=`sudo tar xvzf tomcatbin.tar.gz`
+TOMDIR=`echo $EXTOUT | cat -d '/' -f1`
+sudo rsync -avzh /tmp/$TOMDIR/ /usr/local/tomcat9/
+sudo rm -rf tomcatbin.tar.gz
+sudo useradd tomcat 
+sudo chown -R tomcat.tomcat /usr/local/tomcat9 
+rm -rf /etc/systemd/system/tomcat.service
+				
+# sudo sh /usr/local/tomcat9/bin/startup.sh    
+# sudo sh /usr/local/tomcat9/bin/shutdown.sh
+
+
+----------------------------------------------------				
+cat <<EOT>> /etc/systemd/system/tomcat.service
+[Unit]
+Description=Tomcat
+After=network.target
+[Service]
+User=tomcat
+Group=tomcat
+WorkingDirectory=/usr/local/tomcat9
+#Environment=JRE_HOME=/usr/lib/jvm/jre
+Environment=JAVA_HOME=/usr/lib/jvm/jre
+Environment=CATALINA_PID=/var/tomcat/%i/run/tomcat.pid
+Environment=CATALINA_HOME=/usr/local/tomcat9
+Environment=CATALINE_BASE=/usr/local/tomcat9
+ExecStart=/usr/local/tomcat9/bin/catalina.sh run
+ExecStop=/usr/local/tomcat9/bin/shutdown.sh
+RestartSec=10
+Restart=always
+[Install]
+WantedBy=multi-user.target
+EOT
+
+----------------------------------------------------
+sudo tee /etc/systemd/system/tomcat.service<<EOF
+
+
+EOF
+----------------------------------------------------				
+				
+sudo systemctl daemon-reload
+sudo systemctl start tomcat
+sudo systemctl enable tomcat
+sudo systemctl status tomcat
+sudo systemctl stop tomcat 
+
+to change the default port of tomcat => vi /usr/local/tomcat9/conf/server.xml
+				
+manager app & Host Manager 
+(to access admin and other sections like Server Status, 
+Manager App and Host Manager. 
+You need to configure user accounts for admins and managers.)
+  
+/usr/local/tomcat9/conf/tomcat-users.xml
+	
+<role rolename="manager"/>  
+<role rolename="manager-gui"/>  
+<role rolename="admin"/>  
+<role rolename="admin-gui"/>  
+<role rolename="manager-script"/>  
+<role rolename="manager-jmx"/>  
+<role rolename="manager-status"/>  
+<user username="admin" password="123" roles="admin-gui,admin,manager-gui,manager,manager-script,manager-jmx,manager-status"/>
+	
+/usr/local/tomcat9/webapps/manager/META-INF/context.xml
+/usr/local/tomcat9/webapps/host-manager/META-INF/context.xml
+	
+<!--  Enable Remote Access to Tomcat
+ <Valve className="org.apache.catalina.valves.RemoteAddrValve"
+     allow="127\.\d+\.\d+\.\d+|::1|0:0:0:0:0:0:0:1" />
+ -->
+				
+				
+				
+                				
+				
+				

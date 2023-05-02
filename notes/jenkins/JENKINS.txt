@@ -1,0 +1,746 @@
+**** sudo update-alternatives --config java  (ec2-user or ceentos)
+ 
+                                            JENKINS (version 2.2 because prometheus support > 2.2)
+CLASS 1 
+----------------------------------------------------------------------------------------------------------------
+JENKINS : (CI-CD tool) Continues Integration - Continues Deployment/Delivery
+
+- Jenkins is an open-source automation tool written in Java 
+- Automate the software development lifecycle like build, test, deploy etc
+- power house of jenkins is plugins 
+  (using plugin we can extend the features of jenkins)
+- AWS pipeline, Bamboo, Circle CI, Solano CI, Team City similar to jenkins
+- workdir -> /var/lib/jenkins/ 
+	 
+CI-CD Flow ? (important) (get that picture from aditya)
+- git checkout [git clone](build periodically, POLL SCM, Webhooks)
+- Build using Build Toll (Make, Ant, Maven)
+- Push it to Some Artifactory (jfrog,Docker Hub, ECR, NEXUS)
+- Deploy to Environment  (tomcat, kubernetes, Docker) --> [ DEV, UAT, PROD ]
+
+Installation:-----
+* install java and build tool (maven) and git  
+* Installation: Jenkins Officail website : Jenkins.io
+   Jenkins Path: /var/lib/jenkins/  (to take of backups or transfering job one jenkins to another and workspace)
+	
+wget -q -O - https://pkg.jenkins.io/debian-stable/jenkins.io.key | sudo apt-key add -
+sudo sh -c 'echo deb https://pkg.jenkins.io/debian-stable binary/ > /etc/apt/sources.list.d/jenkins.list' 
+sudo apt-get update
+sudo apt install default-jre
+sudo apt-get install jenkins
+----------------------------------------------------------------------------------------------------------------
+==> Triggers :
+1.Build Periodically :
+  * if u want to trigger a jenkins job particular interval of time set by cronjob
+  * build periodically option from the build triggers 
+  * don't care about new commit or no new commit 
+	     
+2.POLL SCM : 
+  * POLL SCM periodically check source code management tool based on cronjob time formate if any changes were made 
+    like commit it trigger jenkins job only if new commits where pushed 
+	 	   
+3.GitHub hook trigger for GITScm polling : (push or new commit or pull) [in build trigger]
+  * GitHub Webhooks in Jenkins are used to trigger the jobs instantanasly when ever the developer 
+	commits somthing to the branch
+	
+while configuring webhook 
+content type -> application.json (once it is hit to payroll url get the response in json)
+which event would you like to trigger this webhook? => * just the push event 
+                                                       * Send me everything (for every event)
+													   * Let me select the individual event (select the event) 
+https://www.cidevops.com/2019/02/how-to-create-webhooks-in-github-and.html 
+---------------------------------------------------------------------------------------------------------------	  
+==> Project Workspace : cd /var/lib/jenkins/workspace/<job_name>
+                         mvn clean install
+						 	
+==> pom.xml located in some other folder how will you run mvn commands other folder (1:20)
+---------------------------------------------------------------------------------------------------------------
+==> Plugins:(Manage plugins -> Avaliable -> install plugin )
+     The plugins help in increasing the capabilities of jenkins by adding some useful features that might help
+	 you to enhance productivity.There are more than 1700 plugins available to increase our productivity with
+	 jenkins
+
+* Monitoring Plugin by JavaMelody - To monitor Jenkins server 
+  (how many cpu percentage and how many hits) [Manage Jenkins]
+* Docker Plugins - To integrate Docker environment with jenkins
+* Kubernetes Plugins - To integrate Kubernetes environment with jenkins
+* Blueocean - Modern Dashboard View (checkout) [Dashboard] (start and stop at perticular stage)
+  Adventage(you can start and stop at perticular stage)
+* ThinBackup or Periodic backup - To take the backup of jenkins jobs [Manage Jenkins]
+* Email plugin
+* pipeline plugin
+* Sonar Scanner & sonar quality gates 
+* nexus plugin 
+------------------------------------------------------------------------------------------------------
+thin backup plugin -> once you install you can see it in manage jenkins dash board
+*  mention the backup directory (where you need to store backups)
+*  shedule a cronjob for backup time (full backup and differential backups)
+*  maximum number of backups (5) (large file keep maintain previous 5 backups always)
+*  when you performing backups some down time is there in jenkins (when the time comes if any job is 
+   in the intermediat stage it will not stop that job else it will wait for some  time to complete that
+   job we need to specify the time 60mins
+------------------------------------------------------------------------------------------------------
+=> SONAR QUBE : (sonar qube scanner & sonar quality gates)
+* (port -> 9000)
+* static code analysis which is more popular because it's covering most popular programmimg languages like 
+  python, c-sharp, java, etc 
+* static code analysis tool -> it will going to validate and verify the source code like check-style scanner 
+* Code Quality Assurance tool -> it will check and analyzes source code either it will met with our quality 
+  criteria or not, and provides reports to the jenkins as well 
+  . It combines static and dynamic analysis tools and enables quality to be measured 
+* in organization usually the quality criteria is kept with 70 to 80% if the source code in not met with that
+  further stages is going to stoped and send a notification to developer to rework on sourse code
+
+ How to configure sonarqube:
+->  Install sonarqube(7.9) onvirtual machine and java as well and enable it (port 9000)
+->  Install plugin (sonar qube scanner and sonar quality gates)
+->  allow traffic between jenkins and sonar (SG)
+->  Configure (Manage jenkins->configure system -> SonarQube Server) and mention the sonar token
+    to access from jenkins and and create a webhook in sonar to sent report to the jenkins 
+->  In jenkins console -> Global tool configuration install sonar 	
+
+*****Elements of sonarqube dashboard :(can we add manuall elements)
+  Bugs and Vulnerability -> is related to the security of your software
+  code smells -> code is not written using fundamental standards.
+  Duplications -> code duplication 
+  Coverage -> how much program source code is covered by a testing plan
+
+--------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------- 
+--------------------------------------------------------------------------------------------------------
+CLASS 2 
+--------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------------
+
+==> Master Slave :  
+     
+     Some times you might need several different environments to test your builds this cannot be done by single
+      jenkin server in such cenarios we require a different machine with different setup/environment that takes
+       a specific job from the master 
+	   
+	 adventage : ----
+	 * master slave distribute the load over multiple servers
+	 * you can get seperate environment for testing
+	 * if the master server has limited resources then we can perform the the operation on slave machines
+	 
+	 You need to create a Node and mention the parameter like
+	 - Manage Jenkins --> Manage Nodes and Clouds --> New Node
+	 - executors (how many job run with Parallely 
+	 - Labels  (only build job with label expression) enable the [Restrict where this project can be run] 
+	   in pipeline select the agent 
+	 - launch methos (SSH Login)
+	  
+* Java Repo: https://github.com/adhig93/java_repo1
+* Tomcat Repo: https://github.com/adhig93/tomcat-config
+
+https://github.com/ravdy/DevOps/blob/master/jenkins/Jenkins_Master_Slave_configuration.md (valaxy)
+* Master and slave should have => same Java version, Same Maven version
+
+--------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------------------------	   
+---------------------------------------------------------------------------------------------------------------------
+CLASS 3
+---------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------------------------
+Q)How do you secure jenkins Server? 
+  (user, permissions, roles, Jobs permission)
+  * [Configure Global Security -> Authentication & Authorisation ]
+  Authentication :- Login(Lightweight Directory Access Protocol)
+                   (user an LDAP can login to the jenkins the credential of ldap provide by IT team)
+                    other option is jenkin own user Database
+  Authorisation :- privilage (Admin access, Read access, Jobs access)
+                  - Legacy -> enable Anonymous access 
+				  - Matrix-based Security (user and group)
+				  - Project based Matrix Authorization Strategy
+				  - Role based Authorization plugin 
+ 
+ * Matrix-based Security: allows configuring the permission for each user individullay 
+ * Project based Matrix Authorization Strategy: It is an extention to metrix based security where you 
+ can set permission to individual project 
+ - enable project based security in job 
+ 
+ * first we have user before giving a permission
+
+***** If you have many users you can create a role which will have certain kind of privilages then you add 
+      the users on it for that we will use  'Role-based Authorization Strategy' plugin 
+  
+-------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------
+
+CI/CD : (important)
+   Continoues Integration and Continoues Delivey and Continoues Deployment 
+   
+ Once dev team pushes the code to github jenkins pipeline job will get triggered, It has 4 stages
+ 
+1.SCM Checkout or GIT Checkout (git clone)
+   In Get Checkout stage jenkins will pull the source code from GitHub (git clone).
+   once the checkout stage is sucessfull build stage will get triggered automatically by webhook 
+	 
+2.Build Stage
+  In Build Stage Jenkins will compile the source code and generates a binary.after sucessfull completion of build 
+  stage push stage will get triggered.
+  
+3.Push Stage
+  In Push Stage the binary that was generated during the build stage it will be pushed to an artifactory once that 
+  is done deploy stage will get triggered Automatically 
+  
+4.Deploy Stage
+  In Deploy Stage we pull the binary from artifactory and deploy it to an environment
+  
+5.testing stage (testing team take care)  
+----------------------------------------------------------------------------------------------------------------
+Continous Integration (CI) : (automated processes in jenkins)
+ - the main purpose of CI is detect the code issues very early stage ( developer will solve it in short span of time) 
+ - in SDLC the developer fetch the code to github Automatically it will be compiled(.javac), build(maven) and 
+   tested(sonar qube) and send the notification to developer if there is Failure in code and as soon developer
+   recive notification he/she fix the code and commited it again and this cycle is repeated 
+   (code->fetch->build->test->notify) 
+      		
+Continoues Delivery (CD) : (with Human intervention)
+ - if every thing is good in CI integration the artifact generated by CI is stored to the repository
+  then in CD is the extention of CI processes here you need to perform sertain kind of operation like 
+  Provisioning, Dependencies, Configuration changes,network ,artifact deploy to server will done in automated way 
+ - goal ready to deploy eny environment 
+ - it will be from dev env to pre-pod or staging envirenment 
+
+Continuous Deployment (CD) : (no human intervention)
+ - you can say like it is also extention of CD but here when you deploy artifact to server no human intervention 
+   come in to the place and directly available to the users 
+ - it will be from dev env to the production env  
+------------------------------------------------------------------------------------------------------------
+explain CI-CD in your organization?
+
+git checkout: 
+After adding functionality to the feature branch we will going to rize a PR and Adding reviewers in that
+Here we have an integrated generic web-hook so the jenkins job will get triggered and reviewers will check 
+the sonarscan report and also check any effect on CI-CD by adding this Functionality if every thing is working fine 
+they will approve and merge it to main branch 
+
+IN the CI-CD  we come accross with 4 stages 
+1)Build :  
+  in this complie the source code and generate a binaries here we will use multi stage 
+  docker file for in that maven tool to generate the binaries and get artifact and we create a 
+  docker image 
+   
+2) push :
+  befor push to the priv repo we need to do some configuration in jenkins node 
+  push the docker image to the private docker registry which is nexus repo    
+  once it is done we can say like CI part is completed and we can start continues Deployment part 
+  
+3) deploy: 
+   we will trigger the CD job with CURL Command from the CI pipeline 
+   we use container -> Docker (or) we use pod -> K8S
+   we need to create secret to authenticate the image 
+
+test : we deploy the image to testing environment the tester will test all the use cases with that 
+perticular envirenment 
+
+(some yaers ago we worked on tomcat env now we moved on and switched to k8S from from 3 years back 
+ then on we deployed to K8S env)
+---------------------------------------------------------------------------------------------------------------------
+* once we will going to add the functionality to the feature we will going to rize the PR parallely it will trigger the 
+  jenkins job pipeline with the help of webhook 
+* mainly this pipeline contain 4 phases 
+* build -> in this we are using container managment tool like docker and we are using multistage docker file to reduce 
+           the image size and we are using base image as maven build tool  because we are using source code as java 
+		   and tomcate for webapplication deploy.
+* push  -> once you will get a build artifactory image we will push it to private repo like nexus because of using 
+           priv repo we need to do some configuration like in jenkins master we will also installed docker as well
+		   in /etc/docker/daemon.json we need to add insecure registry like adding ip:port of nexus repo before that 
+		   we need to have docker host and ip in nexus repo where it will store the image 
+* deploy-> for deployment we are using container orchestration tool like k8s here you will going to create a secret to 
+           authenticate the image from priv repo, and in deployment->container->spec add ImagePullSecret and specify 
+		   the secret name by using "kubectl set image deploy deployment_name image=image:tag --record" you will going 
+		   to achive deployment 
+* test  -> once every thing is successful they will merge it to dev branch and delete the feature and create release branch
+           and verify with respect to diff envirenment like QA, UAT, pre-pod and finally production 		   
+  
+---------------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------------
+Jenkinsfile :- jenkins pipeline can be define in text file called as jenkins file(default name Jenkinsfile)
+
+PIPELINE v/s Freestyle job 
+Freestyle job -> Are graphical job You need to fill all the information like for form filling 
+you run the job you see it's output but the problem is 
+  * if you need a pipeline then you need to 
+    connect all this job by manually one by one like it is time consuming and 
+  * one more like if you want to
+    do same thing in other project then you need to build it from Initially it is hectic 
+
+Pipeline => 
+- we can say like it is the collection of job and all the jobs in pipeline interlink with each other 
+  if any job is not going to be exicuted the next job is not going to trigger it will stop the pipeline 
+- we can easilly replicate with this in other project as well it take less time consumption
+- pipeline created in groovy languag
+- for CI-CD we go with pipeline 		  
+  
+
+==> DECLARATIVE PIPELINE 
+1.New way of writing with simple groovy declaratives
+2.Code is written in a file and is checked into git (SCM) and then added to jenkins job
+3.All code is defined inside pipeline block and break down the stages into multiple steps 
+4.break down the stages 
+
+
+==> SCRIPTED PIPELINE :
+1.Old way / Traditional way of pipeline code with scripted groovy syntax/java 
+2.Code is written directly in jenkins pipeline job which in UI interface
+3.Defined within a node block DECLARATIVE	   
+-------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------- 
+ Interview Question ??
+ are you worked on groovy script ?
+ A) I only work on declartive syntax 
+ 
+ ----------------------------------------------------------------------------------------------------------
+ CICD Pipeline Script example:
+ 
+ pipeline {
+    agent any  //any represent this pipeline can run either master or agent 
+    stages {
+        stage('GIT Checkout') {
+            steps {
+               sh 'sleep 5' 
+			}
+        }
+
+        stage('Build') {
+            steps {
+                echo "This is Build stage"
+                sh 'sleep 10'
+            }
+        }
+
+        stage('Push') {
+            steps {
+                echo "This is Push stage"
+                sh 'sleep 5'
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                echo "This is Deploy stage"
+                sh 'sleep 5'
+            }
+        }
+
+    }
+}
+
+---------------------------------------------------------------------------------------------------------------
+==> Assignment Pipeline script for deploying war file to Tomcat
+
+pipeline {
+    agent {label 'linux-1'}
+    stages {
+        stage('GIT Checkout') {
+            steps{
+                  git 'https://github.com/adhig93/java_repo1.git'
+			}
+        }
+
+        stage('Build') {
+            steps {
+                    sh 'mvn clean install' 
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+				sh 'sudo cp target/*.war /opt/apache-tomcat-9.0.64/webapps'
+
+            }
+        }
+		stage ('tomcat') {
+		  steps {
+		      sh 'sudo sh /opt/apache-tomcat-9.0.64/bin/startup.sh' 
+		  }
+		}
+	}
+}
+-----------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------
+CLASS 4
+------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------
+environment block: (environment variable) (https://www.youtube.com/watch?v=7KCS70sCoK0)
+-> we can specify the environment block in 2 level one will be pipeline and other is stage level if you
+   mention it on pipeline level it is valid for all the steps in the pipeline if is mention in stage 
+   level it is valid only for that perticular stage 
+-> while build a image in docker i need to specify docket-tag (i need to specify commit id there)
+-> environment value always mention in interpolution -> "${}" 
+-> Global environment variable = if you want to specify the dynamic value at the run time 
+   we can use the GEV and this can utilized at any part of Jenkinsfile 
+   example: ${env.BUILD_ID}, ${env.BUILD_NUMBER} 
+-> pipeline syntex -> snippet generater -> environmental variable (configure) 
+                   -> global env varaible 
+				   
+** Manage Jenkins  Configure system  Global properties option.
+----------------------------------------------------------------------------------------------------------
+How to secure password in jenkinsfile? (Credentials & Credentials Binding plugin)
+* In snippet generater -> withCredentails: Bind credentails to variable -> secret text  
+-----------------------------------------------------------------------------------------------------------
+parameterized build?
+It will allow to pass the parameters in jenkins job
+**** Setup AWS EKS Using Terraform | Deploy Nginx | How to Provision EKS in AWS -> 
+     you tube see the code example (real time use cases)
+-----------------------------------------------------------------------------------------------------------
+ AGENT : where we suppose to run over pipeline or Stage in master or slave that should be desided by AGENT
+ -> we specify the agent for enter pipeline and we also specify the agent in stage level as well 
+    Few of the parameters used with agents are:
+   1. Any : Runs the pipeline/ stage on any available agent.
+   2. None : there is no global agent for the entire pipeline and 
+             each stage must specify its own agent.
+   3. Label : Executes the pipeline/stage on the labelled agent		
+   4. Docker : This parameter uses docker container as an execution 
+               environment for the pipeline or a specific stage. 
+			   
+******** different stages an diff agent (declerative generater view it) 
+
+pipeline {
+    agent none
+
+    stages {
+        stage('Stage 1') {
+            agent { label 'master' }
+			steps {
+                echo 'This is Stage 1'
+            }
+        }
+		stage('Stage 2') {
+			agent { label 'slave1' }
+            steps {
+                echo 'This is Stage 2'
+            }
+        }
+    }
+}
+----------------------------------------------------------------------------------------------------------
+ Q)How can you run 2 stages at the same time?
+ Q) execution time is more what will be your approach?
+******** pipeline with parallel stage (declerative generater -> stages: Stages)
+
+pipeline {
+    agent any
+
+    stages {
+        stage('Stage 1') {
+			parallel {
+				stage('Stage 1-A') {
+					steps {
+						echo 'This is Stage 1-A'
+						sh 'sleep 5'
+					}
+				}
+				stage('Stage 1-B') {
+					steps {
+						echo 'This is Stage 1-B'
+						sh 'sleep 5'
+					}
+				}
+				stage('Stage 1-C') {
+					steps {
+						echo 'This is Stage 1-C'
+						sh 'sleep 5'
+					}
+				}
+			}
+        }
+		stage('Stage 2') {
+            steps {
+                echo 'This is Stage 2'
+				sh 'sleep 5'
+            }
+        }
+		stage('Stage 3') {
+            steps {
+                echo 'This is Stage 3'
+				sh 'sleep 5'
+            }
+        }
+    }
+}
+------------------------------------------------------------------------------------------------------------
+******** pipeline with parallel steps  
+
+Pipeline with Parallel Steps
+
+pipeline {
+    agent any
+
+    stages {
+        stage('Stage 1') {
+            steps {
+                parallel (
+				    step1: {
+					    echo 'This is Step 1'
+					    sh 'sleep 5'
+				    },
+				    step2: {
+					    echo 'This is Step 2'
+					    sh 'sleep 5'
+				    }
+                )
+			}
+        }
+		stage('Stage 2') {
+            steps {
+                echo 'This is Stage 2'
+				sh 'sleep 5'
+            }
+        }
+    }
+}
+
+---------------------------------------------------------------------------------------------------------------------
+==> how do i acess jenkins system log ??
+   goto manage jenkins  -> click on system log
+-> default log are available at /var/lib/jenkins/jenkins.log 
+----------------------------------------------------------------------------------------------------
+
+-------------------------------------------------------------------------------------------------------------------
+*Copy Jenkins job from one server to another Jenkins server | Jenkins for beginners (6 min)
+ /var/lib/jenkins/jobs/<job_name> 
+ scp -i file.pem sourcefile ec2-user@Ip:/var/lib/jenkins/jobs/
+ *** In jenkins Console => 'Reload Configuration from Disk' in Manage Jenkins 
+-----------------------------------------------------------------------------------------------------------------
+https://drive.google.com/file/d/1w8xgx8t-dM0jGCTAJFW2dEvqGgDVgiPa/view?usp=sharing
+------------------------------------------------------------------------------------------------------------
+4. parameterized plugin -> 'active choice plugin' [choice parameter]
+  (snippet -> properties:Set job properties)
+5. scrum master
+6. how to restrict job to run in slave instead of master
+7. list of agents
+8. upstram and downstream job  
+------------------------------------------------------------------------------------------------------------
+JFROG -> ravdy/DevOps(git url)
+install JFROG ->
+- (centos)t2.small and open port 8081 ans 8082
+- yum install java-1.8* -yaers
+- install package then 
+  $ sudo /opt/artifactory-oss-6.9.6/bin/artifactoryctl start/check/stop
+  * Run Artifactory as a Service
+  $ sudo /opt/artifactory-oss-6.9.6/bin/installService.sh
+ 
+Integrate Artifactory with Jenkins:----
+- Install "Artifactory" plug-in
+- Manage Jenkins -> Configure System -> JFROG
+  url-> mention private url of JFROG and allow SG of JFROG to access jenkins 
+  and mention username and password 
+  
+----------------------------------------------------------------------------------------------------------
+q) snapshot and release in pom.xml while artifactory upload
+----------------------------------------------------------------------------------------------------------
+NEXUS -> complete by java home cloud (install and run as service and upload artifact and upload docker image)
+-----------------------------------------------------------------------------------------------------------
+multibranch pipeline:
+- it solves the problem of creating new build for every branch
+- it uses 'multi branch plugin' 
+-  branch indexing --> "Automatilcally identify how many branches are there in that
+  perticular repository and create a build for every branch where ever it finds jenkins file"
+- Automatically it trigger for new branch when we configure webhook in github for that we need to install 
+  'Multibranch Scan Webhook Trigger'
+  * enable scan by webhook in jenkins console 
+----------------------------------------------------------------------------------------------------------
+Different types of jobs 
+ - FreeStyle job
+ - pipeline
+ - multibranch pipeline 
+ - multiconfiguration job
+ - Folder
+ - Github Organization 
+-----------------------------------------------------------------------------------------------------------
+********How to keep track changes of Jenkins Configuration and Jenkins Job Configuration ?(deekshith)
+- install plugin 'job configuration history' and you can see the - job config history in dash board 
+==> by this you can restore the deleted job as well (if you deleted that job after installed this plugin)
+-----------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------------
+**** How to pass parameter from up stream job to downstream job 
+
+pipeline {
+    agent any
+    parameters { choice(name: 'ENV', choices: ['Dev', 'Qa', 'Prod'], description: '') }
+    stages {
+        stage("PARAM 1") {
+            steps {
+                build job: 'job_2_pipeline', parameters: [string(name: 'ENV', value: "${params.ENV}")]
+            }
+        }
+    }
+}
+----------------------------------------------------------------------------------------
+pipeline {
+    agent any
+    stages {
+        stage('Example') {
+            steps {
+                script{
+                    echo "${params.ENV}"
+                }
+            }
+        }
+    }
+}
+-----------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------------
+Parameterized Builds:-----
+- Declerative directive generator -> parameters:parameters -> choice parameter 
+  * parameters { choice(name: 'ENV', choices: ['Dev', 'Qa', 'Prod'], description: '') }
+  * "${params.ENV}"
+  
+properties([parameters([choice(choices: ['master','feature-1','feature-2'],
+           description: 'Select the branch to build', name: 'branch')])])
+		   
+stage(git){
+  step{
+    echo "Pulling images from the branch ${params.branch}"
+	git branch: "${params.branch}", url: 'url'
+  }
+}
+-----------------------------------------------------------------------------------------------------------
+NEXUS artifactory upload :--
+ 
+- nexus (t2.medium & SG [8081 & 22 & allow jenkins-SG])
+- create repo in nexus -> maven2(hosted) 
+- jenkins console  => install plugin "Nexus Artifact UploaderVersion"
+- create a credentail for nexus in jenkins (user & passwd)
+- pipeline syntax -> nexusArtifactUploader (configure it)
+----------------------------------------------------------------------------------------------------------
+post build action ? -> email notification, build other project, 
+post build in pipeline:--- once the pipeline is got exicuted or may not to be exicuted i need to send 
+email notification to my team members for that i will use post block in pipeline
+- usually e will writen pipeline in a last or stage complition as well  
+post { 
+        always { 
+            echo 'I will always say Hello again!'
+        }
+    }
+condition: always, aborted, failure,success, 
+-------------------------------------------------------------------------------------------------------
+=> build environment -> delete workspace before build start enable it 
+clean workspace?   
+- workspace clean up plugin 
+- /var/lib/jenkins/workspaces 
+post { 
+        always { 
+           cleanWs()  
+        }
+    } 
+	
+Is there any plugin that's compatible with Pipeline that I can wipe out the workspace on a successful build?
+in jenkin workspace is full then what you will do?
+--------------------------------------------------------------------------------------------------------
+already 50 builds are done i don't want 51th build i want it show as 1st build?
+=> Script Console (only increment) -> Jenkins.instance.getItemByFullName("job_name").updateNextBuildNumber(45) 
+=> Script Console ->
+
+   item = Jenkins.instance.getItemByFullName("your-job-name-here")
+   //THIS WILL REMOVE ALL BUILD HISTORY
+   item.builds.each() { build ->
+                        build.delete()
+                   }
+   item.updateNextBuildNumber(1)
+   
+******** general -> Discard old builds enable it you can also specify "max build to keep" 
+-----------------------------------------------------------------------------------------------------------
+manually install plugin in jenkins and upgrade and downgrade? (GUI mood)
+* manage jenkins -> manage plugin -> advance -> upload plugin (upload ant.hpi file of plugin)
+* restart jenkins -> ip:8080/restart
+* then yo can able to see the plugin in available section 
+------------------------------------------------------------------------------------------------------------
+how do you skip stages in jenkins? (applying condition we can skip)
+-----------------------------------------------------------------------------------------------------------
+Q) if you lost username and passwd in jenkins login?
+=> /var/lib/jenkins/config.xml --> you can find username and passwd
+=> once you change it restart the jenkins (sudo systemctl restart jenkins)
+------------------------------------------------------------------------------------------------------------
+shred Library and jenkins pipeline
+
+* snippet Generator -> instead of Git:git it has a issues while passing variable(shared library)so we can use 
+                     "checkout out from version control" 
+* if you want to right mutile configuration in single fill seperated by "---" 
+------------------------------------------------------------------------------------------------------------
+problem faced:
+- while exicuting docker build command don't place the . at the end it will not work (docker build . -t image:tag)
+- basically in sonar quality gates java version is not matching this kind of issues facing frequently so i came 
+  with a solution of, i used docker image as a agent for perticular stage 
+  (image is open jdk:11 and sonar command is running on it)
+-------------------------------------------------------------------------------------------------------------
+Q)How to configure Jenkins with High Availability? (we will maintain 2 master node)
+-------------------------------------------------------------------------------------------------------------
+Q) master node is failure how will you trouble shoot it ? through logs 
+-------------------------------------------------------------------------------------------------------------
+Which monitoring tool can be used to implement continuous monitoring?
+Nagios is one of the DevOps tools for continuous monitoring. It is a widely-used open-source tool.
+In a DevOps culture, Nagios can assist to monitor systems, applications, services, and business processes.
+---------------------------------------------------------------------------------------------------------------
+Q)How build 100 job at time in single click
+How to trigger 100 jobs (n) at a time from one jenkins job| prarameterized trigger plugin -> youtube 
+- (once you install prarameterized trigger plugin)
+- Configuration -> Build -> Trigger/call build on other project -> specify the job name 
+- it is like Upstream and Downstream Project
+
+or 
+
+Post-build-action 
+- build other project -> other project name (specify the action like Trigger only if build is stable)  
+--------------------------------------------------------------------------------------------------------------
+Normally, a script which exits with a nonzero status code will cause the step to fail with an exception.
+you have to make sure that your script returns a nonzero status code when it fails.
+
+snippet generater - sh:Shell SCRIPTED
+Return exit status check mark it  
+
+(return exit status bydefault it is false make it as true for that perticular step or stage)
+-------------------------------------------------------------------------------------------------------------
+how to skip the jenkins stage?
+we can use when expretion 
+
+(this stage is only exicuted when branchname is dev)
+stage("test"){
+  when {
+    expression {
+	   BRANCH_NAME == 'dev' || BRANCH_NAME == 'master'
+	   }
+	}
+	steps {
+	   echo "testing the application"
+	}
+}	
+-------------------------------------------
+  if (env.BRANCH_NAME == "deployment") {                                          
+        ... do some build ...
+    } else {                                   
+        ... do something else ...
+    }   
+-----------------------------------------------------------------------------------------------------------
+How do I skip the failed stage in Jenkins pipeline?
+ Use script step and try-catch block
+-----------------------------------------------------------------------------------------------------------
+SMTP server? (while sending mail what are you using) 
+ port 465
+ gmail -> 2 facter ( Allow less secure app & 2 facter Authentication must be disable)
+-----------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+   
+
+
+
+
+
+
+
+
+
+
+										

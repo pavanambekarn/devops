@@ -1,0 +1,221 @@
+provider "aws" {
+ region = "us-east-1"
+ secret_key = " "
+ access_key = " "
+}
+
+variable "ami" {
+  default = ["ami-0cff7528ff583bf9a"]
+}
+
+resource "aws_instance" "web" {
+  ami                    = "${var.ami}"
+  instance_type          = "t3.micro"
+  availability_zone      = "us-west-2a"                                       //either this or subnet id 
+  key_name               = "${aws_key_pair.dovekey.key_name}"
+  vpc_security_group_ids = ["sd-id"]  //["${aws_key_pair.dovekey.id}"]
+  user_data              = "{file(" ")}"                                      //extra 
+  iam_instance_profile   = "${aws_iam_instance_profile.test_profile.name}"    //extra
+  tags = {
+    Name = "web-application"
+  }
+}
+
+resource "aws_key_pair" "dovekey" {
+  key_name   = "dovekey"
+  public_key = file("dovekey.pub")
+}
+
+resource "aws_security_group" "terraform-sg" {
+  name        = "terraform-sg"
+  description = "SG"
+  vpc_id      = aws_vpc.main.id
+
+  ingress {
+    from_port        = 22
+    to_port          = 22
+    protocol         = "tcp"
+    cidr_blocks      = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name = "allow-ssh"
+  }
+}
+----------------------------------------------------------------------------------------------------
+terraform {
+       required_version  = ">= 0.14"      //"0.12" it will work only 0.12 
+	   required_providers {
+	      aws    = {
+	         source  = "hasicorp/aws"
+		     version = ">= 3.6.0"
+	     }
+	   }
+	      backend "s3" {
+	        bucket         = "<bucket_name>"
+		    key            = "<path>"
+		    region         = "<region>"		  
+		    dynamodb_table = "<dynamodb_name>"   //state lock 
+	      }
+    }
+------------------------------------------------------------------------------------------------------
+*** S3 bucket 
+
+resource "aws_s3_bucket" "my_bucket" {
+  bucket = "bucket_name"
+  region = "region"
+  force_destroy = true      //once you delete the object in the bucket then you can able to delete the bucket 
+  tags = {
+    Name        = "javahome-app-de"
+    Environment = "${terraform.workspace}"
+  }
+}
+
+resource "aws_s3_bucket_versioning" "versioning-example" {
+   bucket    = aws_s3_bucket.my_bucket.id
+   versioning_configuration {
+     status  = "Enabled"
+   }
+} 
+------------------------------------------------------------------------------------------------------
+module using ec2 
+------------------------------------------------------------------------------------------------------
+ec2.tf
+
+resource "aws_instance" "ec2" {
+  ami                    = "${var.ami}"
+  instance_type          = "${var.ec2_class}"
+  key_name               = "${var.key_pair}"
+  subnet_id              = "${var.subnet_1a}"
+  vpc_security_group_ids = ["${var.sec_id}"]
+
+  tags = {
+    Name = "${var.environment}-ec2"
+  }
+}
+-------------------------------------
+variables.tf
+
+variable "ami" {}
+variable "ec2_class" {}
+variable "key_pair" {}
+variable "subnet_1a" {}
+variable "environment" {}
+variable "vpc_id" {}
+variable "sec_id" {}
+------------------------------------
+in local machine:--- (create a file ec2-dev.tf)
+
+provider "aws" {
+ region   =  "us-east-1"
+ access_key = " "
+ secret_key = " "
+}
+
+module "ec2-dev" {
+  source         = "git::git-url//modules/ec2.tf" (total path where your file is located)
+  ami            = " "
+  ec2_class      = " "
+  key_pai        = " "
+  subnet_1a      = " "
+  environment    = " "
+  vpc_id         = " "
+}
+
+
+------------------------------------------------------------------------------------------------------
+VPC 
+------------------------------------------------------------------------------------------------------
+
+resource "aws_vpc" "main" {
+  cidr_block       = "10.0.0.0/16"
+  instance_tenancy = "default"
+
+  tags = {
+    Name = "main"
+  }
+}
+-----------------------------------------------
+resource "aws_subnet" "pub_sub" {
+  vpc_id     = aws_vpc.main.id
+  cidr_block = "10.0.1.0/24"
+  availability_zone = "us-east-1a"
+  map_public_ip_on_launch = "true"
+
+  tags = {
+    Name = "pub_sub-1"
+  }
+}
+
+resource "aws_internet_gateway" "gw" {
+  vpc_id = aws_vpc.main.id
+
+  tags = {
+    Name = "Internet-GW"
+  }
+}
+
+resource "aws_route_table" "public_RT" {
+  vpc_id = aws_vpc.main.id
+
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = aws_internet_gateway.gw.id
+  }
+
+  tags = {
+    Name = "public_RT"
+  }
+}
+
+resource "aws_route_table_association" "a" {
+  subnet_id      = aws_subnet.pub_sub.id
+  route_table_id = aws_route_table.public_RT.id
+}
+-----------------------------------------------
+resource "aws_subnet" "priv_sub" {
+  vpc_id     = aws_vpc.main.id
+  cidr_block = "10.0.2.0/24"
+  availability_zone = "us-east-1a"
+
+  tags = {
+    Name = "priv_sub-1"
+  }
+}
+
+resource "aws_eip" "elestic-ip" {
+  vpc      = true
+}
+
+resource "aws_nat_gateway" "NAT-GW" {
+  allocation_id = aws_eip.elestic-ip.id
+  subnet_id     = aws_subnet.pub_sub.id
+
+  tags = {
+    Name = "NAT-GW"
+  }
+
+  depends_on = [aws_internet_gateway.gw]
+}
+
+resource "aws_route_table" "priv_RT" {
+  vpc_id = aws_vpc.main.id
+
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = aws_nat_gateway.NAT-GW.id
+  }
+
+  tags = {
+    Name = "priv_RT"
+  }
+}
+
+resource "aws_route_table_association" "b" {
+  subnet_id      = aws_subnet.priv_sub.id
+  route_table_id = aws_route_table.priv_RT.id
+}
+
+-------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------
+

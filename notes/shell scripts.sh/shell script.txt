@@ -1,0 +1,986 @@
+----------------------------------------------------------------------------------------------------
+Shell Scripting
+----------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------
+25-01-2022 Class - 1
+----------------------------------------------------------------------------------------------------
+Linux Architecture:
+
+Kernel: 
+
+Shell: 
+
+Types of Shells:
+
+1. Bourne Shell: "sh" ( | symbal property is not there )
+
+2. CShell (csh): ( c programing language)
+
+3. KShell (ksh):  ( combination of both sh & kshell)
+
+4. Bourne Again Shell (bash): most efficient when compare to bourne shell 
+   what ever the feature missing in that we canachive here
+
+To change Shell:
+
+chsh/lchsh <shell_name> --> To change the current shell
+lchsh -> for ec2-user
+echo $SHELL --> To check the current shell
+----------------------------------------------------------------------------------------------------
+Bash Shell Scripting
+----------------------------------------------------------------------------------------------------
+To perform repetitive tasks instead of runnong all the commands one by one we can write these
+commands in a file and we can execute them. These files are called as shell scripts
+
+The extension of shell scripts is .sh
+----------------------------------------------------------------------------------------------------
+Shebang: 
+==> Open an interpreter and exicute all the commands that are writing in the interpreter
+
+The first line of any shell script should start with shebang
+
+				#!/bin/bash
+				
+Shebang invokes the bash shell and if it was not used, the shell script uses the default shell
+----------------------------------------------------------------------------------------------------
+To execute shell scripts:
+
+1. ./<script_name>.sh  ( you need to provide executable permission chmod u+x <script_name> )
+2. sh <script_name>.sh ( no need to provide the executable permission)
+3. bash <script_name>.sh
+----------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------
+Special Variables:
+
+$0 --> The filename of the current script
+$# --> The total number of arguments pass to the script
+echo ${#arr[@]} total number of element pass to the array
+
+$* --> To give all the arguments passed to script in string format
+$@ --> To give all the arguments passed to script in array format
+
+$? --> It gives the status of the last executed command 
+       what is a exit status in unix
+$$ --> To check the PID of the current running process
+$! --> Gives the PID of the last process that went into background 
+$n --> a positive decimal number which indicats the postion
+       of argument ($1- first argument $2- second argument
+
+==> if you want to exicute the script when the session start in 
+    .bashrc file --
+    sh </home/ec2-user/d1/d2/<shellscript.sh>
+	
+==> sh pavan.sh 1 " " 3
+   1st argument taken as 1
+   2nd argument taken as space
+   3rd argument taken as 3
+----------------------------------------------------------------------------------------------------
+echo -n "$n"   => it will print in side by side 
+----------------------------------------------------------------------------------------------------
+File Operators:
+
+[ -f $<name> ] --> To check if it is a filename
+[ -d $<name> ] --> To check if it is a directory
+[ -r $<name> ] --> To check whether the file has read permission
+[ -w $<name> ] --> To check whether the file has write permission
+[ -x $<name> ] --> To check whether the file has executable permission
+[ -e $<name> ] --> To check if a files exists
+[ -s $<name> ] --> To check if the file has some data 
+[ -L $<name> ] --> short cut is created for that file or not 
+[ -z $<name> ] --> causes test to check whether a string is empty
+----------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------
+Debugging:
+
+set -x --> Prints commands and their arguments as they are executed. 
+       => if you want it for particular line then set -x to set +x
+set -e --> To stop a script immediately when a command exits with non zero status
+set -t --> To exit after reading and executing only one command
+set -n --> Read commands but do not execute them.
+set -v --> Print shell input lines as they are read.
+           ( print command as well as output also)
+set -C -->  by default in bash redirected output is allowed to 
+            overrite in file to avoid we use  
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Mail Command
+cc-> curbon copy
+
+sendmail, postfix, mailx
+
+echo "content" | mail -s "subject" -c "cc" -b "bcc" <email_id>
+mail -s "subject" -c "cc" -b "bcc" <email_id> < <file_name_path>
+---------------------------------------------------------------------------------------------------------------------
+Variables:
+
+Variables is a character string to which we assign some value, The value can be a number, text,
+filename or any other data
+
+The name of the variable can contain only letters, numbers and an underscore
+
+To access the variable inside the shell script we have to use "$" followed by the name of the variable
+
+Examples:
+
+1. Assigning Variables
+
+#!/bin/bash
+
+name="abc"
+place="Bangalore"
+
+echo "Hi, How are you"
+echo "This is $name, Iam from $place"
+
+2. Passing values during the run time
+
+To pass arguments or values to shell scripts at run time, we can use $1, $2, .... ${n}
+
+#!/bin/bash
+
+echo "Hi, How are you"
+echo "This is $1, Iam from $2"
+
+While executing the script: sh <script>.sh abc Bangalore
+
+----------------------------------------------------------------------------------------------------
+26-01-2022 Class - 2
+----------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------
+Operators:
+
+1. Arithmetic Operators:  ( + , - , / , \* , % )
+
+#!/bin/bash
+
+sum=`expr $1 + $2`
+sum=$(($1+$2))
+sub=`expr $1 - $2`
+sub=$(($1-$2))
+mul=`expr $1 \* $2`
+mul=$(($1 * $2))
+
+echo "Sum of Two Numbers is $sum"
+echo "Difference of Two Numbers is $sub"
+----------------------------------------------------------------------------------------------------
+2. Relational Operators:
+
+a. Strings
+
+Equal --> ==
+Not Equal --> !=
+Less Than --> <
+Less Than or Equal --> <=
+Greater Than --> >
+Greatet Than or Equal --> >=
+
+b. Numbers
+
+Equal --> -eq
+Not Equal --> -ne
+Less Than --> -lt
+Less Than or Equal --> -le
+Greater Than --> -gt
+Gteater Than or Equal --> -ge
+----------------------------------------------------------------------------------------------------
+IF Condition:
+
+Syntax:
+
+if [condition]
+then
+	statements1
+else
+	statements2
+fi
+
+if [condition1]; then
+	statements1
+elif [condition2]; then
+	statements2
+else
+	statements3
+fi
+----------------------------------------------------------------------------------------------------
+Example:
+
+1. To find the biggest of two numbers
+
+#!/bin/bash
+
+first=$1
+second=$2
+
+if [ $first -gt $second ]; then
+	echo "$first is the biggest"
+else
+	echo "$second is the biggest"
+fi
+----------------------------------------------------------------------------------------------------
+#!/bin/bash
+
+first=$1
+second=$2
+
+if [ $# -ne 2 ]; then
+	echo "Enter two numbers"
+elif [ $first -eq $second ]; then
+	echo "The numbers are equal"
+elif [ $first -gt $second ]; then
+	echo "$first is the biggest"
+else
+	echo "$second is the biggest"
+fi
+
+----------------------------------------------------------------------------------------------------
+Example: Shell script to check a file or directory
+
+#!/bin/bash
+
+name=$1
+
+if [ -f $name ]; then
+	echo "$name is a file"
+	if [ -r $name ]; then
+		echo "$name has read permission"
+	else
+		echo "$name does not have read permission"
+	fi
+	if [ -w $name ]; then
+		echo "$name has write permission"
+	else
+		echo "$name does not have write permission"
+	fi
+elif [ -d $name ]; then
+	echo "$name is a directory"
+else
+	echo "$name does not exist"
+fi
+
+
+==> echo 30 | grep [0-9]   then echo $? is 0 
+    echo test | grep [0-9] then echo $? is non-zero
+	echo test | grep [a-zA-Z] then echo $? is 0
+
+----------------------------------------------------------------------------------------------------
+Assignment: Shell Script to find the biggest of 3 Numbers
+=>
+#!/bin/bash
+echo " enter 3 number"
+read a b c
+if [ $a -gt $b ] && [ $a -gt $c ]
+then
+   echo "$a is biggest number"
+elif [ $b -gt $c ]
+then
+   echo "$b is biggest number"
+else
+   echo "$c is biggest number"
+fi
+----------------------------------------------------------------------------------------------------
+
+Assignment: To check if the file has some data
+
+#!/bin/bash
+if [ -s $1 ]
+then
+   echo "file has data"
+else
+   echo "file has no data"
+fi
+
+----------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------
+27-01-2022 Class - 3
+----------------------------------------------------------------------------------------------------
+Biggest of 3 numbers
+ 
+#!/bin/bash
+ 
+f1=$1
+f2=$2
+f3=$3
+ 
+
+if [ $# -eq 3 ]; then
+    if [ $f1 -eq $f2 ] && [ $f1 -eq $f3 ] && [ $f2 -eq $f3 ]; then
+        echo "All Numbers are Equal"
+    elif [ $f1 -gt $f2 ] && [ $f1 -gt $f3 ]; then
+			echo "$f1 is greater"
+	elif [ $f2 -gt $f3 ]; then
+			echo "$f2 is greater"
+	else
+			echo "$f3 is greater"
+	fi
+else
+	echo "Enter three numbers only"
+fi
+------------------- --------------------------------------------------------------------------------
+While Loop           (untill condition become false it keep on exicuting)
+
+while [condition]
+do
+	statements
+done
+
+while [condition]; do
+	statements
+done
+----------------------------------------------------------------------------------------------------
+Example: to find the sum on n numbers
+
+#!/bin/bash
+
+n=$1
+sum=0
+while [ n -gt 0 ]; do
+	sum=`expr $sum + $n`
+	n=`expr $n - 1`
+done
+
+==>
+#!/bin/bash
+for((i=1;i<=$1;i++))
+do
+   sum=$(($sum+$i))
+done
+echo "$sum"
+
+----------------------------------------------------------------------------------------------------
+Example: To find the factorial of a number
+
+#!/bin/bash
+
+n=$1
+Factorial=1
+
+while [ $n -gt 1 ]; do
+      Factorial=`expr $Factorial \* $n`
+      n=`expr $n - 1`
+done
+echo "The Factorial of $1 numbers is $Factorial"
+
+==>
+#!/bin/bash
+sum=1
+for((i=1;i<=$1;i++))
+do
+   sum=$(($sum*$i))
+done
+echo "$sum"
+
+----------------------------------------------------------------------------------------------------
+While Loop To Read Lines
+
+Syntax:
+
+while read line
+do
+	echo $line
+done < <file>
+----------------------------------------------------------------------------------------------------
+Example: To Print the conents of a file
+
+#!/bin/bash
+
+while read line
+do
+	echo $line
+done < $1
+----------------------------------------------------------------------------------------------------
+Example: While loop to check the number of characters in each line
+
+#!/bin/bash
+
+while read line
+do
+	echo $line | wc -c
+done < $1
+----------------------------------------------------------------------------------------------------
+Example:
+
+Input:
+
+This is Linux Red Hat Floavor
+We are working in AWS CLoud
+
+Output:
+
+1: 20
+2: 15
+
+#!/bin/bash
+
+i=1
+while read line
+do
+	wc=`echo $line | wc -c`
+	echo "$i:$wc"
+	i=`expr $i + 1`
+done < $1
+----------------------------------------------------------------------------------------------------
+Example:
+
+Name ID Age
+abc 001 25
+def 002 56
+ghi 003 36
+jkl 004 59
+mno 005 29
+
+Output: All the names of persons aged more than 40 years
+
+def
+jkl
+
+#!/bin/bash
+cat $1 | sed 1d > temp
+while read line
+do
+	age=`echo $line | cut -d " " -f3`
+	if [ $age -gt 40 ]; then
+		name=`echo $line | cut -d " " -f1`
+		echo $name
+	fi
+done < temp
+rm temp
+----------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------
+Q)the file operater to check whether the input is a symbolic link
+softlink or hardlink
+
+#!/bin/bash
+if [ -L $1 ]
+then
+    echo "$1 is a symlink"
+else
+    echo "$1 is not a symlink"
+fi
+
+----------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------
+28-01-2022 Class - 4
+----------------------------------------------------------------------------------------------------
+Example: To Find the sum on Even Numbers upto n
+#!/bin/bash
+n=$1
+sum=0
+while [ $n -gt 0 ]
+do
+  if [ $((n%2)) -eq 0 ]
+  then
+   sum=$((sum+n))
+  fi
+  n=$((n-1))
+done
+
+echo "$sum"
+
+--------------------------------------------------------------------------------------
+Example: Script to check the disk size
+
+#!/bin/bash
+
+size=`df -h | awk -F " " '{print$(NF-1)}' | sed -n "6p" | cut -d "%" -f1`
+size=`df -h | awk -F " " '{print$(NF-1)}' | sed -n "6p" | sed 's/%//g'
+if [ $size -gt 85 ]; then
+	echo "The disk size is Full"
+	echo "Percentage Usage is $size"
+fi
+----------------------------------------------------------------------------------------------------
+Example: Script to change the file extensions
+
+t1.txt t2.txt t3.txt
+t1.sh t2.sh t3.sh
+
+#!/bin/bash
+
+find -type f -name "*.txt" > temp
+while read line
+do
+	name=`echo $line | sed s/.txt/.sh/g`
+	mv $line $name
+done < temp
+rm temp
+----------------------------------------------------------------------------------------------------
+Example: Script to reverse a file
+
+this is linux
+we are working in AWS
+
+output:
+
+we are working in AWS
+this is linux
+
+#!/bin/bash
+n=`cat $1 | wc -l`
+while [ $n -gt 0 ]
+ do
+		head -$n $1 | tail -1 >> temp
+		n=`expr $n - 1`
+done
+cat temp
+rm temp
+
+----------------------------------------------------------------------------------------------------
+Assignment: Script to Reverse a string
+
+Input: Hello
+Output: olleH
+
+echo 'pavan' | grep -o . | tac | tr -d '\n'
+
+Hint: echo <string> | cut -c5 --> To cut the 5th letter in the string
+=> #!/bin/bash
+
+echo "enter the string"
+read string
+n=`echo $string | wc -c`
+ 
+while [ $n -gt 0 ]
+do
+   echo $string | cut -c$n >> temp
+   n=$(($n-1))
+done
+cat temp | tr -d '\n'
+rm temp
+
+(or)
+
+#!/bin/bash
+
+echo "enter the string"
+read string
+n=`echo $string | wc -c`
+ 
+while [ $n -gt 0 ]
+do
+   t=$t`echo $string | cut -c$n`
+   n=$(($n-1))
+done
+
+----------------------------------------------------------------------------------------------------
+echo "pavan" | rev
+----------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------
+29-01-2022 Class - 5
+----------------------------------------------------------------------------------------------------
+Cron Job
+
+A Cron Job is a linux command used for scheduling tasks to be executed periodically
+
+crontab --> This is a file which contains all the cron jobs entries
+
+*		*		*		*		*	command/script
+min 	hour	date	month	week
+
+00 - Sunday
+01 - Monday
+02 - Tuesday
+03 - Wednesday
+04 - Thursday
+05 - Friday
+06 - Saturday
+
+5th of Feb Saturday on 6 PM --> 00 18 05 02 06 command/script
+(if you don't provide 00 it will consider every minute)
+10 AM on every Monday --> 00 10 * * 01 command/script
+10 AM on every Monday and Friday --> 00 10 * * 01,05 command/script
+Every Hour everyday --> 00 * * * * command/script
+Every 15 minutes on Monday --> */15 * * * 01 command/script
+
+last day of the month ->  https://tecadmin.net/running-cron-job-on-last-day-of-the-month/
+  59 23 28-31 * * [ $(date +%d -d tomorrow) -eq 1 ] && /root/script.sh
+  
+** Better way to schedule cron on every next month of 1st day
+   This will run the command foo at 12:00AM.
+   0 0 1 * * /usr/bin/foo
+
+=> every minute -> */1 * * * * or * * * * *
+=> 15 * * * * -> exicute like 1:15, 2:15.......
+
+
+crontab -e --> To edit the crontab file
+crontab -l --> To list the existing crontabs
+
+Syntax:
+
+* * * * * sh <Path_to_the_Script>
+-> Hava a shell script name logoff.sh i want to run
+   this script on every working day at 6pm what is the command  (00 18 * * 01-05)
+ 
+----------------------------------------------------------------------------------------------------
+For Loop
+
+for i in var1, var2 ......                                             
+do
+	statements
+done
+
+for i in {0..100} --> i will go from 1 to 100
+for i in {0..100..2} --> i will go from 1 to 100 with increments of 2
+for i in $*
+
+
+----------------------------------------------------------------------------------------------------
+sh sum.sh 2 4 6 8 10
+
+#!/bin/bash
+sum=0
+for i in $*
+do
+	sum=`expr $sum + $i`
+done
+echo "The total sum of numbers entered is $sum"
+
+==>
+#!/bin/bash
+arr=($@)
+sum=0
+for((i=0;i<=$#;i++))
+do
+    sum=$(($sum+arr[i]))
+
+done
+echo $sum
+
+----------------------------------------------------------------------------------------------------
+Example to find the factorial of n numbers
+
+#!/bin/bash
+for i in $*
+	n=$i
+	Factorial=1
+	while [ $n -gt 1 ]; do
+		Factorial=`expr $Factorial \* $n`
+		n=`expr $n - 1`
+	done
+	echo "The Factorial of $i is $Factorial"
+done
+----------------------------------------------------------------------------------------------------
+systemctl is-active --quiet <service_name> --> To check if a particular service is running
+ps -C <service_name> --> To check if a particular service is running
+----------------------------------------------------------------------------------------------------
+Example: A script to check if the services are down
+#!/bin/bash
+
+for a in $*
+do
+     systemctl status $a > /dev/null
+     n=`echo $?`
+     if [ $n -eq 0 ]
+     then
+        echo "service is running"
+     else
+        systemctl start $a
+		echo $a >> started_service
+     fi
+done
+mail -s "subject" pavan@gmail.com < started_service
+
+----------------------------------------------------------------------------------------------------
+30-01-2022 Class - 6
+----------------------------------------------------------------------------------------------------
+Functions:
+
+Syntax:
+
+<functions_name> ()
+{
+	statements
+}
+----------------------------------------------------------------------------------------------------
+Example: Hello Function
+
+#!/bin/bash
+
+hello ()
+{
+	echo "Hello World"
+	echo "This has been printed inside the function"
+}
+
+echo "This is before we call the function"
+hello
+echo "This is after we call the function"
+----------------------------------------------------------------------------------------------------
+Example: Factiorial of a given set of numbers using functions
+
+#!/bin/bash
+
+fact ()
+{
+	n=$1
+	Factorial=1
+	while [ $n -gt 1 ]; do
+		Factorial=`expr $Factorial \* $n`
+		n=`expr $n - 1`
+	done
+	echo "The Factorial of $1 is $Factorial"
+}
+for i in $*
+do
+	fact $i
+done
+
+==>
+#!/bin/bash
+fun ()
+{
+sum=1
+for((i=1;i<=$1;i++))
+do
+   sum=$(($sum*$i))
+done
+echo "$sum"
+}
+
+for i in $*
+do
+   fun $i
+done
+----------------------------------------------------------------------------------------------------
+Case Statements: ( replacement of if condition )
+
+Synatx:
+
+case $variable in
+pattern1) Statements to be executed if pattern1 matches the variable
+;;
+pattern2) Statements to be executed if pattern 2 matches the variable
+;;
+pattern3|pattern4) Statements to be executed if pattern3 or pattern4 matches the variable
+;;
+*) Default statements to be executed if non of the patterns matches
+;;
+esac
+----------------------------------------------------------------------------------------------------
+Example:
+
+#!/bin/bash
+
+echo "Enter the Number"
+read n
+
+case $n in
+1) echo "The number is 1"
+;;
+2) echo "The number is 2"
+;;
+3|4) echo "The number is 3 or 4"
+;;
+5|6) echo "The number is 5 or 6"
+;;
+*) echo "Invalid number"
+;;
+esac
+----------------------------------------------------------------------------------------------------
+shell script option              Output
+./arg.sh -b develop           -> develop is a branch
+./arg.sh -t 19.12             -> 19.12 is a tag
+./arg.sh -b develop -t 19.12  -> develop is a branch
+                                 19.12 is a tag
+.arg.sh -t 19.12 -b develop	  -> 19.12 is a tag
+							     develop is a branch
+
+while
+    [ -n "$1" ]      # -n if any argument is there go 
+do                   # inside the while condition
+    case "$1" in
+    -b)
+        echo "$2 is a branch"
+        shift        # elemenet the first argument make 2nd
+         ;;          # make 2nd argument as first 
+    -t)
+       echo "$2 is a tag"
+       shift
+       ;;
+    *)               # it is one of -b or -t 
+        echo "Option $1 not recognized"
+        exit 1
+        ;;
+    esac
+    shift
+done
+----------------------------------------------------------------------------------------------------
+Example: To check the day
+
+Monday --> Today is Monday
+Tuesday --> Today is Tuesday
+Wednesday or Thursday --> Today is either Wednesday or Thursday
+Friday --> Today is Friday
+Any other Imputs --> Saturday and Sunday are holidays
+
+#!/bin/bash
+ 
+echo "enter the day"
+read day
+case $day in
+Monday) echo "Today is Monday"
+;;
+Tuesday) echo "Today is Tuesday"
+;;
+Wednesday|Thursday) echo "Toady is either Wednesday or Thursday"
+;;
+Friday) echo "Today is friday"
+;;
+*) echo "Saturday and Sunday are holidays"
+;;
+esac
+----------------------------------------------------------------------------------------------------
+Example:
+
+1 --> Search for files based on given input [find -type f -iname "<name>"]
+2 --> Check if the file by the given input is present or not [ -e $<name> ]
+3 --> Create a softlink [file name and also the softlink name] [ ln -s <original file> <sl name>]
+
+#!/bin/bash
+
+echo "1 --> Search for files based on given input"
+echo "2 --> Check if the file by the given input is present or not"
+echo "3 --> Create a softlink"
+
+echo "Enter the Number"
+read n
+
+case $n in
+1) echo "Enter the file name"
+read name
+find -iname $name
+;;
+2) echo "Enter the file name"
+read name
+if [ -e $name ]; then
+	echo "The file is present"
+else
+	echo "The file is not present"
+fi
+;;
+3) echo "Enter the orginal file name"
+read original
+echo "Enter the soft link name"
+read softlink
+ln -s $original $softlink
+;;
+*) echo "Invalid Input"
+;;
+esac
+----------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------
+Environment Variables:
+
+export <KEY>=<VALUE>
+export -p ( to list the default environment variable )
+
+Note: These Environment Variables will be removed after the session has been closed
+----------------------------------------------------------------------------------------------------
+* Lets say I have many application properties and that i need use it in my shell which is better way 
+  in a dirct 
+  config  file the content is  nam="pavan"
+                               sur="ambekar"
+  properties.sh shell script conten   #!/bin/bash 
+                                      source config
+                                      echo "Name=$nam"
+									  echo "Surname=$sur"
+----------------------------------------------------------------------------------------------------
+while v/s for
+while -> until the condition become false keep on looping
+for -> it exicute the loop with specific range
+------------------------------------------------------------------------------------------------------
+know about continue and break ask in interview
+break -> it will going to  the loop (for, while, switch[case])
+
+ continue:  
+for ((i=0;i<10;i++))
+do
+   if [ $i -eq 5 ]
+     then
+         continue
+     else
+         echo $i
+   fi
+done
+----------------------------------------			
+#!/bin/bash
+
+for ((i=0;i<=10;i++))
+do
+    if [ $i -eq 5 ]
+    then
+       break
+    else
+       echo $i
+    fi
+done			 
+------------------------------------------------------------------------------------------------------
+Automatically Launch/Stop EC2 Instances Using Shells Script & AWS CLI?
+
+aws cli command
+
+#!/bin/bash
+# Start EC2 Instance
+aws ec2 start-instances --instance-ids pasteInstanceIdHere
+
+#!/bin/bash
+ # Stop EC2 Instance
+aws ec2 stop-instances --instance-ids pasteInstanceIdHere
+------------------------------------------------------------------------------------------------------
+interview) I need to have a shell script when ever i execute the script that should
+  monitor my application log folder, if the folder contains more than 10
+  files then I should print "folder has more than 10 files" and also delete
+  extra files based on modification date else script should print " folder 
+  has less than or equal to 10 files"
+  #!/bin/sh
+  folder_path="/home/deekshithsn1/application_logs"
+  cd $folder_path
+  count_of_files=$( ls -1 | wc -l )  # to avoid total 0 at starting
+  if [ $count_of_files -gt 10 ]      # ls -one show file name
+  then
+  echo "folder has more than 10 files"
+  ls -1t | tail -n +11 | xargs rm -f   # line after 10 lines
+  else 
+  echo "folder has less than or equal to 10 files"
+  fi
+---------------------------------------------------------------
+------------------------------------------------------------------------------------------------------
+interview) A script to check if the services are down
+#!/bin/bash
+service="httpd"
+for i in $service
+do
+    sudo systemctl status $i > /dev/null
+     if [ $? -ne 0 ]
+      then
+           sudo systemctl start $i > /dev/null
+           echo "$i processes is started know"
+      else
+           echo "process is running"
+     fi
+done
+--------------------------------------------------------------------------------------------------------
+fibanance , palindrom , revrse , factorial, 
+-----------------------------------------------------------------------------------------------------
+Script to take some inputs from user, find the logs which are 15 days old, compress then and copy to the 
+specified server with given IP address.
+
+$ sed -n '/Feb 23 13:55/,/Feb 23 14:00/p' /var/log/mail.log
+Feb 23 13:55:01 messagerie postfix/smtpd[20964]: connect from localhost[127.0.0.1]
+Feb 23 13:55:01 messagerie postfix/smtpd[20964]: lost connection after CONNECT from localhost[127.0.0.1]
+Feb 23 13:55:01 messagerie postfix/smtpd[20964]: disconnect from localhost[127.0.0.1]
+Feb 23 13:55:01 messagerie pop3d: Connection, ip=[::ffff:127.0.0.1]
+
+The expression '/pattern1/,/pattern2/' will print everything that is between first pattern and second pattern.
+ In this case it will print every line it finds between the string Feb 23 13:55 and the string Feb 23 14:00.
+----------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+

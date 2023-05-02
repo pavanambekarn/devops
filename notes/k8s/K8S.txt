@@ -1,0 +1,1644 @@
+----------------------------------------------------------------------------------------------------------
+Kubernetes  (1.21) EKS (port number ->6443)
+
+* smallest object -> pod 
+* wordir -> $HOME/.kube/config (directory of kubectl)
+(if it is deleted we could not exicute kubectl command suppose it is deleted how we recover that?)
+industry -> EKS (every thing take care by aws) 
+* pull base -> K8S (master and worker node K8S installed on them)
+push base -> ansible and terraform ans jenkins (don't need to install the software on other slave machine)
+swap memory?
+* It is written in go-lan
+
+Q)If .kube folder is deleted we could not exicute kubectl command suppose it is deleted how we recover that?
+-> you can find that in master ($ cat /etc/kubernetes/admin.config) copy and past the content 
+=> if you going loss admin.config file then in master then 
+$ cd /etc/kubernetes/pki (this folder contain all the certificate of diff componant used by K8S) run command 
+$ kubeadm init phase kubeconfig admin --apiserver-advertise-address <priv_IP_master> --cert-dir /etc/kubernetes/pki   
+----------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------
+26-03-2022 Class - 1
+----------------------------------------------------------------------------------------------------------
+Installation:
+URL: https://github.com/adhig93/k8sinstall
+
+kubectl get nodes --> To check all the nodes in the setup
+
+kubectl label node <name> node-role.kubernetes.io/worker1=worker1 --> To label a node[give role]
+
+k8s Master --> t2.medium (ubuntu)  [3 master node on top of that load balancer is there]
+k8s Worker Nodes --> t2.micro      [2 worker node]
+
+* kubeadm init -> master (Initialize the master node)[update the K8S]
+
+**** EKSCTL (https://github.com/ravdy/kubernetes/blob/master/kubernetes_setup_using_eksctl.md)
+**** Baremetel :---- https://github.com/kunchalavikram1427/YouTube_Series/blob/main/Kubernetes/ClusterSetup/kubeadm_kubernetes_cluster_setup_AWS.pdf
+
+in bare mettel -> k8s is pull based appoach 
+* install kubeadm,kubectl,kubelet
+* install docker
+* install certificate
+* turn off swap memory
+for master -> initailize by kubeadm init 
+for worker -> attach to master by join command 
+ 
+-----------------------------------------------------------------------------------------------------------
+In Docker we will come across with container in case you need to replicate the container or any back up container 
+if main container goes down for that we need container orchestation tool like K8S 
+
+* cluster is group of node which will have master and worker node   
+-----------------------------------------------------------------------------------------------------------
+cluster is a set of node(minions) 
+K8S Architecture:---
+-> you can login to your K8S by GUI (graphical user interface) or kubectl
+   (kubectl is a tool to connect with master)
+-> Master (Control plane)
+    * API Server (kube api)
+	* etcd
+	* Schedular
+	* Controller Manager
+-> Worker Node 
+    * kubelet 
+	* Proxy
+	* Container Runtime 
+	
+API Server:-- 
+- acts as frontend for K8S 
+- It will handel incoming and outgoing communication (to and fre between kubectl and cluster)
+- It act as Authentication and Authorisation 
+- It will recive the information and pass to other services like Schedular
+
+etcd:-- 
+- distributed Database (ex-Clusterpoint, Apache Ignite)
+ * One that runs on several machines at the same time and watch for changes to that data.
+   One that makes it easy to store data across a cluster 
+- It store the information of your K8S cluster (No of pods, Namespace,Services)
+- If you want to take backup of your K8S just take the backup of etcd 
+- Kube-API stores and retrive information from it 
+
+Schedular:--
+- watches newly created pod and shedule a node for them based on
+  * Availability of nodes 
+  * Resourse requirement (hardware or software)
+  * Affinity and Anti Affinity (I want to select this particular node)
+
+Controller:-- (daemon)
+- Continuesly watching cluster always try to match Actual stat to desired state
+  * scale up and scale down in pods and maintaning correct number pods for that it will uses 
+    - Deployment
+	- Replication Controller/ Replica Set
+	- Daemon Set
+	- Statefull Set
+
+Kubelet:--
+- It act as agent in worker node 
+- Heavy lifting operation like 
+  * fetch image and map volume and run cobtainer etc
+- to perform this operation it will select the container runtime envirenmental tool by Container Runtime
+- (deamon set controller and static pod lifecycle is maintained by kubelet) 
+
+Kube-Proxy:--
+-  maintains network rules on nodes.
+- If you want to expose pode to outside world you can do by kube-proxy
+- You can set network rule here
+
+Container Runtime :--
+- in our project we are using Docker as Container Runtime 
+- diff Container Runtime are -> rklet, cri-o 
+----------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------
+28-03-2022 Class - 2
+----------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------
+Assignment: Command to backup of etcd
+----------------------------------------------------------------------------------------------------------
+Pod: (pod manifest file ask in interview)
+
+apiVersion: v1   (pod -> v1 | service -> v1 | ReplicaSet -> apps/v1 | Deployment -> apps/v1 ) command check it 
+kind: Pod        (Pod | Service | Deployment | ReplicaSet)
+metadata:
+  name: nginx-pod
+  labels:                            (grouping multiple pods)
+    app: nginx
+	type: load-balancer
+spec:
+  containers:
+  - name: webserver
+    image: nginx
+	ports:
+	- containerPort: 80
+	
+Commands:
+
+kubectl apply -f <.yaml_file> --> To create any K8S object
+kubectl get pods --> To display all the pods in the cluster [default-namespace]
+kubectl exec <pod_name> -it <command>/kubectl exec <pod_name> -- <command> --> To get inside a pod
+** kubectl exec -it <pod_name> -- sh 
+******kubectl get pod -o wide -> to get more information of the command (to check pod ip)
+******kubectl get pod -o json | grep podIp
+kubectl describe <object_kind> <object_name> --> To get the information about K8S objects
+kubectl delete <object_kind> <object_name> --> To delete a object in K8S
+
+----------------------------------------------------------------------------------------------------------
+29-03-2022 Class - 3
+----------------------------------------------------------------------------------------------------------
+Manifest File Fields:
+
+1. apiVersion: (version of the object) 
+- it specify the version of K8S that will be used to create K8S object 
+Ex: pod -> v1 | service -> v1 | ReplicaSet -> apps/v1 | Deployment -> apps/v1
+
+kubectl api-versions --> To check all the api versions in K8S
+kubectl api-resource --api-group <api-version> --> To check the objects that can be created under a api version
+
+2. kind: (type of object) 
+- It specify the type of K8S object that where trying to create in side the cluster 
+Ex: Pod, Deploy, ReplicationController, ReplicaSet etc
+
+3. metadata: (provide the tag)
+- ex: name of pod and which namespace it is running )
+ 
+4. spec: 
+- core information of the object and specify the desired state of object 
+
+5. labels:
+- Labels are key-value pair attached to an object that helps to select and then group the object
+- we can any number of labels to a K8S object
+ 
+labels:
+  app: nginx
+  type: web
+
+6.selectors:
+- using matching labels of the object selecter can be used to identify the object
+- K8S currently support 2 typs of selector  
+
+a. equity-based selectors  (=, !=, ==)
+b. set-based selectors     (in, notin, exists)
+
+ex:
+environment in (production, qa)
+environment notin (dev)
+----------------------------------------------------------------------------------------------------------
+Controller Types:
+
+1. ReplicationController/ReplicaSet: 
+- used to create multiple instances of a single pod to achive loadbalancing and high availablity 
+- by any chance one of the pod dies then the controller will recreate a new one
+- let say you create pod with some label and then you create a RS with same label then RS it will consider the 
+  same label pod that is already exist as well  
+
+apiVersion: apps/v1                    (ReplicationController : v1) 
+kind: ReplicaSet
+metadata:
+  name: nginx-rc
+spec:
+  replicas: 4
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      name: nginx
+      labels:
+        app: nginx
+		type: load-balancer 
+    spec:
+      containers:
+      - name: nginx
+        image: nginx
+        ports:
+        - containerPort: 80
+
+****** kubectl scale --replicas=6 rs nginx-rc
+
+Difference B/W RS & RC:
+* The RS is a new version 
+* RS --> selector is compulsary in RS ans for RC -> not mendatory 
+* apiVersion --> RS apps/v1 & RC v1 
+----------------------------------------------------------------------------------------------------------
+2. Deployment Controller: (manifest file ask in interview) 
+** [stateless application? 
+    does not save client data generated in one session for use in the next session ]
+	ex: DNS, HTTP, IP 
+- Deployment is most used object for deploying pods in K8S, this controller provides declerative updates
+  for pods without breaking user exipereance 
+- we can effortlessly rollout application update and also rollback the update using deployment controller 
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deploy
+  labels:
+    app: java
+spec:
+  replicas: 4 
+  strategy:                                   //default 
+   rollingUpdate:
+     maxSurge: 25%
+	 maxUnavailable: 25%
+   type: RollingUpdate 
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      name: nginx
+      labels:
+        app: nginx
+    spec:
+      containers:                            
+      - name: nginx
+        image: nginx:1.20
+        ports:
+        - containerPort: 80
+		
+kubectl set image deploy nginx-deploy nginx=nginx:1.21 --record --> To update the image (CLI command)
+kubectl set image deploy nginx-deploy nginx=nginx:1.6 --record
+
+kubectl apply -f .yaml -> to update the image in .yaml file 
+
+kubectl rollout history deploy nginx-deploy --> To check the total history of the controller
+kubectl rollout undo deploy nginx-deploy --> To rollback to a previous version
+kubectl rollout undo deploy nginx-deploy --to-revision=2 --> To rollback to a specific version
+----------------------------------------------------------------------------------------------------------
+3. DaemonSet Controller (kubectl explain daemonset)   (static pod)
+-  DaemonSet pods are also ignored by the kube-scheduler.
+- if node is added or remove from the cluster Daemon set automatically adds or delete the pod 
+- it will make sure instance of pod running on every node  
+- Don't specify the replicas: here  
+
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: nginx-daemon
+spec:
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      name: nginx
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.20
+        ports:
+        - containerPort: 80  
+		
+Typical use cases of daemon set :
+1. Monitoring Exporter: if you want to moniter all the node of the cluster we can use tools like "Node exporter"
+                        and "Prometheus" etc
+  * Node exporter: exposes the end point which will have all the metrix related to that perticular node and
+   that perticular end point is consumed by prometheus(not greate visualization tool) send that data to grafana    
+2. Logs Collection: we can use tools like "Fluentd and splunk in kibana" with daemon set to export logs
+ from all the node of our cluster
+**** How Fluentd simplifies collecting and consuming logs | Fluentd simply explained-anna
+----------------------------------------------------------------------------------------------------------
+ Static pods are pods created and managed by kubelet daemon on a specific node without API server observing them.
+ If the static pod crashes, kubelet restarts them. Control plane is not involved in lifecycle of static pod. 
+ Kubelet also tries to create a mirror pod on the kubernetes api server for each static pod so that the static 
+ pods are visible i.e., when you do kubectl get pod for example, the mirror object of static pod is also listed.
+ ***  "static pods" are useful in cluster bootstrapping cases.
+----------------------------------------------------------------------------------------------------------
+4. Stateful Set: (maintain sticky identity on each of there pod)
+- Scenario : In a headless service it is going to point to the perticular pod through there DNS name of the pod
+  in that DNS we have (podname, headless-servicename,cluster-domain) to get a constant name of the pod even if 
+  it is restarted we will going to use statefull Set     
+- All the pod have there own uniq identity and own volume poll and own data
+- if pod need stable name 
+- pod need come up with particular order then we chose stateful Set
+- we cann't rollback a state full to previous version we can only delete scaleup scale-down a state full set 
+  [but in deployment you could not get ordered pod creation there is no uniq identity for pod(random name)]
+  
+ statefull application: Telnet, FTP (file transfer protocal)[20,21] 
+----------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------------
+********* https://kukulinski.com/10-most-common-reasons-kubernetes-deployments-fail-part-1/ 
+kubectl get pod <pod_name>
+1) ImagePullBackOff
+     (a) having the wrong container image specified and 
+	 (b) trying to use private images without providing registry credentials
+2) CrashLoopBackOff
+     Awesome! Kubernetes is telling us that this Pod is being Terminated due to the application inside 
+     the container crashing. Specifically, we can see that the application Exit Code is 1. We might also 
+     see an OOMKilled error, but we'll get to that later.
+3) RunContainerError (created configmap in diff namespace)
+4) status is running (but container is not ready restarting)
+5) No resources found.
+6) for a long time the pod in pending state means (node resourse is full)
+ when ever a pod exceeds its memory limit a signal SIGKILL is sent which immediatly terminate the container 
+ and spawns a new with OOM(out of memory) error. => container exit code -> 137 
+
+**** Kubernetes Troubleshoot Example Scenarios -> youtube 
+-------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------
+Pod Phases/Pod Lifecycle:  
+
+1. Pending: 
+- the Scheduler tries to figure out were to place the POD untill it is in pending state 
+
+2. ContainerCreating:
+- were the images required for the application are pulled and the container starts
+
+3. Running: 
+- Once the container is created in a pod it goes into a running state 
+- By default, Kubernetes assumes that as soon as the container is created, it is ready to serve user traffic
+
+4. Succeeded: (batch job) 
+- all the containers in the pod have terminated in success and it will not been restarted 
+
+5. Failed:
+- all the container inside the pod have terinated where atleast one container has terminated in failure 
+  the container either exited with non-zero status or terminated by system 
+  (It will exit without completing his job)
+  
+6. Unknown:
+- kubenetes cluster not able to communicat with pod or node
+----------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------
+29-03-2022 Class - 4
+----------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------
+Probes:  (kubectl get pod -> running) (moniter the pod without prometheus) 
+- defined at container level
+- Actions perfromed by the kubelet which provides health checks to moniter the state or condition of the application
+  inside the pod 
+
+Configuring Probes:
+
+1. initialDelaySeconds: Default:0, Minimum Value: 0
+- once the container going to be created in the pod it will wait for some time to start application inside the container  
+
+2. periodSeconds: Default:10, Minimum Value:1 
+- frequently it is checking the health states of the container application inside the pod the duration of checking 
+
+3. timeoutSeconds: Default:1, Minimum Value:1 
+- number of seconds the probe will wait for a positive responce if  
+
+4. successThreshold: Default:1, Minimum Value:1 
+- how many consicutive time you will going to get positive responce to say that container application inside the pod is ready 
+
+5. failureThreshold: Default:3, Minimum Value:1
+- how many consicutive time you will going to get failure responce to say that container application inside the pod is not ready 
+----------------------------------------------------------------------------------------------------------
+Types of Probes: tie the ready condition to the actual state of the application inside the container
+
+1. Readiness Probe: 
+- By default, Kubernetes assumes that as soon as the container is created, it is ready to serve user traffic 
+- But if the application within the container took longer to get ready, the service is unaware of it and sends 
+  traffic through as the container is already in a ready state, causing users to hit a POD that isn’t yet running
+  a live application
+- container is not created here 
+
+2. Liveness Probe: 
+- Every time the application crashes, kubernetes makes an attempt to restart the container to restore service to users 
+  due to a bug in the code, the application is stuck in an infinite loop
+- Liveness Probe periodically test whether the application within the container is actually healthy or not if it unheathy 
+  container to be "killed and restarted"
+- It doesn’t wait for readiness probes to succeed. If you want to wait before executing a 
+  liveness probe you should use initialDelaySeconds or a startupProbe.
+- EXIT CODE 1 => application inside the container not running preperlly
+- How to monitor the pod that is always running?
+  
+********** Container Deadluck ?
+
+3. Startup Probe [version 1.16]: (extra layer of check of pod)
+- To prevent the DeadLuck we will use startup Probe  
+- all other probes are disabled if a startup probe is provided, until it succeeds. 
+- K8S will exicute startup probe first and if it succed then the live-ness take over the probe action, 
+
+spec:
+  containers:
+    startupProbe:
+	  httpGet:
+	    path: <path_to_application>
+		port: <port>
+	  initialDelaySeconds: 10
+	  failureThreshold: 20
+	  successThreshold: 10
+    livenessProbe:
+	  httpGet:
+	    path: <path_to_application>
+		port: <port>
+	  initialDelaySeconds: 5
+	  failureThreshold: 3
+---------------------------------------------------------------------------------------------------------- 
+Probe Actions:
+
+Shell [exec] 
+- this probe action is used to run a shell command inside the container shell env and probe action 
+  is consider failure if the exicuted command exit with non zero-value 
+
+Syntax:
+<probe_type>
+  exec:
+    command:
+	- <command>
+	- <arguments>
+-------------------------------
+apiVersion: v1
+kind: Pod
+metadata:
+  name: Shell
+  labels:
+    app: alpine
+spec:
+  containers:
+  - name: alpine
+    image: alpine
+	args:                         //CMD[" "]  and exitcode 127 
+	- /bin/sh
+	- -c
+	- touch /home/tmp/probecheck; sleep 20; rm /home/tmp/probecheck; sleep 10000
+	livenessProbe:
+	  exec:                                    // file or directory not foung exit code 127
+	    command:
+		- cat
+		- /home/tmp/probecheck 
+	  initialDelaySeconds: 2
+	  periodSeconds: 5
+	  failureThreshold: 5
+---------------------------------------------------------------------------------------------------------- 
+2. HTTP Request [httpGet] 
+- K8S generally used for web application the most comman probe action is http request
+- httpGet sends the get api request to the path defined in the probe 
+- the http status code determine the weither the probe is successfull or not
+- https://komodor.com/learn/exit-codes-in-containers-and-kubernetes-the-complete-guide/  
+
+- http response code (Assignment)  (server gyan)
+  Informational responses (100–199)
+  Successful responses (200–299)
+  Redirection messages (300–399)
+  Client error responses (400–499) 
+  * 404->  the server was unable to find what was requested.(path is not exist)
+  * 403-> forbidden (nishedisalaghide)  ((networking protocal error like VPC or DNS like))
+  * 402-> expired the certificate (payment issues & Expired account) 
+  Server error responses (500–599) 
+
+Syntax:
+
+<probe_type>
+  httpGet:
+    path: <path_to_application>
+	port: <port>
+-----------------------------------	
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    test: liveness
+  name: liveness-http
+spec:
+  containers:
+  - name: liveness
+    image: k8s.gcr.io/liveness
+    args:
+    - /server
+    livenessProbe:
+      httpGet:
+        path: /healthz
+        port: 8080
+      initialDelaySeconds: 3
+      periodSeconds: 3
+----------------------------------------------------------------------------------------------------------   
+TCP Port Check [tcpSocket]:
+- perticular port inside the pod is open and kubelet is able connect to that specific port 
+- database 3306 
+<probe_type>
+  tcpSocket:
+	port: <port_number>
+
+---------------------------------------------------------------------------------------------------------- 
+----------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------
+29-03-2022 Class - 5
+----------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------
+*** for bare matel view-network/calico plugin responsible for create ip for pod
+----------------------------------------------------------------------------------------------------------
+Services: 
+- For external communication between pod in the cluster to internet and internal communication of pods with 
+  in the cluster we will use services
+* Scenario explain (external communication) basically it will map request from our laptop to node and node to pod.
+- pods are short lived and it can be horizantally scalled so there Ip is not constant for this reason 
+  K8S provide an object called service to expose the pods internally as well as externally  
+--------------------------------------------------------------------------------------------------------
+Types of Services:
+
+1. ClusterIP
+- when you install K8S by default kubernetes running in clusterip service (kubectl get service)
+- It enabels the communication of pods with in the cluster with out using there Ip address 
+- In manifest file if you don't mention the type by default it is consider as ClusterIp service 
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-clusterip
+spec:
+  type: ClusterIP                // if you don't mention it 
+  selector:
+    app: nginx
+  ports:
+  - targetPort: 80
+    port: 90                    // if you want to change you can 
+	
+----------------------------------------------------------------------------------------------------------
+2. NodePort (Node Port Range - 30000-32767) 
+- when you created the nodeport Internally ClusterIp is automatically get created
+- it will going to connect the pod inside the cluster to external(internet) through the port  
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-nodeport
+spec:
+  type: NodePort
+  selector:
+    app: nginx
+  ports:
+  - targetPort: 80
+    port: 90
+	nodePort: 30500
+	
+- target port is mandatory 
+- If you don't mention 'port' bydefault it will take the target port number
+- If you don't mention 'nodeport' bydefault it will take port number with in range of (30000 - 32767)
+----------------------------------------------------------------------------------------------------------
+3. LoadBalancer:   
+- suppose we have two diff microservices in a cluster externally you will going to access with url/wear and url/watch 
+  at the time we will going to use loadbalancer 
+- If you going to create a LoadBalancer service internally it will create a NodePort and ClusterIp service as well 
+  it will going to perform all the operation that it has to do for nodeport, but in addition sends a request to cloud 
+  platform to provision a native load balancer for this service   
+- Basically it will going to distribute the traffic as well as it will route the trafic to perticular service  
+
+**** always spin up with network load balancer  
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: example-service
+spec:
+  selector:
+    app: example
+  ports:
+    - port: 8765
+      targetPort: 9376
+  type: LoadBalancer
+ 
+----------------------------------------------------------------------------------------------------------
+4. Headless (deekshith video regardinng init-container and sidecar-container)
+  https://github.com/DeekshithSN/kubernetes/tree/master/services/mysql-headless-service
+
+- When you are working with a stateful application like databases mongo-DB,MySQL 
+  Assume I have a three replicas of my SQL This is a stateful set which is created by the ordinalindex mysql-0
+  which start from 0,1,2, I have a clusterIp service it will redirect the wright request or read request 
+  randomly to any one of the pod, Let's say I have a right request assume that the service is going to forward 
+  the request mysql-0 and One more write request it is going to forward the request to my-SQL 2 but When you 
+  send a read request Assume that it will going to mysql-1 here 'Data inconsistent" come into picture because 
+  what ever the queary you exicuted it will be in mysql-0 (own volume because it is statefull set) and mysql-2 
+  (own volume)so to over come this we will going to use Headless service, we are using stateful set so the name is 
+  constant with ordinal index, replace the service from cluster ip to headless service and i want to chose one of the 
+  replica as my master rest all other things are my slave, so when i get write requist through headless service we 
+  are pointing to mysql-0(master) pod and also always i am going to take backup and exicute in slave like mysql-1 
+  mysql-2 and the data is sync between all the 3 replicas and there is a no dataconsistency and also i will create a 
+  clusterIp for read request when you get a read request it will going to point to any of the pod you will get a output
+  because data is sync   
+    
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql-h 
+spec:
+  clusterIP: None          // important 
+  selector:
+    app: mysql 
+  ports: 
+   - port: 3306  
+----------------------------------------------------------------------------------------------------------
+Namespaces: 
+- devide the cluster into multiple mini cluster they are logically isolated from one another  
+- multiple team working on multiple project it is difficult to track of which team has created which pod,service etc
+- Namespaces are intended for use in environment 
+
+Kubernetes has 4 Initial Namespaces by Default:
+
+1. default: 
+- this namespace is used for your objects when you don't specify any namespace
+
+2. kube-system: (schedular,api server, etcd, proxy etc ) 
+- kubectl get pod -n kube-system 
+- this namespace for the object created by K8S system to run it's componant 
+
+3. kube-public:
+- the object inside this namespace is readable by all users including those who are not authenticated 
+
+4. kube-node-lease
+- it gives the information about your nodes to the master (it's just moniter node is working properly or not)
+- this namespace is a new addition in kubernetes and it has resorces which provide tools to moniter 
+  objects asscioted with each other 
+  
+* you can't have same name of pod within the namespace but across the namespace you can
+* If you create your own namespace it is easy to delete all the resourses created by you  
+----------------------------------------------------------------------------------------------------------
+Creating Namespace either by CLImood(imperative-mood) or console mood(declerative-mood)
+-------------------------------------------------------
+1. kubectl create ns <namespace_name>
+   kubectl get namespaces 
+
+2.
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: dev
+--------------------------------------------------------
+To create objects under a specific namespace we have 2 ways:
+
+1.
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx-pod
+  namespace: dev
+  labels:
+    app: nginx
+	type: load-balancer
+spec:
+  containers:
+  - name: webserver
+    image: nginx
+	ports:
+	- containerPort: 80
+	
+2. kubectl apply -f <yaml_file> -n <namespace_name>
+----------------------------------------------------------------------------------------------------------
+Assignment: Cgroups and Namespace (Docker) 
+* kubectl get all -A (all namespace like default , kubesystem everything)
+* kubectl get all -n <name-space>
+* kubectl config view (currently in which namspace)
+* kubectl config set-context --current --namespace=dev (don't specify extra parameter)
+
+----------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------
+Class - 6
+----------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------
+Q) manullay shedule a pod or not shedule a pod (diff typs of shedular)
+1) Node Selector
+2) Node Affinity and Anti Affinity
+3) Pod Affinity and Anti Affinity
+4) Taints and Tolerations
+
+******* master has a taint --> Noshedule 
+
+Commands:
+
+kubectl get nodes --show-labels                 --> To display all the labels of the node
+kubectl label nodes <node_name> <key_of_label>- --> to delete the label from node  
+kubectl label nodes <node_name> <key>=<value>    --> To add a label to a node
+kubectl label nodes <node_name> spec=high 
+
+Scheduling Pods: 
+- sheduling the pod on node is taken care by shedular  
+ex: when you want to shedule a pod an specific nods with some perticular specifications 
+- when you co-locate pods an perticular nodes from the same availablity zones  
+- when you want to co-locate a pod from one service with a pod an another service an the same node due to strong 
+  dependency on each other 
+  
+Types:
+
+1. nodeSelector:
+- simplest way of sheduling the pods to aperticular node using it's labels 
+
+-------------------
+spec:
+  nodeSelector:
+    <key>: <value>
+-------------------
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx-pod
+  labels:
+    app: nginx
+spec:
+  containers:
+  - name: webserver
+    image: nginx
+	ports:
+	- containerPort: 80
+  nodeSelector:                         //If they does not find node it will move to pending state  
+    instance: high
+
+Limitations: 
+- place the pod any node that are not small or  
+- place the pod on medium or large node 
+You cannot achieve this by Node selector but we can achieve this by Node Affinity 
+
+----------------------------------------------------------------------------------------------------------
+Affinity: 
+- greetly expands the node selector and it provide soft and hard sheduling roll 
+
+Hard Rule: 
+requiredDuringSchedulingIgnoredDuringExecution
+
+Soft Rule: (if you not get label it will adjest with another node)
+preferredDuringSchedulingIgnoredDuringExecution
+
+requiredDuringScheduing --> during the pod sheduling it will search the label if it is not find it will be in pending state 
+IgnoredDuringExecution  --> If some one in future they deleted the label at the time pod is going to be ignored the label 
+requiredDuringExecution --> If some one in future they deleted the label at the time pod is going to be deleted                            
+----------------------------------------------------------------------------------------------------------
+1) nodeAffinity:
+- similar to node selector node affinity allows sheduling pod to specific node 
+-----------------------------------------------------------
+spec:
+  affinity:
+    nodeAffinity:
+	  requiredDuringSchedulingIgnoredDuringExecution
+	    nodeSelectorTerms:
+		- matchExpressions:
+		  - key: <key>
+		    operator: In
+			values:
+			- <value>
+------------------------------------------------------------
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx-pod
+  labels:
+    app: nginx
+spec:
+  containers:
+  - name: webserver
+    image: nginx
+	ports:
+	- containerPort: 80
+  affinity:
+    nodeAffinity:
+	  requiredDuringSchedulingIgnoredDuringExecution
+	    nodeSelectorTerms:
+		- matchExpressions:
+		  - key: spec
+		    operator: In         //NotIn(anti-affinity)
+			values:
+			- high
+			- medium
+---------------------------------------------------------------
+---------------------------------------------------------------
+                   Node1   Node2  Node3      weightage 
+                   yes     no      no     SSD = 5 weightage 
+	               no	   yes	   yes    Availability Zone = 3 weightage
+	               no 	   no 	   yes    CPU 10 = 10 weightage 
+total weihtage --> 5       3       1 
+-----------------------------------------------------------------   	 
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx-pod
+  labels:
+    app: nginx
+spec:
+  containers:
+  - name: webserver
+    image: nginx
+	ports:
+	- containerPort: 80
+  affinity:
+    nodeAffinity:
+	  preferredDuringSchedulingIgnoredDuringExecution
+	  - weight: 1                  // if it is not there if they can't find label it will move to pending state 
+        preference:
+          matchExpressions:
+          - key: spec 
+            operator: In
+            values: 
+            - test                //if they find spec=test they have highest preferance 
+      - weight: 5                 // we have specifing that this label as weightage 5 
+        preference:
+          matchExpressions:
+          - key: spec 
+            operator: In
+            values:
+            - high
+
+***** in case they didn't find any label from both this weightage, then it will pick random node 
+suppose we have a 2 node with the label=test in (node1) and label=high in (node2) then where it is going to place ?
+----------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------
+01-03-2022 Class - 7
+----------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------
+let say webapplication in one server communicating with another server database for data, to increas the speed 
+we intraduce the redis/memchached in webapplication server to store chache(most used data) 
+
+                      node1           node2          node3  
+					  web1            web2            DB
+redis/memchache       yes             yes             no 
+
+- If you want to deploy a pod with specific node which have matching pod = Pod Affinity 
+- If you want to deploy a pod with specific node which don't have matching = pod Anti-Affinity 
+
+** if you don't want to have multiple pod on same node then you can use pod-antiaffinity 
+   when replicas->4 all are created in single node to avoid that 
+
+Pod Affinity & Anti Affinity:  ( https://github.com/DeekshithSN/kubernetes => deekshith )
+real time example: co-locate the pod in same zone 
+
+podAntiAffinity ->
+- i don't want to create 2 pod of redis-cache an same node 
+- if i have 3 node somebuddy created redis-cache pod in one node i don't want to create that redis cache again 
+-------------------------------------------------------
+topology: one more match expression
+------------------------------------------------------------------ 
+Syntax:
+
+spec:
+  affinity:
+    <podAffinity/podAntiAffinity>:
+      requiredDuringSchedulingIgnoredDuringExecution:
+      - labelSelector:
+          matchExpressions:
+          - key: <key>
+            operator: In
+            values:
+            - <value>
+        topologyKey: kubernetes.io/hostname
+-------------------------------------------------------
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-affinity
+  labels:
+    app: pod
+spec:
+  containers:
+  - name: webserver
+    image: nginx
+    ports:
+    - containerPort: 80
+  affinity:
+    podAntiAffinity:                          //why?
+      requiredDuringSchedulingIgnoredDuringExecution:
+      - labelSelector:
+          matchExpressions:
+          - key: app
+            operator: In
+            values:
+            - web 
+        topologyKey: kubernetes.io/hostname   //explanation?
+----------------------------------------------------------------------------------------------------------
+Taints and Tolerations:
+- if you going to apply a taint on the node that node can only allow to place tolerations pod apart from 
+  other pad could not able to enter it  
+limitations: 
+- suppose 3 node (a,b,c) and 3 pod (1,2,3) and we will going to apply a taint on node-a and tolerations on 
+  pod-1 while placing a pod by shedular it will have the chances to place pod-1 at node-b as well at the time 
+  no pod is going to assoiceted to node-1 to overcome that we will going to use the combination of taint and 
+  tolerations and node affinity. 
+     
+Commands:
+
+kubectl taint nodes <node_name> <taint_key>=<taint_value>:<taint_effect> --> To taint a node
+kubectl taint nodes <node_name> <taint_key>=<taint_value>:<taint_effect>- --> To untaint a node
+
+Taint Effects:
+
+1. NoSchedule:
+- no pod can be sheduled on the taint node without toleratons 
+2. PreferredNoSchedule: 
+- the system will try to avoid placing a pod that does not telorate the taint but not gurented 
+3. NoExecute:
+- Any pods that do not tolerate the taint will be evicted immediately, and pods that do tolerate the taint will
+  never be evicted 
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-affinity
+  labels:
+    app: pod
+spec:
+  containers:
+  - name: webserver
+    image: nginx
+    ports:
+    - containerPort: 80
+  tolerations:
+  - key: instance
+    operator: "Equal"
+	value: taint
+	effect: NoSchedule
+---------------------------------------------------------------------------------------------------------	
+* Master --> Noshedule (taint)  
+***** kubectl describe node kubemaster | grep taint 
+----------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------
+Class - 8
+----------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------
+*********
+basically if you want to store a data even if pod is deleted then we go with persistent volume but in K8S we have 
+multiple pod so we will not going to assign this volume to the K8S host we will assign it to cloud platform AWS-EBS
+Here we come up with a concept like persistence volume and persistence volume claim, let say Persistence volume is 
+nothing but an administrator create a pool of volume In that he will going to divide the volume based on the resources
+requirment in future this is called persistent volume and User can now select the one of the persistent volume based 
+on the resource utilization of pod by using persistent volume claim object in K8S 
+
+before creating PV in K8S by administrator, he has to create a cloud persistent disk then he can assign it to persistant
+volume this is called as static provisioning
+
+dynamic provisioning is nothing but automatically persistant volume is going to be created by cloud platform  when we 
+will going to approach a PVC and we need to provision the cloud plateform in storage class 
+********
+----------------------------------------------------------------------------------------------------------
+Kuberenetes Volumes:
+
+In Kubernetes, a volume can be thought of as a directory which is accessible to the containers in a pod.
+
+HostPath Volume Mounting:
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx-pod
+  labels:
+    app: nginx
+    type: load-balancer
+spec:
+  volumes:
+  - name: volume-hostpath
+    hostPath: 
+	  path: /tmp/hostpath/
+	  type: DirectoryOrCreate                  //Directory   or // emptyDir: {}
+  containers:
+  - name: nginx
+    image: nginx:alpine
+	ports:
+	- containerPort: 80
+	volumeMounts:
+	- mountPath: /home
+	  name: volume-hostpath
+----------------------------------------------------------------------------------------------------------
+emptyDir: {} => 
+- empty directory first created when the pod is assigned to the node 
+- Stays as long as pod is running 
+- once pod is removed from a node, emptyDir is deleted forever
+use cases: Temporary space
+----------------------------------------------------------------------------------------------------------
+Types:
+
+1. Ephemeral Volumes:
+Ephemeral Volumes are short lived, they are tightly dependant with the lifetime of the Node 
+and they are deleted if the Node goes down
+
+2. Persistent Volumes:
+Persistent Volumes are meant for long term storage and are independent of the Pods or Nodes life-cycle. 
+Persistent volumes can be created in two ways: manually by an administrator (static) or 
+dynamically using storage classes (dynamic). Once created, persistent volumes can be bonded to a pod 
+using a Persistent Volume Claims (PVC)
+
+Uses:
+
+I.	Persistent Volumes, when mounted, allow data to persist even when the pods are deleted.
+II.	Persistent Volumes allow data sharing between pods by mounting the same Persistent Volume 
+to various pods.
+
+----------------------------------------------------------------------------------------------------------
+1. Static provisioning (Manually created by the administrator)
+ manually creating a persistent volume by PersistentVolume object in K8S. 
+ This step is usually done by an administrator.
+        PV --> PVC --> Pod
+
+2. Dynamic provisioning(Storage Classes)
+- here PV is going to be created by automatically by storage class object and it will going to set 
+  storage capacity based on the request of PVC
+- we will going to mention the provisioner in the storage class object in our organization 
+  we will going to use EBS as provisioner 
+diff provisioner :- https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#volume-v1-core
+- The main goal of storage classes is to eliminate pre-provision storage like PV by admin   
+
+Users can request storage by specifying the storage class in PVC.
+
+StorageClass --> PVC --> Pod
+----------------------------------------------------------------------------------------------------------
+AWS EBS is perticularly ment for node if I need a multiple node persistent volume then go for  Glusterfs or NFS 
+we can combine EBS with Glusterfs or NFS 
+- AWSElasticBlockStore, Glusterfs and NFS are VolumePlugin  
+----------------------------------------------------------------------------------------------------------
+Persistent Volumes:
+
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv
+spec:
+  storageClassName: static           //SSD 
+  capacity:
+    storage: 2Gi
+  accessModes:
+  - ReadWriteOnce
+  hostPath:
+    path: /tmp/static
+----------------------------------------------------------------------------------------------------------
+Persistent Volumes Claim:
+To claim a Persistent Volume, we use a Persistent Volume Claim. 
+Persistent Volume Claims or PVCs are a way for an application developer to request storage 
+for the application.
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pv-claim
+spec:
+  storageClassName: static
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+	  storage: 1Gi
+----------------------------------------------------------------------------------------------------------
+Mounting on Container:
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx-pod
+  labels:
+    app: nginx
+spec:
+  volumes:
+  - name: volume-static
+    persistentVolumeClaim:
+	  claimName: pv-claim
+  containers:
+  - name: webserver
+    image: nginx
+	ports:
+	- containerPort: 80
+	volumeMounts:
+	- mountPath: /home
+	  name: volume-static
+----------------------------------------------------------------------------------------------------------
+The access modes are:
+
+•	ReadWriteOnce -- the volume can be mounted as read-write by a single node
+•	ReadOnlyMany -- the volume can be mounted read-only by many nodes
+•	ReadWriteMany -- the volume can be mounted as read-write by many nodes
+----------------------------------------------------------------------------------------------------------
+Reclaim Policies: (it is shedulaed on the storage class object)
+ https://kubernetes.io/docs/concepts/storage/storage-classes/
+
+•Retain:  
+- PV will remain untill it is deleted by the administarter and it is not available for 
+  re-use by any other claims 
+- previous claimant's data remains on the volume. An administrator can manually reclaim the volume.
+•Delete:  
+- as soon as the claim is deleted, the volume will be deleted as well.
+•Recycle: 
+- the data in the PV will be scrubbed before making it available to other cliams.
+----------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------
+CLASS - 9
+----------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------
+Environment Variables:
+	  
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx-pod
+  labels:
+    app: nginx
+spec:
+  containers:
+  - name: nginx
+    image: nginx:alpine
+	ports:
+	- containerPort: 80
+	env:
+	- name: TEST-ENV
+	  value: test
+	- name: UAT-ENV
+	  value: uat
+----------------------------------------------------------------------------------------------------------
+real time example of configmap and volume is watch promethues video in K8S (Deekshith) 
+----------------------------------------------------------------------------------------------------------
+Config Maps & Secrets:
+ConfigMaps and Secrets are Kubernetes objects to store data in key value pairs. 
+Pods can then use these key values Environment Variables or as configuration files in a volume.
+
+ConfigMaps and Secrets are ways of separating the configuration data from the Deployment manifests, 
+which makes them more portable.
+----------------------------------------------------------------------------------------------------------
+Config Maps: (copy some configaration from my local to pod(prometheus))
+Kubernetes config maps are namespaced objects and they are used to store data in terms of plain text, 
+which is open and readable to all the users who have access to the cluster.
+
+kubectl create configmap <configmap_name> --from-literal <key>=<value>
+kubectl create configmap username --from-literal user=abc
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: username
+data:
+  user: abc
+----------------------------------------------------------------------------------------------------------
+Secrets:
+Kubernetes secrets are secure objects to store sensitive data such passwords, 
+keys etc which are encrypted in base 64
+
+kubectl create secret generic <secret_name> --from-literal <key>=<value>
+kubectl create secret generic password --from-literal pass=test
+
+apiVersion: v1
+kind: Secret
+metadata:
+  name: password
+type: Opaque                  // it shouldn't see by anyone (kubectl describe secret Secret)
+data:
+  pass: test
+
+----------------------------------------------------------------------------------------------------------
+Mounting on Containers as ENV:
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx-pod
+  labels:
+    app: nginx
+spec:
+  containers:
+  - name: webserver
+    image: nginx
+	ports:
+	- containerPort: 80
+	env:
+	- name: USERNAME
+	  valueFrom:
+	    configMapKeyRef:
+		  name: username
+		  key: user
+    - name: PASSWORD
+	  valueFrom:
+	    secretKeyRef:
+		  name: password
+		  key: pass
+
+* go inside the pod and check it (kubectl exec nginx -it sh) (#echo $USERNAME) 
+* real time example of secret  
+- to store some data to S3 bucket we need to provide access-key and secret-key we use secret
+- database passwd we will use secret and database user we used as configMap 
+----------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------
+Resource Quota:
+
+Kubernetes namespaces help creating logically isolated work environments. But namespaces 
+do not enforce limitations or quotas. For this purpose, we use Kubernetes quotas 
+to specify strict quota limits for around 15 Kubernetes API resources
+
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: resourcequota
+  namespace: dev
+spec:
+  hard:
+    pods: 1
+	configMaps: 2
+	requests.cpu: 0.5         // single pod
+	limits.cpu: 1              // all the pod 
+	requests.memory: 256Mi
+	limits.memory: 512Mi
+------------------------------------------------	
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx-pod
+  labels:
+    app: nginx
+spec:
+  containers:
+  - name: webserver
+    image: nginx
+	ports:
+	- containerPort: 80
+	resources:                           // while pod creating you need to add it else it will show error:forbidden
+	  requests:
+	    cpu: 0.25
+		memory: 128Mi
+	  limits:
+	    cpu: 0.5
+		memory: 256Mi
+		
+----------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------
+Securing Kubernetes: 
+Kubernetes Security Best Practices 2021 (From Container Specialist)-> raj 20 min 
+
+Context:
+
+A context is a group of access parameters to enable secure connection to a specific cluster’s API server. 
+Each context contains a Kubernetes cluster, a user, and a namespace.
+
+Types of Users in Kubernetes:
+
+User Account: (create a certificate, complex) ((https://www.youtube.com/watch?v=U67OwM-e9rQ&t=144s))
+
+We can create users and groups who can connect to the Kubernetes API server. 
+* kubernetes-admin is the default user
+
+Service-Account: (jenkins, Prometheus) 
+
+Service accounts are used to give access to processes inside pods to interact with the Kubernetes API. 
+They can also be used by applications outside the cluster. 
+For example, Prometheus monitoring tool which is used to monitor the cluster can be given the access 
+using Service-Account.
+- for every namespace sa is automatically created 
+- ** kubectl get sa (default sa)
+----------------------------------------------------------------------------------------------------------
+Step1: Creating Service Account    
+kubectl create sa test
+
+Step 2: Get the secret token of the Service Account
+kubectl describe sa test
+
+Step 3: Get the token value of the secret
+kubectl describe secret <token_name>
+
+Step 4: Assign the token value to a variable
+TOKEN="<value>"         //session specific when close session you couldn't get 
+
+TOKEN="$(kubectl describe secret $(kubectl describe sa test | grep "Tokens" | awk '{print$NF}') | grep "token:" | awk '{print $NF}')"
+
+Step 5: Set the credential for the SA
+kubectl config set-credentials test --token=$Token
+
+Step 6: Create a new context for the SA
+kubectl config set-context <context_name> --cluster=kubernetes --user=test
+
+Step 7: Switch to newly created context
+kubectl config use-context <context_name>
+----------------------------------------------------------------------------------------------------------
+RBAC:
+
+RBAC or Role-Based Access Control is an approach in Kubernetes used to add constraints for users, 
+groups and applications to access Kubernetes resources. 
+RBAC basically adds security to the Kubernetes cluster and we can apply it for a 
+specific namespace or to the total cluster. 
+It was introduced in version 1.8 and uses rbac.authorization.k8s.io API group.
+
+3 important concepts in RBAC.
+
+Subject: Subject is the entity that needs access. It could be user or group or a service account
+Resources: Resource is the K8s object that a subject wants to access. It could be pods, deployments, services etc 
+Verbs: Verbs are the actions that a subject can do on resources. It could be the list, delete, create, watch etc
+----------------------------------------------------------------------------------------------------------
+Role & Cluster Role:
+
+Role and ClusterRole contains set of rules to access & modify Kubernetes resources. 
+Difference between them is Role works in particular namespace while ClusterRole is cluster wide. 
+Basically, we use Role If we want to define permissions inside a namespace and use ClusterRole 
+for cluster wide.
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: sa-cr
+rules:
+- apiGroups: ["*"] 
+  resources: ["pods", "secrets"]
+  verbs: ["list", "get", "delete"]
+ 
+kubectl create clusterrole sa-cr --resource=pods --resource=secrets --verb=get --verb=delete --verb=list
+
+*** diff between clusterRoll v/s Role
+- we are not going to mention the namespace in the cluster role 
+- cluster-role are reusable if you have another namespace you can create service
+  account on that namespace as well
+--------------------------------------------------------------------------------------------------------
+2. Role Binding & Cluster Role Binding
+
+Rolebinding binds the Role to a Subject to access the Resources within a namespace while 
+ClusterRoleBinding binds the ClusterRole to a Subject to access the resources cluster-wide.
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: sa-crb
+subjects:
+- kind: ServiceAccount
+  name: test
+  namespace: default
+roleRef:
+  kind: ClusterRole
+  name: sa-cr
+  apiGroup: rbac.authorization.k8s.io
+  
+kubectl create clusterrolebinding sa-crb --serviceaccount=default:test --clusterrole=sa-cr
+
+-------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------
+CLASS 10
+-------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------
+Helm Charts:
+- Helm 3 
+- /usr/local/bin/helm (path)
+- package manager for K8S that allow developers and administarter to more easily package configure and deploy 
+  object on to K8S cluster 
+
+helm create <chart_name> --> To create a helm template
+helm install <chart_name> <folder_name> --> To install a Helm chart
+helm list 
+helm upgrade <chart_name> <folder_name> --> To upgrade a Helm chart
+
+helm upgrade <chart_name> <folder_name> --set replicacount=5  --set ports.nodeport=31000  --> To set values from CLI
+
+helm ls
+helm rollback release_name revision
+helm history chart_name
+
+--------------------------------------
+Chart.yaml File:
+
+apiVersion: v2
+name: nodejshelm
+description: A Helm chart for Deploying NodeJS application in Kubernetes
+
+type: application
+
+version: 2.1
+appVersion: "version13"           //image tag 
+-------------------------------------
+deployment.yaml File
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: webapp
+  name: webapp-deployment
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: webapp
+  template:
+    metadata:
+      labels:
+        app: webapp
+    spec:
+      containers:
+      - image: {{ .Values.image.repository }}
+        name: nodejs
+        ports:
+        - containerPort: {{ .Values.ports.containerPort }}
+      imagePullSecrets:
+      - name: dockerhub
+--------------------------------------------------
+service.yaml File
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: webapp-svc
+spec:
+  ports:
+  - port: {{ .Values.ports.containerPort }}
+    targetPort: {{ .Values.ports.containerPort }}
+    nodePort: {{ .Values.ports.nodePort }}
+  selector:
+    app: webapp
+  type: NodePort
+--------------------------------------------------
+values.yaml File
+
+replicaCount: 3
+
+image:
+  repository: adhig93/kubernetes:version13
+  
+ports:
+  containerPort: 3080
+  nodePort: 31200
+------------------------------------------------------------------------------------------------------  
+EKS Cluster: (PASS SERVICE)
+
+Step 1: Install AWS ClI
+https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2-windows.html
+
+Step 2: Open cmd.exe as Administrator
+
+Step 3: Instal Chocolatey
+https://docs.chocolatey.org/en-us/choco/setup
+
+Step 4: Install eksctl     // writen in Go and uses cloud formation
+choco install -y eksctl
+
+Step 5: Install kubectl   // for communication with cluster api server 
+choco install kubernetes-cli
+
+Step 6: Create Cluster
+eksctl create cluster \
+ --name my-cluster \                                
+ --version 1.21 \
+ --with-oidc \                    //To use IAM roles for service accounts, connect s3 bucket in IAM (identity provider)  //openidconnect
+ --nodegroup-name worker \
+ --region us-east-1 \  
+ --node-type t3.medium \          // if you don't specify two m5.large node is created 
+ --managed \                      // EKS cluster with managed node group 
+ --asg-access \            // it will create autoscalling group along with iam role necessary on the EC2 to be accessed by Auto scalling 
+ --ssh-access \
+ --ssh-public-key may2022 
+
+----------------------------------------------------------------------------------------------------------
+eksctl get clusters
+eksctl delete cluster --region us-east-1 --name my-cluster --> To delete EKS Cluster
+----------------------------------------------------------------------------------------------------------
+I want to access this eks  in another system? and if i am going to delete the .kube file then?
+- have a user to running this command (aws-cli) 
+aws eks --region us-east-1 update-kubeconfig --name my-cluster --> To setup kubeconfig file on the local server
+----------------------------------------------------------------------------------------------------------
+Q) I have running eks cluster how can we integrate with jenkins? 
+- kubeconfig file adding them in security credentail but the problem is it is not secure way jenkins is not 
+  as secure as when compare to other thing keeping configuration data inside jenkins is not preferable.
+- we can have jump server (like bastion server) 
+  * install aws-cli and kubectl and eksctl  
+  * aws eks --region us-east-1 update-kubeconfig --name ekscluster
+----------------------------------------------------------------------------------------------------------
+how to upgrade eks-cluster in aws (suppose you downgrade the k8s then)
+aws eks --region us-east-1 update-kubeconfig --name my-cluster  
+-----------------------------------------------------------------------------------------------------------
+To create a Dockerhub Secret in K8S to pull image from priv repo:
+
+kubectl create secret generic dockerhub \
+    --from-file=.dockerconfigjson=/home/ubuntu/.docker/config.json \
+    --type=kubernetes.io/dockerconfigjson
+-------------------------------------------------------------------------------------------	
+* nexus repo =>	
+kubectl create secret docker-registry <name> --docker-server=DOCKER_REGISTRY_SERVER 
+--docker-username=DOCKER_USER --docker-password=DOCKER_PASSWORD --docker-email=DOCKER_EMAIL
+
+deployment.yaml 
+
+spec:
+  imagePullSecret:
+  - name: <name>
+  
+to upload in nexus => in jenkins host /etc/docker/daemon.json  
+                      specify the insecure registry ip:port of nexus ip 
+----------------------------------------------------------------------------------------------------------
+Shared Library:
+
+A shared library is a collection of independent Groovy scripts which you pull into your Jenkinsfile at runtime.
+Let’s say we are supporting five micro services in the project typically, all five microservices need their own Jenkinsfile, 
+but the content of the Jenkinsfiles is going to be mostly the same except for some inputs. 
+Jenkins Shared Library avoids this repetition of pipeline code by creating a shared library.
+----------------------------------------------------------------------------------------------------------
+Steps to create Jenkins shared library:     
+
+Step 1: Create vars folder
+Create a Git repository and create a directory called vars, which will host the shared library’s source code (file extension .groovy)
+
+Step 2: Create Groovy file
+Create a file <name.groovy> inside the vars folder (camel casing is mandatory for file names). 
+The filename will be used later by Jenkinsfile to access this Jenkins pipeline library.
+
+Step 3: Create call() function inside Groovy file
+When a shared library is referred from the Jenkins job, Jenkins, by default, 
+will invoke the call() function within our Groovy file. Consider the call() function like the main() method in Java. 
+We can also specify parameters for the call() function if we want to.
+----------------------------------------------------------------------------------------------------------
+Calling a Shared Library in Jenkins:
+
+Example:
+@Library('sharedlibrary')_
+eksShell('dockerhub', 'adhig93/kubernetesjenkins', \
+'ver', 'https://github.com/adhig93/nodejs-k8s.git', 'main', 'github')
+----------------------------------------------------------------------------------------------------------
+Shared Library Repo: https://github.com/adhig93/shared_library
+----------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------
+Q) container restart policy in K8S
+  on         -> do not automatically restart the container (default in docker)
+  on-failure -> restart the container if it fail with non-zero exit code [crashloopbackoff]
+  always(default) -> always restart container without worrying about return code 
+  **** The default behavior of PODs is to attempt to restart the container in an effort to keep it running
+ ** docker container run --restart=always -itd ubuntu /bin/bash 
+ ** restartPolicy: Never in manifest file 
+---------------------------------------------------------------------------------------------------------
+Annotations: to store the unstructured information in Kubernetes objects.
+like : timestamp , commit-message, user information 
+
+metadata:
+  name: pod-with-annotation
+  annotation:
+    commit-message: testign for nginx
+    owner: Nidhi
+--------------------------------------------------------------------------------------------------------
+S3 bucket can we use as volume ?
+-------------------------------------------------------------------------------------------------------
+CORDON? https://computingforgeeks.com/join-new-kubernetes-worker-node-to-existing-cluster/ 
+- Prevent a node from scheduling new pods use – Mark node as unschedulable
+- kubectl cordon <node-name>
+
+Sometimes we need to drain nodes in Kubernetes. When I manually set up a k8s cluster, I can drain the 
+specific node then terminate that machine. While in EKS, nodes are under auto scaling group, which means 
+I can't terminate a specific instance(node). If I manually terminate a instance, another instance(node) 
+will be automatically added into eks cluster.
+So is there any suggested method to drain a node in EKS?
+
+1) kubectl get nodes
+2) kubectl cordon <node name>                                             (Prevent a node from scheduling new pods)
+3) kubectl drain <node name> --ignore-daemonsets --delete-emptydir-data   (Migrate pods from the node)
+
+For AWS autoscaling group, if you have nodes span out to multiple zones, consider delete nodes in
+each zones instead of all nodes from a single zone.
+
+After the execution of the above commands, check the autoscaling group's desired number. It should decrease automatically.
+--------------------------------------------------------------------------------------------------------
+In organization level Key=value example?
+"release" : "stable"
+"environment" : "dev"
+--------------------------------------------------------------------------------------------------------
+Ingress Controller:
+
+Ingress exposes HTTP and HTTPS routes from outside the cluster to services within the cluster. 
+Traffic routing is controlled by rules defined on the Ingress resource.
+
+In order for the Ingress resource to work, the cluster should have an ingress controller running.
+
+The famous ingress controllers are Nginx, AWS and GCE
+--------------------------------------------------------------------------------------------------------
+add number of nodes in K8S ? corom concept?
+-------------------------------------------------------------------------------------------------------
+what are the problem faced in K8S or challenging task? 
+=> pod affinity 
+=> Deadluck situation 
+-------------------------------------------------------------------------------------------------------
+Diff between EKS and ECS and fargate? (Container orchestrator tool)
+EKS: aws can manage the Kubernetes control plane for you need to pay for it 
+ECS: control plane is managed by aws only need not pay for it (for worker node you have to pay)
+fargate: server less 
+
+--------------------------------------------------------------------------------------------------------
+microservices in K8S ? (Deekshith) important 
+
+Design Any Architecture In Kubernetes | Guestbook Demo => 3-tier stateless service in k8s (important) 
+=> System Design (Part 2): 3-tier app on AWS EKS (you tube)
+--------------------------------------------------------------------------------------------------------
+How Prometheus works? Where u configure metrics for it? How u get notified?
+Monitoring the cluster without Prometheus?
+Have u configured Prometheus urself?
+--------------------------------------------------------------------------------------------------------
+ How can u access S3 from k8s? How u giving access?
+- awscli image 
+- secret to store access key and secret key (you need to specify in .aws/config of image)
+- that should be taken care by volume and volume mount 
+--------------------------------------------------------------------------------------------------------
+If u have to copy entire namespace of one cluster to other, how can u do?
+
+ $ kubectl cp <namespace1>/<pod1>:/tmp/foo.txt foo.txt
+ $ kubectl cp foo.txt <namespace2>/<pod1>:/tmp/foo.txt
+-------------------------------------------------------------------------------------------------------
+What exactly u do in K8S on daily basis?
+- already pre-build image is available update it to (config file)manifest file of every name-space and
+   make sure that all the thing is working fine (infrastructure maintanance)
+ (log4g image to reduce vulnerability issues)
+- grafana panal integration (ready config file if you want add extra panal add it re-deploy)
+------------------------------------------------------------------------------------------------------
+Q)Suppose pod with configmap . Some change in the configmap how can update that pod without restart
+ specify the config map withrespect to the volume and volume mount
+------------------------------------------------------------------------------------------------------
+q)https v/s http
+HTTPS uses TLS (SSL) to encrypt normal HTTP requests and responses, and to digitally sign those requests and
+ responses
+-------------------------------------------------------------------------------------------------------
+kubectl port-forward prometheus-monitoring-3331088907-hm5n1 8080:9090 -n monitoring
+------------------------------------------------------------------------------------------------------

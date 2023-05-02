@@ -1,0 +1,114 @@
+CICD Pipeline:
+
+pipeline {
+    agent {label 'slave1'}
+
+    stages {
+        stage('GIT Checkout') {
+            steps {
+                echo 'This is Git Checkout Stage'
+				git 'https://github.com/adhig93/java_repo1'
+            }
+        }
+		stage('Build Stage') {
+            steps {
+                echo 'This is Build Stage'
+				sh 'mvn clean install'
+            }
+        }
+		stage('PUSH Stage') {
+            steps {
+                echo 'This is Push Stage'
+            }
+        }
+		stage('Deploy Stage') {
+            steps {
+                echo 'This is Deploy Stage'
+				sh 'sudo cp target/*.war /opt/apache*/webapps/'
+            }
+        }
+    }
+}
+
+Pipeline With Agents:
+
+pipeline {
+    agent none
+    stages {
+        stage('Stage1') {
+            agent {label 'master'}
+			steps {
+                echo 'This is Stage1'
+				sh 'sleep 5'
+            }
+        }
+		stage('Stage2') {
+            agent {label 'slave1'}
+			steps {
+                echo 'This is Stage2'
+				sh 'sleep 5'
+            }
+        }
+    }
+}
+
+Pipeline with Parallel Steps:
+
+pipeline {
+    agent none
+    stages {
+        stage('Stage1') {
+            agent {label 'master'}
+			steps {
+                parallel (
+					step1:{
+					echo 'This is Step1'
+					sh 'sleep 5'
+					},
+					step2:{
+					echo 'This is Step2'
+					sh 'sleep 5'
+					}
+					
+				)
+            }
+        }
+		stage('Stage2') {
+            agent {label 'slave1'}
+			steps {
+                echo 'This is Stage2'
+				sh 'sleep 5'
+            }
+        }
+    }
+}
+
+Pipeline with Parallel Stages:
+
+pipeline {
+    agent any
+    stages {
+        stage('Stage1') {
+			parallel {
+				stage("Stage 1-A") {
+					steps {
+						echo 'This is Stage1-A'
+						sh 'sleep 5'
+					}
+				}
+				stage("Stage 1-B") {
+					steps {
+						echo 'This is Stage1-B'
+						sh 'sleep 5'
+					}
+				}
+			}
+        }
+		stage('Stage2') {
+			steps {
+                echo 'This is Stage2'
+				sh 'sleep 5'
+            }
+        }
+    }
+}

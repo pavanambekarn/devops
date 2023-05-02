@@ -1,0 +1,1021 @@
+----------------------------------------------------------------------------------------------------
+LINUX
+----------------------------------------------------------------------------------------------------
+DevOps is a combination of software developers (dev) and operations (ops).
+faster development of new products and easier maintenance of existing deployments.
+----------------------------------------------------------------------------------------------------
+17-01-2022 Class - 1
+----------------------------------------------------------------------------------------------------
+Step 1: Create AWS Account
+
+Step 2: Create Redhat Linux Server (t2.micro)
+
+Search for EC2 in the AWS console
+Goto Instances on the left and select Launch Instances
+
+Select Redhat Linux 8 flavor of Linux
+Select t2.micro in Instance Type
+
+Configure Security Groups
+Type - All Traffic
+Source - Anywhere
+
+Key Pair
+
+Select create a new key Pair, give a name and download the pem file
+----------------------------------------------------------------------------------------------------
+Step 3: Download and install Putty
+
+Step 4: Open Puttygen and ceate a ppk file (converting pem file to ppk)
+
+Puttygen --> Load --> Select the .pem file (All files) --> Save Private Key (ppk)
+
+Step 5: Connect to the Linux Server
+
+Open Putty
+
+Copy the public ipv4 address from AWS and paste it in Host Name
+
+Under Connection --> SSH --> Auth --> Select the ppk file that was generated using Puttygen
+
+Login As: ec2-user (Default Username for Redhat Machine)
+----------------------------------------------------------------------------------------------------
+Linux Commands:
+----------------------------------------------------------------------------------------------------
+ls --> To list the files and directories
+ls -l --> To list the files and directories in long format
+ls -lt --> To list the files in long format sorted with time(newest will be shown first)
+ls -lrt --> To list the files in long format sorted with time in reverse order(oldest will be shown first)
+ls -a ----> to list all the files including the hidden files and directory
+ls -R ---> TO SHOW FILES LIKE a tree command
+ls -i <file_name> --> TO check the inode of a file
+----------------------------------------------------------------------------------------------------
+cd <directory_name> --> To change a directory
+cd .. --> To go back to a previous directory
+cd ../../.. if you have 2-3 directory
+cd --> To goto home directory (/home/ec2-user)
+cd means change directory
+
+clear (or) ctr + l --> to clear screen
+----------------------------------------------------------------------------------------------------
+pwd --> To check the present working directory or path of the folder/file/dir
+
+* how to get present working folder
+  pwd | awk -F "/" '{print$NF}'
+----------------------------------------------------------------------------------------------------
+mkdir ( make directory) 
+mkdir <directory_name> --> To create a directory_name
+mkdir -p file1/file2/file3 ---> so dir 1 has dir 2 and dir 2 has dir 3 (created all sub directory at once)
+---------------------------------------------------------------------------------------------------
+touch command
+touch <file_name> --> To create a empty file
+touch file has ( access time, modified time, change time)
+touch -a file1-----> to modify access time
+touch -m file3-----> to change modified time
+stat file1
+----------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------
+18-01-2022 CLASS - 2
+----------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------
+VI - Text Editor (visual instrument)
+
+vi <file_name> --> To open the file for edit
+
+Note: By default VI editor opens in command mode
+
+esc --> To go back to command mode
+esc + i --> To enter Insert mode in VI
+
+esc + :w --> To save the file
+esc + :wq --> to save the file and quit
+esc + :wq! --> To save the file and quit
+esc + :q! --> To quit without saving the file
+esc + :q --> To quit the file without saving
+
+w --> write
+q --> quit
+! --> Forcefully
+----------------------------------------------------------------------------------------------------
+Find and Replace strings/name in vi
+
+esc + :%s/<old_string>/<new_string>/g
+
+eg--> :%s/aws/azure/g 
+this will search and replace aws to azure in entire file present
+eg---> : %s/AWS/azure/ig
+if you put ig it doesn't matter if the word is in cap or small letters it will search and replace 
+but if you give only g in command u have to write the exact format to search and replace
+
+% --> All lines
+s --> Substitute
+g --> globally (All occurences of the pattern)
+ig --> Case insensitive replace
+----------------------------------------------------------------------------------------------------
+esc + :1s/<old_string>/<new_string>/g --> To replace only in the first line
+esc + :1,4s/<old_string>/<new_string>/g --> To replace from lines 1 to 4
+esc + :4,$s/<old_string>/<new_string>/g --> To replace from line 4 to end of the file
+----------------------------------------------------------------------------------------------------
+esc + dd --> To delete a line in VI
+
+esc + /pattern (to search some words) 
+press esc+n to fine more similar searches in the file
+----------------------------------------------------------------------------------------------------
+esc + :undo
+esc + :redo
+----------------------------------------------------------------------------------------------------
+esc + :set nu --> TO set the numbers for the file
+esc + :set nonu --> To remove the numbers
+----------------------------------------------------------------------------------------------------
+cat command (concatnicate)
+cat <file_name> --> To check the contents of the file ie what is written in the file
+cat > <file_name> --> To create and write the contents of the file
+control+d to exit editing
+cat >> <file_name> --> To add further contents of the file without removing earlier data.
+cat file1 file2 > file3 --->copy data in file 1 and 2 and copy it in file3
+****** cat -b <filename> to display the content with respect to numbers
+using tac( reverse of cat) will reverse the things in file 
+tac <file_name> 
+----------------------------------------------------------------------------------------------------
+Assignment: How to display the contents of the file in the reverse order (answer- tac command)
+----------------------------------------------------------------------------------------------------
+nano command
+nano <file_name> 
+control + x to save and exit
+-----------------------------------------------------------------------------------------------------
+
+Remove the files
+
+rm <file_name> --> To delete a file
+rm <f1><f2><f3> --->to remove multiple file
+rmf <file_name> --> To force delete a file
+rm -rf <directory_name> --> To delete a directory
+rm -rf * --> Remove all the file and directories in that particular folder
+----------------------------------------------------------------------------------------------------
+Copy the files 
+
+cp <file_name_1> <file_name_2> --> to copy a file
+cp <file_name_1> <dir>/<file_name_2> --> To copy a file to a directory
+cp <file_name_1> <dir_1>/<dir_2>/<file_name_2> just give entire path details to copy 
+cp -R <dir_1> <dir_2> --> To copy a directory (R- recursive)
+----------------------------------------------------------------------------------------------------
+Move the files( same commands as copy but use mv instead of cp)
+
+mv <file_name_1> <file_name_2> --> to move a file
+mv <file_name_1> <dir>/<file_name_2> --> To move a file to a directory
+mv <file_name_1> <dir_1>/<dir_2>/<file_name_2> just give entire path details to copy or move
+mv <dir_1> <dir_2> --> To move a directory
+mv file1 myfiles --> to rename the file
+----------------------------------------------------------------------------------------------------
+hidden files 
+touch .file1 ( if dot is given before the file it will be created as hidden folder)
+mkdir .dir1 ( to create hidden directory)
+to view ls -a ( all)
+-----------------------------------------------------------------------------------------------------
+Echo --> Print
+
+echo "hello" --> To print hello or anything on the terminal
+echo -e "hello \n how are you" --> To print with new line using \n
+----------------------------------------------------------------------------------------------------
+Redirect(>) and Append(>>)
+
+echo "hello" > <file_name> --> Redirect the output of echo command to the file (if file is not there it will create it)
+echo "hello" >> <file_name> --> Append the new info to the existing file
+----------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------
+19-01-2022 Class - 3
+----------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------
+Word Count
+
+wc <file_name> --> The total number of lines, words and character present in the file
+
+wc -l <file_name> --> To check only the number of lines
+wc -w <file_name> --> To check only the number of words
+wc -c <file_name> --> To check only the number of characters
+----------------------------------------------------------------------------------------------------
+File and Disk Size
+
+df -h --> To check the disk size of the system
+free -h --> To check the system memory (RAM)
+lscpu --> To check CPU of the system
+nproc --> to check no of cpu
+du -sh <file_name> --> To check the file size
+du -sh * --> To check the size of all files and directories in the pwd
+----------------------------------------------------------------------------------------------------
+stickybit
+
+A Sticky bit is a permission bit that is set on a file or a directory 
+that lets only the owner of the file/directory or the root user to delete or rename the file. 
+No other user is given privileges to delete the file 
+
+chmod +t /usr/local/temp
+----------------------------------------------------------------------------------------------------
+grep - U
+ to search for strings inside a file
+
+grep "<string>" <file_name> --> To display all the lines with the string
+grep -i "<string>" <file_name> --> To display all the lines with the string but case insensitive search
+
+grep -e "<string1>" -e "<string2>" <file_name> --> To search for multiple patterns
+grep -E "<strng>|<string>" <filename>
+
+grep -w "<string>" <file_name> --> To search for a whole word
+
+grep -l "<string>" * --> To check for the pattern in all the files and prints the filenames
+grep -l -R "<string>" --> To check for the pattern in all the files recursively and prints the filenames
+
+grep "^<string>" <file_name> --> TO print all the lines that start with the pattern
+grep "<string>$" <file_name> --> TO print all the lines that end with the pattern
+
+grep -c "<string>" <file_name> --> TO count the number of lines the pattern is present
+
+grep -v "<string>" <file_name> --> To display all the that does not have the pattern
+
+Assignment: Grep Flag to check all the files that does not have the pattern?
+grep -ivl "aws" * it it is wrong      grep -iL "aws" * 
+
+==> ==> command to count the number of empty line
+         grep -c "^$" f1   (^ -> caret)
+---------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------
+
+SUDO --> Super User Does
+
+sudo gives permissions for users to execute commands as a root user
+
+sudo su --> To go to root user
+
+sudo <command> --> To execute a command when you get permission denied
+
+To give an user the sudo permission, User needs to be added to the sudoers file
+
+File location: /etc/sudoers
+
+<user_name>		ALL=(ALL)       NOPASSWD: ALL
+
+Assignment:- package installer for Alpine flavor of linux - apk  Debian - apt Redhat-yum 
+
+# export EDITOR=vim
+# visudo
+# export -p (to list all the environmental variable)
+----------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------
+19-01-2022 Class - 4
+----------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------
+Add Users
+
+sudo useradd <user_name> --> To add a user to the server
+sudo passwd <user_name> --> To set a password for the user
+sudo userdel <user_name> --> to delete a user from the server
+=> userdel -r = remove user in home dirc
+
+To check all the users in the server
+
+getent passwd
+cat /etc/passwd --- list the users
+----------------------------------------------------------------------------------------------------
+Add Groups
+
+sudo groupadd <group_name> --> To add a group to the server
+sudo groupdel <group_name> --> to delete a group from the server
+
+sudo usermod -aG <group_name> <user_name> --> To add an user to the group
+=> to change group name => groupmod -n group_new group_old
+
+To check all the groups in the server
+
+getent group
+cat /etc/group
+
+to add user in the group which is already present
+gpasswd -a <user_name> <group_name> -- to add user to a group
+gpasswd -M ajay,sameer,vijay <group_name> --> to add multiple users
+------------------------------------------------------------------------------------------------------
+Permissions in Linux
+
+r - Read Permission
+w - Write Permission
+x - Execute Permission
+
+-rw-rw-r--
+
+rw- --> Owner of the file -->u 
+rw- --> Group to which the file belongs -->g 
+r-- --> Others -->o 
+
+r - 2^2 --> 4
+w - 2^1 --> 2
+x - 2^0 --> 1
+- --> 0
+
+rwx rwx rwx
+
+chmod 777 <file_name> --> To give rwx for owner, group and others
+chmod 766 <file_name> --> To give rwx for owner, rw for group and other
+
+chmod u+x <file_name> --> To give the owner execute permission
+chmod o-x <file_name> --> TO remove execute permission for others
+
+u --> owner
+g --> group
+o --> others 
+----------------------------------------------------------------------------------------------------
+Change ownership of files and directories
+
+chown <user_name> <file_name> --> To change the owner of the file
+chgrp <group_name> <file_name> --> To change the group to which the file belongs
+
+chown <user_name>:<group_name> <file_name> --> TO change the owner and the group
+chown -R <user_name>:<group_name> <file_name> -> recursively change
+ 
+sudo cat /etc/passwd  -> to list the users    (cut -d ":" -f3 => print UID)
+sudo cat /etc/group   -> to list the group    (cut -d ":" -f3 => print GID)
+----------------------------------------------------------------------------------------------------
+Default Permisssion in Linux:
+
+Files --> 666
+Directories --> 777
+umask: it is a command that determines the settings of a mask that controls 
+how file permissions are set for newly created files. 
+It may also affect how the file permissions are changed explicitly
+
+umask 002 --> To change the default permissions of the files and directories to 664 and 775
+(root) umask 022 --> To change the default permissions of the files and directories to 664 and 775
+
+sudo /etc/profile --> To change the umask value permanently. It will ensure that even when new session 
+is started it will retain the updated umask value
+
+----------------------------------------------------------------------------------------------------
+
+yum ( yellowdog updater modifier)
+yum update -y
+yum install tree -y -->to install tree 
+
+yum install httpd -y -->to install apache server and files will get installed 
+ 
+yum remove httpd -y -->to remove apache http server and files will get installed
+yum update httpd -y -->to update apache http server and files will get installed
+yum list installed or apt list istalled (list rpm and dabien package installed)
+service httpd start --> to start httpd service
+service httpd stop --> to stop httpd service
+servive https status --> active/inactive 
+chkconfig https on --> to automatically turn on the service once the computer start
+chkconfig https on --> to start manually
+yum installed --> to check installed things
+systemctl is-active --quite <sevice name>
+
+----------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------
+21-01-2022 Class - 5
+----------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------
+head --> To print required starting number of lines
+
+head -n <file_name> --> To display the starting n lines
+head -3 <file_name> --> To display the starting 3 
+head <file_name> --> To display the starting 10 lines
+
+tail --> To print the required lines from the end
+
+tail -n <file_name> --> To display the last n lines
+tail -3 <file_name> --> To display the last 3 lines
+tail <file_name> --> To display the last 10 lines
+
+* tail -f <file_name> to print the dynamin content
+----------------------------------------------------------------------------------------------------
+Pipe [|] --> To pass the output of one command to the next command
+
+Example:
+head -4 <file_name> | tail -1 --> To display only the 4th line
+----------------------------------------------------------------------------------------------------
+Sed --> Stream Editor  to find and replace words
+
+sed 's/<old_string>/<new_string>/g' <file_name> --> To replace old string with the new string and
+display it on the terminal (It won't make changes to file)
+
+sed -i 's/<old_string>/<new_string>/ig' <file_name> --> It will also make changes to the original file
+ignoring case sensitivity
+
+sed -i '1s/<old_string>/<new_string>/g' <file_name> --> It will make changes to the first line only
+sed -i '2,5s/<old_string>/<new_string>/g' <file_name> --> It will make changes from 2 to 5th line
+sed -i '4,$s/<old_string>/<new_string>/g' <file_name> --> It will make changes from 4 to end of file
+
+sed -i '4d' <file_name> --> Deletes the 4th line
+sed -i '3,5d' <file_name> --> Deletes the lines from 3 to 5
+sed -i '4,$d' <file_name> --> Deletes the lines from 4th to end of the file
+
+==> command to delete the empty line in file
+    sed -i '/^$/d' pavan
+	 
+sed -n '2p' <file_name> --> To print the 2nd line only
+sed -n '2,4p' <file_name> --> To print the lines from 2 to 4
+sed -n '2,$p' <file_name> --> To print the lines from 2nd to end of the file
+sed -n '2p;7p' <file_name> -->  To print the line 2th and 7th
+
+* -n = switch tells sed to not output each line of the file it reads
+* The last p after the regular expressions tells it to print lines that match the preceding expression.
+----------------------------------------------------------------------------------------------------
+Find --> To find files and directories path in Linux
+(by default recursive option is there)
+
+find -name <string_name> --> To search and display all the files and directories with the particular name
+find -iname <string_name> --> Case Insensitive search
+
+-type f --> To only search for files
+-type d --> To only search for directories
+
+find -mtime -10 --> To find and display all the files and directories created in the last 10 days
+find -mtime +10 --> To find and display all the files and directories created more than 10 days ago
+find -type f -mtime +70 filename ---> to find and display all the files created more than 70 days ago
+
+find -type f -perm 664 --> To search for all the files with the permission 664
+
+find -type f -empty --> To search for all the empty files 
+
+find -maxdepth 1 -name <name> --> To only search for the current directory 
+----------------------------------------------------------------------------------------------------
+Assignment: 
+1. Find and delete all the empty files
+   => find -type f -empty -print -delete
+   => find -type f -empty | xargs rm -rf
+
+2. Find all the files with size more than 1 MB
+   => find -type f -size +1M
+3. Find all non empty 
+   => find -type f ! -size 0
+----------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------
+22-01-2022 Class - 6
+----------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------
+Cut - Used to cut a file column wise (diff between cut and awk)
+
+cut -d " " -f1 <file_name> --> To display only the 1st column
+cut -d " " -f1,3 <file_name> --> To display the 1st and 3rd column
+cut -d " " -f2-5 <file_name> --> To display from 2 to 5th columns
+
+d --> Delimiter 
+
+echo <string> | cut -c5 --> To cut the 5th letter in the string 
+----------------------------------------------------------------------------------------------------
+awk '{print}' <file_name>  --> TO display the contents of the file
+
+awk -F " " '{print$2}' <file_name> --> To display only the 2nd column
+awk -F " " '{print$2,$3}' <file_name> --> To display the 2nd and 3rd column
+awk -F " " '{print$NF}' <file_name> --> To display the last column
+awk -F " " '{print$(NF-1)}' <file_name> --> To display only the 2nd last column
+
+awk 'NR==3 {print}' <file_name> --> To display the 3rd row
+--------------------------------------------------------------------------------------------------
+Link --> To create a shortcut for a file in linux
+
+ln -s <original_file_path> <softlink_name> --> To create a soft link
+ln <original_file_path> <hardlink_name> --> To create a hard link
+
+A softlink will point to the path of the original file and once the file gets deleted/moved
+The softlink will not work
+
+A hardlink even after the original file gets deleted/moved The hardlink will still work
+
+Reason: Hardlink points directly to the inode of the file
+
+inode --> Is the unique identification number of file which points to the file's memory block
+
+ls -i <file_name> --> TO check the inode of a file
+----------------------------------------------------------------------------------------------------
+Miscellaneous
+
+who --> To check all the users that are logged in to the server
+whoami --> To check the current user
+which ansible --> /usr/bin/ansible (give the path where it been install)
+
+hostname --> To check the ip address of the system (Private)
+curl ifconfig.me --> To display the public ip address
+hostname -i  --> to check only private ip address
+hostname<enter> -->to check host details
+
+ifconfig<enter> -->to check ip address and other details of the machine 
+ 
+uname or cat /etc/os-release  --> To check OS and details
+uname -a --> To check all the details of the system
+uname -r (or) cat /proc/version --> To check Linux Kernel version
+----------------------------------------------------------------------------------------------------
+tee - Redirect and Append
+
+ls -l | tee <file_name> --> To write the output of a command to a file and display the contents on the terminal
+
+ls -l | tee -a <file_name> --> For Append
+----------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------
+22-01-2022 Class - 7
+----------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------
+
+SSH - Secure Shell or Secure Socket Shell
+
+SSH is a network protocol that enables users to access a server in a secure way over an unsecured network
+
+Defualt Port:
+
+SSH --> 22
+telnet --> 23
+Apache Tomcat --> 8080
+Jenkins --> 8080
+HTTP --> 80
+HTTPS --> 443
+Kubernatos -6443
+----------------------------------------------------------------------------------------------------
+Port: A port is a virtual point where network connections start and end
+----------------------------------------------------------------------------------------------------
+SSH CONNECTION WITH KEY
+
+ssh -i <PEM_File> ec2-user@<ipadress> --> To SSH into a server using PEM file
+
+SSH Passwordless Connection:-
+
+ssh-keygen -t rsa --> To generate a rsa key pair (Public and Private Key)
+
+id_rsa --> Private Key
+id_rsa.pub --> Public Key
+
+Copy the contents of the Public Key (id_rsa.pub) to the authorized_keys file under .ssh folder 
+of the server that you want to establish password less connection.
+ 
+Passwordless connection will be established or ssh-copy-id ec2-user@private-IP 
+-- it will ask passwd 
+
+ssh <ip_address> --> to enter the other password less server
+
+==> Before that enable password based Authentication 
+   (target machine set passwd for root it will ask at ssh-copy-id)
+    in /etc/ssh/sshd_config file 
+    (in case for root PermitRootLogin yes & PasswordAuthentication yes) 
+     systemctl restart ssh.service for debain 
+	 systemctl restart sshd.service for RHEL 
+
+----------------------------------------------------------------------------------------------------
+winscp --> To transfer Files
+
+download winscp onto windows OS of the system
+After installaion --> Try establish connection between 2 server
+1. New session --> Enter ipaddress of linux server in hostname, enter user name (ec2-user)
+	           Enter Advance tab--> ssh --> Authentication --> provide ppk_file of the linux server and login
+2. Drag and drop pem_files (pem file of server_1 into server_2 and viceversa)
+----------------------------------------------------------------------------------------------------
+scp - To copy files over ssh (it is faster)
+
+scp <file_path> <user_name>@<ipadress>:<destination_path> --> To copy a file over ssh to another 
+   server in passwordless connection
+
+scp -p <pem_file> <file_path> <user_name>@<ipadress>:<destination_path> -->Without passwordless connection
+
+rsync --> With rsync in case of any failures rsync will resume where the copy has stopped
+----------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------
+ xargs command => it can take output of a command and passes it as argument of another command
+                  If no command is specified, xargs executes echo by default. 
+	ex:-  find Pictures/tecmint/ -name "*.png" -type f -print0 | xargs -0 tar -cvzf images.tar.gz
+	      find -type f -empty | xargs rm -rf
+		  
+----------------------------------------------------------------------------------------------------
+
+Process (ps)
+
+ps -ef --> To show all the running process on the server
+
+ps -u <user_name> --> To check all the process started by a particular user
+ps -C <service_name> --> To check if a particular service is running
+
+kill/kilall --> To forcefully stop a process
+----------------------------------------------------------------------------------------------------
+load average 
+   
+System load/CPU Load : is a measurement of CPU over or under-utilization in a Linux system; 
+the number of processes which are being executed by the CPU or in waiting state.
+
+Load average : is the average system load calculated over a given period of time of 1, 5 and 15 minutes.
+
+  --> top (or) $uptime  (or) $ cat /proc/loadavg   
+   
+uptime=>  load 0.4(1 min)    1(5 min)    5(15 min )
+                40%           100%         400%
+----------------------------------------------------------------------------------------------------
+kill -9 <PID> --> To kill a process by PID
+killall -9 <process_name> --> To kill a process by its name
+killall -9 -u <username> --> To kill all the process started by an user
+
+KILL : ( terminate the processes manually)
+Kill will generate a SIGTERM signal asking a process to kill itself gracefully i.e , free memory or take care of
+other child processes. Killing a process using kill will not have any side effects like unrelased memory because
+it was gracefully killed.
+
+KILL-9 :
+
+Kill -9 works similarly but it doesn't wait for the program to gracefully die. Kill -9 generates a SIGKILL signal
+which won't check the state of the process and kills the process immediately.
+
+sudo service <process_name> stop --> Gracefully stop a process
+example:
+
+sudo service docker stop --> To stop docker service
+
+top --> To check all the process in an interactive view
+        to check pid number , memory % , cpu %
+----------------------------------------------------------------------------------------------------
+Assignment --> Load Average in Linux ( uptime OR top command)
+----------------------------------------------------------------------------------------------------
+ping <hostname> --> ( To check the latency of server [pocket transfering] ) connectivity between networking devices 
+ping www.google.com
+
+ping 0 --> To ping current server
+
+diff ping and nslookup 
+- nslookup to check out the IP adress of the webserver which routing by DNS
+----------------------------------------------------------------------------------------------------
+bashrc and bashprofile
+
+These files execute everytime automatically as the session starts
+
+Assignment: Find the difference between bashrc and bashprofile
+
+These files execute everytime automatically as the session starts.( both are system file) 
+We could setup environment variables and Alias for commands in these files
+
+The difference between bashrc and bashprofile  -
+   .bashrc - non-interactive login lets print a command echo "pavan" in .bashrc file if you open a new terminal 
+             you can see this word  ( for new terminal Ctrl+Alt+T )
+		====> bashrc. is invoked every time when a new shell is called (ex : /bin/bash to change the shell)
+		   - if you want to exicute in current terminal then source .bashrc
+   .bash_profile - interactive login because when you print a command echo " pavan" in this file in a new terminal 
+             you cann't see that file either you need to login or restart it  ( to relogin ssh localhost )
+		   - if you want to exicute in current terminal no need to relogin
+		=====>  - this is called only at the firt time when you login into the shell 
+           
+
+
+1. bash_profile is read and executed on *interactive login* shells, 
+   while  on non-login shells( non-interactive login ).
+     
+
+2. Use .bash_profile to run commands that should run only once, 
+   such as customizing the $PATH environment variable .
+
+We could setup environment variables and Alias for commands in these files
+
+example
+* How to create shortcut when your using long command
+  repeatedly
+alias FED="find -type f -empty | xargs rm -rf"
+alias - is just command to create short cut of command
+
+* export SEASON="MONSOON"
+
+* bash_history --> Stores all the commands that were executed on the server
+----------------------------------------------------------------------------------------------------
+uniq and sort
+
+uniq <file_name> --> To display only the unique values in a file/ remove duplicates
+
+Drawback --> uniq command only works if the same values are adjacent to each other
+
+sort <file_name> --> To sort the values in a file
+sort -r <file_name> --> To sort in reverse order
+
+sort <filename> | uniq --> To sort and eliminate all the duplicate values
+
+==> ex:- grep -E -o "([0-9]{1,3}[\.]){3}[0-9]{1,3}" logfile | sort | uniq -c | sort –nr
+    -o --- if you don't use it shows enter line
+	-c how many times occarance are there
+	-n sort based on number
+	-E lose there special character
+	
+	() -> like for loop
+	{3} -> this perticular pattern search for 3 times 
+----------------------------------------------------------------------------------------------------
+netstat --> To check the information about ports in the linux server
+ 
+netstat -a --> To check all the ports
+netstat -l --> To check all that are in use
+
+(sudo yum install net-tools - to view netstat)
+
+sudo netstat -tulnp --> To check which is using which port (show PID/name)
+t-tcp u-udp l-listening n-numeric p-program
+----------------------------------------------------------------------------------------------------
+& --> To run a command or a script in background
+ ==> while installing jenkins -> wget package (download war file)
+     nohup java -jar jenkins.war & (ampercent)
+     
+Syntax: command/script &
+
+fg <PID/command/script> --> To bing the process/command/script to the foreground
+----------------------------------------------------------------------------------------------------
+Telnet:
+
+Default port: 23
+=> similar to SSH you can able login a perticular server by using telnet aswell (not required pem file)but 
+   networking protocal is less secure 
+   and data being transferred will be unencrypted
+
+Telenet is a networking protocol which is used to create a remote connection. The data being transferred
+using this protocol is unencrypted
+
+Syntax: telnet <hostname> <portnumber>
+-----------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------
+zip -r jenkins.zip jenkins
+unzip -o jenkins.zip -C /opt 
+
+tar -czvf jenkins.tar.gz jenkins
+tar -xzvf jenkins.tar.gz -C /opt
+-----------------------------------------------------------------------------------------------------
+* to change the default port of tomcat => vi /usr/local/tomcat9/conf/server.xml
+
+how can i change port number => /etc/ssh/sshd_config  => systemctl restart sshd.service 
+---------------------------------------------------------------------------------------------------
+* to check the block memory of a system => lsblk  &  fdisk -l 
+--------------------------------------------------------------------------------------------------
+* to change group name => groupmod -n group_new group_old
+--------------------------------------------------------------------------------------------------
+* TCP and UDP this are protocals used to host to host connection 
+  Both are protocal to provide host to host connection
+  protocals - A set of rules determines the transmission of data
+   
+  TCP - *  a connection-oriented protocol. Connection-orientation means 
+           that the communicating 
+           devices should establish a connection before transmitting data 
+		   and should close the connection after transmitting the data.
+	    *  it guarantees the delivery of data to the destination router.
+		*  Slower compare to UDP
+		*  Retransmission of lost packets is possible in TCP, but not in UDP.
+		*  The TCP connection is a byte stream
+		
+  UDP - *  Datagram-oriented protocol. This is because there is no 
+           overhead for opening a connection, maintaining a connection, 
+		   and terminating a connection.
+		*  The delivery of data to the destination cannot be guaranteed in UDP.
+		*  faster, simpler, and more efficient
+		*  There is no retransmission of lost packets in the User 
+		   Datagram Protocol (UDP).
+		*  UDP connection is message stream.
+ --------------------------------------------------------------------------------------------------
+ ifconfig - .to find out ip adress of you system ( private ip )
+            .active network interfaces
+			. ip addr show 
+--------------------------------------------------------------------------------------------------
+ daemon - a daemon is a process that runs in the background and 
+          is usually out of the control of the user. 
+		  
+		  vi /etc/ssh/sshd_config 
+		  systemctl restart ssh.service  -> Dabien
+  		  systemctl restart sshd.service -> RHEL
+		  
+ Types - crond -> time-based actions such as software updates or system checks.
+         sshd  -> responsible for managing the SSH service
+		 httpd -> normally run with Web server software such as Apache.
+		 systemd -> service configuration  '/etc/systemd/system'
+		 
+list the daemon processes => systemctl | grep daemon 
+
+-------------------------------------------------------------------------------------------------
+ linux repository 
+ yum - ec2-users ( centos | RHEL | Amazon linux | Oracle Linux)
+ apt - Dabien based ( ubuntu | kali linux)
+ 
+ rpm v/s debian - both are used to package management system
+ rpm - before release to user test file & package stable & secure
+ debain - it is mainly concentrat on user friendly 
+-------------------------------------------------------------------------------------------------
+vagrant - 
+select centos(OS),ram & hardisk size download iso minimal(1GB)
+same case for ubuntu 
+setting -> storage select iso
+Network -> by default 4 network adopter
+          1)NAT gateway is there it will provide private ip
+		  2)bridge adopter fetch ip address from my wifi router (public ip)
+          vagrant init geerlingguy/centos7 -> vagrantfile created
+		  then vagrant up -> centos in virtual box
+		  vagrant ssh -> [vagrant@localhost ~]$
+		  vagrant halt -> to power of my VM
+		  vagrant destroy -> delete VM
+		  for ubuntu ->ubuntu/bionic64 (vagrant cloud)
+------------------------------------------------------------------------------------------------
+tomcat - open source 
+         apache company 
+		 war can be placed in tomcat server to see applicaton web page
+------------------------------------------------------------------------------------------------
+curl - Recursive downloads are not supported in curl.
+for example 
+curl https://www.google.com/  
+( it will give the content we need store it in file)
+     
+wget https://www.google.com/ ( it will download index.html)
+------------------------------------------------------------------------------------------------
+lsof /usr/local/tomcat9 then you will get PID (unmount the file like this)
+------------------------------------------------------------------------------------------------
+swap memory :- whenever RAM runs out of memory in Linux, it borrows some memory 
+from the secondary storage(hard disk) to store its inactive content.
+1)Swap Partition- This is the default type of swap memory which is in fact,
+ a hard drive partition that is dedicated to swapping.
+2)Swap File- This is a self-created type of swap memory. 
+Whenever there is no sufficient amount of space left in
+ the hard drive to create a swap partition, a swap file is 
+ manually created for swapping the inactive contents of RAM into it.
+ 
+ *** free -m  or /proc/swap (you can see the swap space)
+ -----------------------------------------------------------------------------------------------
+ Q) In RHEL 7 which process has PID 1 (systemd)
+ 
+ run level (stat of init process) - when linux system boot,          
+ firstly the init process is started which is responible for to
+ start the script which mainly involved in initialization 
+ of you hardware, bringing up the network etc
+ * By default most of the LINUX based system boots 
+   to runlevel 3 or runlevel 5.
+ * The standard LINUX kernel supports these seven different runlevels :
+
+0 – System halt i.e the system can be safely powered off with no activity.
+1 – Single user mode.
+2 – Multiple user mode with no NFS(network file system).
+3 – Multiple user mode under the command line interface and not under the graphical user interface.
+4 – User-definable.
+5 – Multiple user mode under GUI (graphical user interface) and this is the standard runlevel for most of the LINUX based systems.
+6 – Reboot which is used to restart the system.
+---------------------------------------------------------------------------------------------------
+2/2 check - health checks of the instances
+system status checks - hardware issuses, network connectivity etc 
+instance status checks - corrupted kernal version or file system,exhausted memory
+this checks is monitor by cloudwatch
+
+Action -> set a alarm -> specify the action like restart, boat, terminate (time is 5 min)
+----------------------------------------------------------------------------------------------------
+strace - it displays the system call & result of the call 
+         starce ls --> at the end $?->0
+		 processes -> monitering & diagnostic & debugging
+----------------------------------------------------------------------------------------------------
+/usr -> by default software are installed 
+/bin -> contain command of ec2-user
+/sbin -> contain commands of root user
+/var -> log files ( /var/log/messages)
+/pros -> dynamic content (uptime)
+/ -> root directory
+/root -> home dire for root
+/home -> home dire for user
+/etc -> server configuration or network 
+/tmp -> Web browsers periodically write data to the
+        tmp directory during page views and downloads
+----------------------------------------------------------------------------------------------------
+Zombee processes -- processes that have completed their execution, 
+but their entries are not removed from the process table
+
+kill -s SIGCHILD pid
+----------------------------------------------------------------------------------------------------
+==> list the files based on size ascending order 
+ ls -Sl
+----------------------------------------------------------------------------------------------------
+lsof -> List Of Open File 
+Basically, it gives the information to find out the files which are opened by which process
+
+Linux: Which process is causing "device busy" when doing umount?
+umount /mnt/dir
+resault: umount: /mnt/dir: device is busy
+
+- running processes on mounted volumes
+- another volume is mounted on top of a volume we want to unmount
+- NFS locks the volume we want to unmount
+---------------------------------------------------------------------------------------------------
+%cpu in top command 
+%user: Percentage of CPU utilization that occurred while executing at the user level (application).
+%nice: Percentage of CPU utilization that occurred while executing at the user level with nice priority.
+%system: Percentage of CPU utilization that occurred while executing at the system level (kernel).
+%iowait: Percentage of time that the CPU or CPUs were idle during which the system had an outstanding disk I/O request.
+%idle: Percentage of time that the CPU or CPUs were idle and the system did not have an outstanding disk I/O request.
+----------------------------------------------------------------------------------------------------
+proxy ?
+----------------------------------------------------------------------------------------------------
+Selinux?
+----------------------------------------------------------------------------------------------------
+how do you escap default character?   "back slash"
+-----------------------------------------------------------------------------------------------------
+While a container repository is a collection of related container images used to manage, pull and push images,
+ a container registry is a collection of repositories made to store container images.
+--------------------------------------------------------------------------------------------------------------------
+RHEL6 v/s RHEL7 v/s RHEL8
+
+Maximum Supported File System Size.
+RHEL8 -> XFS= 1024TB	
+RHEL7 -> XFS= 500TB	
+RHEL6 -> EXT4= 16TB
+
+In RHEL6 default UID assigned to users would start from 500 while in RHEL7 and RHEL8 it’s starting from 1000.
+
+RHEL6:
+#service sshd restart
+#chkconfig sshd on
+RHEL7 & RHEL8
+#systemctl restart sshd
+#systemctl enable shhd
+
+OS BOOT TIME
+RHEL6: 40 sec
+RHEL7: 20 sec
+
+default kernel RHEL6 -> 2.6, RHEL7 -> 3.10, RHEL8 -> 4.1
+
+firewall ->  protects, and blocks network traffic
+RHEL8 nftables, RHEL7 iptables, RHEL6 iptables 
+
+Default File System	RHEL8 -> XFS, RHEL7 ->XFS, RHEL6 -> EXT4
+
+First Process owned by	RHEL8 ->systemd (PID 1)	RHEL7 ->systemd (PID 1)	RHEL6 ->init (PID 1)
+--------------------------------------------------------------------------------------------------------------------
+Diff between process and thread in linux?
+thread => A thread is a lightweight process that can be managed independently by a scheduler. 
+          It improves the application performance using parallelism.
+Dependency: 
+Individual processes are independent of each other.	Threads are parts of a process and so are dependent.
+Time for creation	 -> Processes require more time for creation.	    Threads require less time for creation.
+Time for termination ->	Processes require more time for termination.	Threads require less time for termination.
+------------------------------------------------------------------------------------------------------------------
+ apache server -> hosting website (80 and 443)
+ yum install httpd                     apt update -y 
+ systemctl start httpd                 apt install apache2
+ systemctl enable httpd                systemctl start apache2 
+                                       systemctl enable apache2
+
+/var/log/httpd/access_log     (log)
+/etc/httpd                    (configration file directory)
+------------------------------------------------
+#!/bin/bash
+
+sudo yum install wget unzip httpd -y
+sudo systemctl start httpd
+sudo systemctl enable httpd
+
+mkdir -p /tmp/webfiles
+cd /tmp/webfiles
+wget https://www/toolplate.com/ /2098_health.zip
+unzip 2098_health.zip
+sudo cp -r 2098_health.zip/* /var/www/html/
+systemctl restart httpd
+rm -rf /tmp/webfiles
+
+**** for diff web-application/microservice /var/www/html/payment user is accessing -> IP/payment
+
+***simply echo "<h1> Java Home App </h1> > /var/www/html/index.html 
+-----------------------------------------------------------------------------------------------------------------
+man -> which will going to brief about to the perticular command ex: man ls
+more -> display the file content in % wise (d-for next page & b-for previous page & q-quit)
+less -> display the file content in page wise 
+-----------------------------------------------------------------------------------------------------------------
+Redirect in linux:
+Basically, when we run a command in terminal, below three files created. (In linux every thing is file) 
+     file                      file Description
+Standard Input(stdin)                0              => command we provide (like file name) 
+Standard Output(stdout)              1              => lscpu > file1   or lscpu >> file2 or lscpu &>> file3
+Standard Error(stderr)               2              => lscpu 2>> file4 (redirecting only error of the file)
+-----------------------------------------------------------------------------------------------------------------
+what are different type of file instructions in Linux.
+directory -> d
+file      -> -rw-r--r--.
+pipe      -> p
+link      -> l 
+charecter file  -> c
+-------------------------------------------------------------------------------------------------------------
+fstab? -> /etc/fstab 
+ configuration table designed to ease the burden of mounting and unmounting file systems to a machine.
+------------------------------------------------------------------------------------------------------------
+There are mainly four types of web servers – Apache, IIS, Nginx and LiteSpeed.
+* it can process only http (jar,war)
+Application server - tomcat, jboss, glassfish, oracle 
+* it can process http/https (jar,war,ear) 
+------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+		  
+ 
+          		  
+          
+
+				  

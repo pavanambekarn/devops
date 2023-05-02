@@ -1,0 +1,164 @@
+Q) install package and restart it 
+---
+- name: package install
+  hosts: all
+  become: yes
+  tasks: 
+  - name: install httpd for RedHat
+    yum: 
+	  name: httpd
+	  state: present
+	  update_cache: yes
+	when: ansible_os_family == "RedHat"   //conditional execution
+	
+  - name: install httpd for Debain
+    apt: 
+	  name: apache2
+	  state: present
+	  update_cache: yes
+	when: ansible_os_family == "Debain"
+	
+  - name: start and enable httpd service 
+    service: 
+	  name: httpd 
+	  state: started
+	  enable: yes 
+	when: ansible_os_family == "RedHat"
+	
+  - name: start and enable apache2 service 
+    service: 
+	  name: apache2 
+	  state: started
+	  enable: yes 
+	when: ansible_os_family == "Debain"
+	
+---------------------------------------------------------------------------------------
+Q) echo that the task is successful once its done
+
+---
+- name: handlers
+  hosts: all
+  become: yes
+  tasks: 
+  - name: Write the apache config file
+    template:
+        src: /srv/httpd.j2
+        dest: /etc/httpd.conf
+    notify:
+    - Restart apache
+	
+  handlers:
+  - name: Restart apache
+    service:                       // instead of service use shell or command module 
+      name: httpd
+      state: restarted
+---------------------------------------------------------------------------------------
+Q)create a file and copy that file in the target using playbook.
+---
+- name: copy module demo
+  hosts: all
+  become: yes
+  vars:
+    myfile: "{{ ~/example.txt }}"
+  tasks:
+  - name: create a text file
+    copy:
+      dest: "{{ myfile }}"
+      content: |
+        line 1
+        line 2 	
+------------------------------------------------------------------------------------
+Q) Copy module
+---
+- name: copy module demo
+  hosts: all
+  become: yes
+  tasks:
+  - name: Copy file with owner and permissions
+    copy:
+      src: /srv/myfiles/foo.conf
+      dest: /etc/foo.conf
+      owner: foo
+      group: foo
+      mode: '0644'
+------------------------------------------------------------------------------------
+Q) update the servers in linux by using single command? ((patching))
+
+---
+- name: update all the package
+  hosts: all
+  become: yes
+  tasks:
+  - name: Upgrade all the insatlled package for Debain 
+    apt:
+	  name: "*"
+	  state: latest
+	  update_cache: yes
+	  force_apt_get: yes
+	when: ansible_os_family == "Debain"   // ansible_distribution == "Debian"
+	
+  - name: upgrade all installed package for RedHat 
+    yum:
+	  name: "*"
+	  state: latest
+	when: ansible_os_family == "RedHat"   // when: ansible_distribution == "centos"
+------------------------------------------------------------------------------------
+Q) write a playbook to install ansible (default dirc /ver/www/html) 
+
+inventory file content
+
+web01 ansible_host=privateIP ansible_user=ec2-user ansible_ssh_private_key_file=privatekey.pem 
+[websrvgrp]
+web01 
+----------------------------------------------------------------------------------
+---
+- name: install package 
+  hosts: all
+  become: yes
+  tasks:
+  - name: install the nginx package 
+    yum:
+      name: nginx
+	  state: present
+	  
+  - name: start the nginx servers
+    systemd:
+	  name: nginx
+	  state: started
+	  enabled: yes
+	  	
+------------------------------------------------------------------------------------
+install jenkins using ansible:
+---
+- name: install jenkins 
+  hosts: all 
+  become: yes 
+  tasks: 
+  - name: download the repo
+    get_url:
+	   url: https://pkg.jenkins.io/redhat-stable/jenkins.repo
+	   dest: /etc/yum.repos.d/jenkins.repo 
+	   
+  - name: Import a key from a url
+    rpm_key:
+      state: present
+      key: http://apt.sw.be/RPM-GPG-KEY.dag.txt 
+	  
+  - name: install java and maven 
+    yum:
+       name: {{ item }}
+       state: present
+    loop: 
+    - java-11-openjdk
+    - jenkins	
+	
+  - name: start the jenkins
+    systemd:
+	  name: jenkins
+	  state: started 
+	  enable: yes
+	 
+---------------------------------------------------------------------------------------------------
+		  
+   
+	

@@ -1,0 +1,29 @@
+sudo update-alternatives --config java  (update java)
+
+sudo yum update -yum
+sudo yum install java-1.8.0-openjdk.x86_64 
+
+cd /opt
+sudo wget https://download.sonatype.com/nexus/3/nexus-3.40.1-01-unix.tar.gz
+sudo tar -xzvf nexus-3.40.1-01-unix.tar.gz
+
+ls -l  ->  nexus-3.40.1-01 
+           sonatype-work
+mv nexus-3.40.1-01 nexus3
+		   
+sudo adduser nexus
+sudo passwd nexus
+
+provide sudo privilage (visudo)
+
+sudo chown -R nexus:nexus /opt/nexus3
+sudo chown -R nexus:nexus /opt/sonatype-work
+
+vi /opt/nexus3/bin/nexus.rc => mention 'nexus' as user
+
+vi /etc/systemd/system/nexus.service (copy content from nexus remote and past nexus as service)
+
+sudo systemctl daemon-reload 
+
+--------------------------------------------------------------------------------------------------
+

@@ -1,0 +1,317 @@
+Build tools - convert the source code into binary (artifact)
+compiling ->
+  A compiler is a special program that translates a programming language's source code into machine code,
+  bytecode or another programming language
+c/c++ -> gcc/g++ (compiler) -> buildtool (make) -> extention .exe
+java -> .javac (compiler) -> Maven & ant -> .jar/.war/.ear
+.jar/.war/.exe/.ear they are called buildtool
+
+build is compiled then given to testing then release,
+if any bug is there then code is get back to developer fix it
+******then again build -> test -> release
+untested binary -> build
+tested binary -> release
+
+               push
+     GitHub<-------------dev             
+       |                  |
+	   |                  |
+	   |pull              |
+	   |                  |
+	   |                  |
+	 devops------------->test -> release
+
+* sudo yum install make
+  sudo yum install gcc
+
+* by default make used Makefile if you want to change the name 
+ you can (make -f <rename_file> 
+ 
+* until you rerun the makefile any other changes is not reflected 
+ in ABC.exe file
+ 
+* if there are 100 file you changed 50th file then you rerun the
+  Makefile it will update 50th fill only
+ 
+* if you want to clean your object file you can include in Makefie
+  clean:
+		rm -rf *.o
+* Makefile contain dependencies (like target and sourse)
+		
+	cycle	
+	pre-procesing -> compile (gcc or g++) -> assembly (.o) -> linking -> execution
+-----------------------------------------------------------------------------------------
+* diff between .jar/.war/.ear 
+Jar  -> java archieve  (to run java application)
+-  It contain a group of .class file  	
+war -> web archieve (to run web application)
+      -  It contain html, jsp, css, xml, servlet etc. file, total file is converted into single zip file
+	  - deployment description name - web.xml 
+ear ->  enterprise archieve ( to run enterprise application)
+     -  It contain web related file and  java j2ee file (EJB)
+	 -  deployment description name - application.xml
+
+An EAR file requires a fully Java Platform, Enterprise Edition (Java EE)- or Jakarta Enterprise Edition 
+(EE)-compliant application server, such as WebSphere or JBoss, to run. A WAR file only requires a Java 
+EE Web Profile-compliant application server to run, and a JAR file only requires a Java installation.	 
+ 
+-------------------------------------------------------------------------------------------------------------
+big3.c
+
+void big3(){
+ int num1, num2, num3;
+
+    printf("Enter the values of num1, num2 and num3\n");
+    scanf("%d %d %d", &num1, &num2, &num3);
+    printf("num1 = %d\tnum2 = %d\tnum3 = %d\n", num1, num2, num3);
+    if (num1 > num2)
+    {
+        if (num1 > num3)
+        {
+            printf("num1 is the greatest among three \n");
+        }
+        else
+        {
+            printf("num3 is the greatest among three \n");
+        }
+    }
+    else if (num2 > num3)
+        printf("num2 is the greatest among three \n");
+    else
+        printf("num3 is the greatest among three \n");
+}
+
+********************************************
+fact.c
+
+void fact() {
+ int i,fact=1,number;
+ printf("Enter a number: ");
+  scanf("%d",&number);
+    for(i=1;i<=number;i++){
+      fact=fact*i;
+  }
+  printf("Factorial of %d is: %d",number,fact);
+}
+
+*************************************************
+main.c
+
+#include <stdio.h>
+main(){
+fact();
+big3();
+}
+~
+~
+~
+*****************************************************
+make
+
+ABC.exe: main.o big3.o fact.o
+        gcc -o ABC.exe main.o big3.o fact.o
+main.o: main.c
+        gcc -c main.c
+big3.o: big3.c
+        gcc -c big3.c
+fact.o: fact.c
+        gcc -c fact.c
+clean:
+	  rm -rf *.o
+--------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------
+CLASS 2
+--------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------
+In C/C++ we don't have deployment ( like direct installation )
+    .exe is given to testing team 
+     no need to deploy to tomcat give the url to testing
+
+---------------------------------------------------------------------------------------------
+
+BUG traking tool / ticketing tool ---> JIRA
+
+initially ticket is open              fixed         Test/pr
+  Assign status        --> inprogress ----> resolved -----> close the ticket 
+
+we can check - priority
+               sevirity
+			   progress
+			   who'm your assigned
+			   
+priority - low    medium    high   very-high  critical
+           1/2    5-days   2-days    1-day    half-day
+		   week
+----------------------------------------------------------------------------------------------
+Hot fix /Patch build -
+suppose 100 files build later you want to update 3 files rebuild
+
+Load build - build would be from enterlly scratch
+----------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------
+2 types of issue 
+1)compilation issue - take care by developer 
+  vertions of tool are not updated or neccesary tool are not there like gcc install 
+  scenario --->  tomcat 10                               tomcat 9
+                 developer ---- (compatibility issue)---  devops
+				 
+2)Build Environmental issue - take care by devops team
+   disk is full / cpu utilization is full
+   
+-----------------------------------------------------------------------------------------------
+tomcat, jboss, tommy this are all webapplication 
+ws02 -> url login (url integration) (to login for any application)
+SFTP -> grafana to kibana to promethes for integration 
+      - to extract data from winscp or pull we will use SFTP 
+	  - banking application i want to load some files to application 
+-----------------------------------------------------------------------------------------------
+
+tomcat version 9
+
+       .war(artifact) Deploy
+java   -------------------->  tomcat9 in webapp folder
+                              (webapplication server)
+							           |
+									   |
+			        URL of server handour to testing team
+
+Other application server - JBoss, websphere
+
+----------------------------------------------------------------------------------------------
+       Tomcat 9
+Build -----------> testing					
+		BVT   
+ (Build verfication test) or (sanity test) (like url is opening in web or not)
+ before giving to testing team we need to do basic test is called BVT
+ 
+----------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------
+Testing Environmen
+
+1) non-prod
+- dev 
+- QA or SIT -- (Quality Assurance or System integration testing) 
+  * scratch deployment: detail testing [ 1000 code is there this 1 code code effecting this 1000 code]
+- UAT --- (User Acceptance Testing) Check for specific test cases (patch deployment)
+
+After this for next stage manager Approval is needed
+
+2) pre-production testing environment (patch deployment)
+- one release deploy madthive
+- client access they are testing it 
+
+3) production environment -- 
+- 6 or 3 months once (at a time 5 to 8 release deploy madthive = Golive)
+- CAB - (change advisary board) team of 5 to 10 member
+   
+----------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------
+Deployment Processes:--
+
+1) first we have to check either any running processes is going on in tomcat
+   stop the tmcat
+   
+2) take the backup of application log
+
+3) take the backup of current build
+
+4) then copy new build to tomcat
+
+5) start the tomcat service
+-------------------------------------------------------------------------------------
+if the deployment fail what will be your approach
+
+stop tomcat
+copy old build 
+start tomcat
+
+during the deployment processes we take a backup
+of build, we wright script like the backup has to rooled again
+you have to get back to your previous build
+------------------------------------------
+Blue-green deployment (zero-time deployment) ex-amazon
+
+blue - for testing 
+green - always running 
+
+either one should up and running always
+
+---------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------
+gradle - ( Andriod project )
+
+* Gradle is based on groovy script but in maven we wright XML.
+* in XML you define configuration file (predefined XML tag) but 
+  gradle whatever you wright in "build.gradle" file is like language 
+  (scripting language) through that you can execute a task.
+* you can perform multi module project in gradle.
+
+--------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------
+Maven (version 3.0)  #sudo yum install maven -y 
+# after validate .m2 folder is installed in -> /home/ec2-user/.m2/ 
+# change the .m2 folder ->
+
+It is not only a build tool for java applications... , 
+project management tool which manages the complete build lifecycle..
+Maven has capablities to extend the functionality by adding plugins...
+
+maven
+
+mvn compile -  used to compile source code
+mvn clean - cleans the previous build files
+mvn test - run testing steps
+mvn test-complie - compile code from testing source
+mvn package - create the artifacts
+mvn install - deploys packages and stores then in local repo
+mvn deploy - artifacts are copied to remote repo
+
+what maven build lifecycle /what are maven phases ?
+
+1. Validate : maven validates project is correct and
+ necessary information is available in POM.xml
+ 
+2. Compile : complies the source code (java)
+          target folder is created with class files
+   sourcecode -------------------------------------> binary
+   
+3. Test : Maven runs unit test cases on complied (JUnit)
+
+4. Package : it takes source code which is compiled and 
+    generates package in distribution format (.jar/.ear/.war )
+	 class files ---------------> .war (artifact)
+	Artifacts  ---- (JFrog)
+	
+5. Integration testing : package is deployed in a environment 
+   where integration testing is done (selenium)
+   
+6. Verify : quality critirea or met or not 
+
+7. Install : installs package into local repository
+             (install dependency for future build in .m2 > repository folder)
+			 
+8. Deploy : publish the build to release environment
+    # setteing.xml provide nexus repository information
+	# <distributionmanagement> in pom.xml specify url of nexus
+
+Maven Reposiroties :
+
+local repo   - .m2 folder in /home/ec2-user
+central repo - repo managed by maven community 
+               link --> https://repo.maven.apache.org/maven2/
+remote repo  - it is constrained to an organisation (jfrog, nexus)
+
+order to look for dependency
+local repo -> central repo -> remote repo 
+--------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------
+diff between dependency and plugin?
+both are used to add some functionality to maven.
+plugin -> Plug-ins are used for adding functionalities to Maven itself (like adding eclipse support or
+          SpringBoot support to Maven etc.).
+dependency -> Dependencies are needed by your source code to pass any Maven phase (compile or test for example).
+             * JUnit must be present at the time Maven is in the test phase  
+-----------------------------------------------------------------------------------------------------------------
+Scenario question on plugins, if u want to have 2 versions of same plugin, how u will do it?
+-----------------------------------------------------------------------------------------------------------------

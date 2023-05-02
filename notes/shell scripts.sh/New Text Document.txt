@@ -1,0 +1,114 @@
+assignment
+
+1) if it is a file check empty or not and check write permission or not if wrightable add content to it ?
+
+#!/bin/bash
+
+# Define the filename
+filename='ts.txt'
+if [ -f /ts.txt ];
+then
+     echo "File not empty"
+else
+     echo "File empty"
+fi
+# Type the text that you want to append
+read -p "Enter the text that you want to append:" newtext
+
+# Check the new text is empty or not
+if [ "$newtext" != "" ]; then
+      # Append the text by using '>>' symbol
+      printf "Appended text is: %s\n" "$newtext" >> $filename
+fi
+
+----------------------------------------------------------------------------------------------------------
+
+2) write a script if it is a file and check the content of the file and print the number of lines,
+   if a directory list files present in directory
+
+#!/bin/bash
+
+echo "Enter the name to check"
+read name
+
+if [ -f $name ]; then
+    echo "$name is a file"
+     cat $name
+     wc -l $name
+elif [ -d $name ]; then
+     echo "$name is a directory"
+     cd $name
+     ls
+else
+    echo "$name does not exist"
+exit 1
+fi
+
+
+----------------------------------------------------------------------------------------------------------
+
+3)arithmetic operation (biggest of two numbers)
+
+
+#!/bin/bash 
+
+NUM=$1
+NUM=$2
+SUM=`expr $1 + $2`
+MUL=`expr $1 \* $2`
+if [ $1 -gt $2 ];
+then
+SUB=`expr $1 - $2`
+DIV=`expr $1 / $2`
+
+else
+SUB=`expr $2 - $1`
+DIV=`expr $2 / $1`
+
+fi
+
+echo " ADDITION OF $1 & $2 IS $SUM "
+echo " MULTIPLICATION OF $1 & $2 IS $MUL "
+echo " SUBSTRACTION OF $1 & $2 IS $SUB "
+echo " DIVISION OF $1 & $2 IS $DIV "
+
+----------------------------------------------------------------------------------------------------------
+
+4) cronjob ---> write a script to run every 90min 
+   
+     		    00 0-21/3 * * * file/script path
+ 		    30 1-22/3 * * * file/script path
+
+		---> write a script to run only on last day of the month
+		    
+		    59 23 28-31 * * ['$(date+%d -d tomorrow)'=='01'] && path of the script
+
+----------------------------------------------------------------------------------------------------------
+
+5) mail configuration 
+
+ #!/bin/bash
+
+ size=`df -h . | awk -F " " '{print} $(NF-1)' | tail -1 | sed 's/%//g'`
+ if [ $size -gt 20 ]; then
+ cat filename | mail -s "disc space" -c "abcgmail.com" -b "ullaspari223@gmail.com"
+ fi
+
+----------------------------------------------------------------------------------------------------------
+
+6) write a script to list files containing pattern "linux" if not found then print saying that pattern not found
+
+   #!/bin/bash
+
+   find / -type f -exec grep -H 'text-to-find-here' {} \;
+
+----------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+

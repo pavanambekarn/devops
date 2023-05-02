@@ -1,0 +1,473 @@
+CLASS 1 
+---------------------------------------------------------------------------------------------------
+GIT Version : 2.27.0.windows.1 ( to track the version of file)
+( basically git is not going to copy it will find out the differance and append it)[[sync]]
+
+==> Repositoty : used to store the data or files to share commonly.
+
+==> Git hub : which will host the git repositories
+
+GIT is a software and it should be installed.
+
+==> ** GIT Architecture :
+					
+1.Working area :  the file is in untracked status 				  
+2.Staging Area : the file is in tracked status                       
+3.3.Local repo / git repo : the file is added to local repo and a new commit id is created						
+4.Central repo : on Git Push,files are moved to central repo.
+---------------------------------------------------------------------------------------------------------
+==> To intialize git :
+sudo yum install git
+mkdir git
+git init
+ls -a
+create files - vi file1
+git add file1
+git status
+git commit -m "mesage"
+
+git config --global user.name "name"
+git config --global user.mail "mailid"
+
+----------------------------------------------------------------------------------------------------------
+1.git init :* to add local git repository to manage the project
+             and it will create hidden folder .git
+		    *  .git folder contain all the information like 
+			commits, branches & remote repository address etc 
+command is used to intialize the respective directory as git repository
+2.how to check git  a directory is git repository or not ??
+   if .git folder is present in the current directory.then it is a git repository
+3.git status :it will show whether files are in workspace or staging are on in git repo
+4.git commit -m "message" :this command commits the staged changes to the local repository.
+5.git config --global user.name "name(bhavya)"
+  git config --global user.email "mailid (abc@gmail.com)"
+6.git log :  gives history of file or repo.
+  git log -n ---> will show last n commits
+  git log filename ---> history of perticular file name
+  git log -n filename --> show last n commit of that perticular file 
+7.git checkout commitid - to go back to previous version .. or move to repective  version /
+                          switch to repective commit ID
+						  
+Assaignment :- Git v/s GitHub
+GIT(CLI) –> command line utility to talk to your repository
+            ( GIT [local repository])
+            software			
+GITHUB-> Version Control System - (maintain version and restore them any time)
+         (GIT HUB [central or remote repo])
+		 GITHUB is Distributed VCS (service)
+2 types of VCS 1) Distributed VCS  
+               2) Central VCS
+
+git log --follow file1.txt -->show the commits that changed a particular file
+git log v/s git show
+git log provide commited id information ( of all commit)but git show provide 
+commited id information as well as edited information in that file (content)
+for last commit id			   
+------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------
+CLASS 2 
+-----------------------------------------------------------------------------------------------------
+==> Branching :Branching is a parallel development,teams can work on same piece of code on different branches
+             parallely and later intehrate by merging
+Why we need branching ??
+    To develop new features  we go for barching.
+	
+	2 typs of merge
+	1) fast forword merge
+	2) 3 way merge 
+
+git branch --> to check number of branches. or list all branches
+* --> indicates the current branch or indicates we are on that branch
+git branch <branchname> --> to create a branch
+git checkout <branch name> --> to switch to another branch
+git branch -d branchname -> to delete the branch
+git checkout -b branchname -> to create new branch with checkout
+git branch -m <old branch name> <new branch name> -> rename branch in local
+
+git push origin :<branch_name>   -> to delete the branch in remote
+git push origin --delete :<branch_name>
+git push origin -u new-name -> rename branch in remote 
+
+==> Merging :
+git merge <branch name> --> to merge specified branch to checked out branch    
+merging is only 1 way -- from source to destination.
+only 1 master per repository
+-------------------------------------------------------------------------------------------------
+==> Merge Conflict : occurs when same piece of code is been worked on different branches,and when we try to
+                     merge,the conflict occurs
+					 we can contact particluar developer to modify the changes
+
+git cherry_pick commit_id --> to merge specific commit on master branch
+                              checkout to master branch and git cherry_pick <comit_id>
+
+----------------------------------------------------------------------------------------------------------
+Assaignment :
+git revert - we can go back to the workspace after commiting,but commit history will be stored
+git reset - we can go back to the workspace after commiting,but commit history is removed
+
+ git restore -- to unstage a file
+-----------------------------------------------------------------------------------------------------
+Rebase : similar to merge, rewrite the commit histroy
+      -> git rebase branch name 
+Rebase works in two modes
+   1.standard mode
+   2.Interactive mode
+   
+Difference b/w merge and rebase ?
+Both merge and rebase perform same operation of integrating branches,but the difference is how they do it
+merge :merge specified branch to checked out branch, creates new commitID indicating merge
+       merge conflict can be handled easily, as the commits are reachable
+	   
+Rebase : 
+    =>  consider you created test branch from master added file1 and commited it 
+        some one developer added some feture to master say file2 
+        currently your in test branch give => 
+		****** git rebase master 
+        what ever the updated commited id in master is integrated in test branch also		
+
+Squash : it is a technique to condense large number of commits to make into small number of meaningful commits
+         so that we can make git histroy clear.
+         -->  git rebase -i HEAD~n	
+
+         * squash the previous commits into one
+		 * You can merge several commits into a single commit with the 
+		 compelling interactive rebase command.
+------------------------------------------------------------------------------------------------------------
+
+Stash : if i am working on one branch and i get critical work/bug to be fixed on another branch,i dont want to
+        commit changes in the current brach,so i will do git stash where the files will be stored in temperory
+		area,and switch to other branch i will fix the issue and come back to previous branch to continue any
+		work.
+	-> I need to do git stash pop,to get back files from temperory area
+
+git stash
+git stash pop
+git stash drop
+git stash list 
+
+git conflict : same the defination of merge conflict.
+--------------------------------------------------------------------------------------------------------------
+Assaignment :  //when you rize pr after that you want to add and commit a file which will show in pr as well?
+==> git amend : To modify your last commit message.
+		   git commit --amend -m "New commit message"
+		   
+	--> it will help you edit the commit message but replace the commit id too check it
+-------------------------------------------------------------------------------------------------------------
+==> Tagging in git : ---
+- tags are nothing but release point)
+- Let say this commit should be a stable release we will going provide tag for that commit id 
+- it is easy to remember the tag name
+	
+2 types –> Annotated tag and light weighted tag 
+  * Light weighted tags --- it stores hash of the specific commit 
+	                        it will not carry any other information apert from that (we can’t give author )
+  * Annotated tag       --- Contain the tagging name, email, and date & having tagging message also 
+                            git tag –a v1.0 –m “my release version 1.0”
+						
+git tag tagname --> to create a tag name (lightweight tag)
+git checkout tagname --> switch to tag
+git tag --> to list all tags
+git tag -a tag_name -m "message" : create tag (Annotated tag)
+
+git tag -d tagname --> to delete the tag (local)
+git tag -d $(git tag -l) --> to delete all the tag 
+git push origin :refs/tags/v1.0 --> to delete the tag in remote
+git push origin --delete $(git tag -l)
+ 
+git push origin <tagname1> -> push the tag to remote
+git fetch --tags 
+git push origin --tags -> push all the tags to remote
+
+==> Difference between tag and branch
+
+tag is a name given to set of files
+branching is for parllel development
+-------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------
+CLASS 3
+------------------------------------------------------------------- -------------------------------------------
+--------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------------------
+Central Repo :
+     git clone --> will bring central repo to local work space for the first time
+	               when you clone it [ git clone url ]
+				  ( it will intialize with .git directory + pull all the files )
+	 
+	 git pull --> it will compare if there are any changes,it will bring changes from central repo and merges 
+	              to local repo automatically
+     git push --> it moves local changes from local repo to central repo
+	              git push url or git push origin HEAD(main) 
+				  git remote add origin url you can see in folder .git/config
+	 
+	 git fetch --> . bring changes from remote repo to local repo remote branches
+                	 like FETCH_HEAD without merging.
+	               . you can review the changes if it fine you can merge it 
+				   
+	 git pull = fetch + merge 
+	 git fetch origin main 
+	 the changes are still in remote branch but it is not applied in local
+	 if you want to see remote branch -> git branch -a
+	 if you checkout to remote branch -> git checkout origin/main or git checkout FETCH_HEAD
+	 then you can merge it -> git merge FETCH_HEAD or git merge origin main
+
+if you want	consider current directory as central repository
+git init --bare(bare-repo) -->   acts a remote repo , we can only push and clone and pull changes to repository
+                                 we cann't run other git operation
+
+git init(non-bare-repo) -> act as local repo we can modify files push to central repo 
+                            and rum all the git commits 
+
+we have two types of repositories
+1.bare repository - only we can pull and push the files, git operations cannot be performed
+2.non bare repository - all the git operations are performed here,we can modify files push to central
+                          ,run all git commands
+						  
+----------------------------------------------------------------------------------------------------
+PAT - personal access token
+----------------------------------------------------------------------------------------------------
+PR - (Pull request) after push the request to local repository you want to merge it to master
+                    pull request rised in master and create pull request and note down url 
+					provide that url to reviewer they take care of merge
+----------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------- 
+==> .gitignore : to ignore a file in the project 
+        --> it will not allow the files to be commited.it will ignore those files. 
+
+------------------------------------------------------------------------------------------------------------------u
+GIT Fork ??
+     A fork is a copy of a repository. Forking a repository allows you to freely experiment with changes 
+	 without affecting the original project.
+----------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------
+production release -> 6 month 
+Release Version: x.x.x.x (naming convention)
+         Ma  Mi  H
+release  1 . 0 . 0
+
+Release Types:
+1) Major: 3-6 month 
+2) Miner: 2-3 weeks
+3) Hotfix: 1 day 
+
+         2-m                  6-m               day                day                minor
+1.0.0 --------------> 1.1.0 ---------> 2.0.0 ------------> 2.0.1 ----------> 2.0.2 ------------> 2.1.0
+----------------------------------------------------------------------------------------------------------
+Branching Stratagey : (see image)
+Main/master -> stabel version of code 
+Dev         -> will pick the code from master ( pre producion stage )  
+Feature     -> 
+Release     -> build code is set for release/deployment.
+Hotfix/Bugfix -> if any issues come into the release branch not neccesary required to go back to
+                 feature and dev then update we can have quick fix like hotfix/bugfix 
+                 
+master -> dev -> feature ->by PR dev ->  release[--->hotfix--->release]---->dev -->master 
+1.0 ------------------------------------------------------------------------- 1.1
+
+Testing ENV 
+1) QA and SIT -> it is check for the individual feature wether it is functioning properly and it is 
+  also see it is dependent an other feature also all are collaborating well.
+2) UAT -> perticular for that feature test (advance test)
+3) PRE-PROD -> client level testing they will come test in application level 
+
+
+Explain branching Stratagey  of your project or release activity or release architecture ??
+
+-> Branches can be created for multiple reasons, here we create branches for releases ,development will be going
+ on the dev branch. once the code is ready on the dev brach for the first release we create relase 1 branch
+and we make a release from the release 1 branch and this branch acts as a maintainance branch for the 1st relase
+that means what ever the issues related to 1st release will be fixed on release 1 branch.and parallely development
+will be going on the dev branch for the 2nd release once the code is ready for the 2nd release on the dev branch
+before we create release 2 branch we merge release 1 branch  to dev branch then we create branch for 2nd release
+from the dev branch.what ever the issues that we have seen in previous release should not be visible in the next
+release. 
+
+pavan:
+
+- branching is nothing but parallel development with respect to the source-code by developers
+- basically in our organization we are using collaborative project it includes 5 branches
+  main,dev,feature,release,hotfix 
+- we will going to create a dev branch from main so we will get the source code from that if you going to add the
+  functionality to the source-code you will going to create a feature branch and add the functionality based on 
+  requirment then we will rize a PR and add the reviewers in that, parallely with the help of webhook it will 
+  trigger the jenkins job as well the reviewers will check the sonar reports and also they will also verify is it 
+  effecting with previous ci-cd pipeline. once every thing is successfull they will merge feature branch to dev 
+  branch and delete that feature branch as well
+- then we will goin to create to release branch and check with respect to the diff environment like 
+  QA/SIT -> here we will going to check it from scratch and what are all the features added if it depenent 
+            to other we will verify that too
+  UAT -> here we are mainly concentrate on feature added to the source code
+  (manager approval is needed)
+  pre-pod -> here the client will going to check there requirment 
+  (CAB meeting -> change advisary board)
+  finally if every thing is working fine we will push it production environment for end-users 
+- in this environment if you going to get any bug we will create a hotfix/bugfix and it will resolved with 
+  short span of time and merge it back to release branch.  
+- main branch will act as a backup we will never touch master branch.
+ 
+---------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------
+Assaignment :
+1.Git Diff:
+            The git diff command shows the differences between the files in two commits or between your current
+			repository and a previous commit. 			   		
+------------------------------------------------------------------------------------------------------------------
+8.What is difference between git and other repository
+
+git
+*git is a distributed version control system, that means whole repository will be present in the local workspace.
+*if you want to go to previous version of the code, it will be available in the local workspace.
+*in git we can work offline(local workspace).
+*git has many advanced features like fetch, revert, rebase..etc
+
+other(svn):
+*centralized version control systems, only the latest version of code will be there in the local workspace.
+*if you want the previous version of the code, it needs to be checked out from the central repo.
+*we need to interact with central repo frequently.
+*we dont have direct commands to all these features
+
+-----------------------------------------------------------------------------------------------------------------
+==> Git Show :
+            git-show is a command line utility that is used to view expanded details on Git objects such as 
+			blobs, trees, tags, and commits. git-show has specific behavior per object type. ... 
+			Blobs show the direct content of the blob. Commits show a commit log message and a diff output
+			of the changes in the commit.
+			
+	-> Git show is similar to git log but it also shows which line and what has been modified		
+   
+--------------------------------------------------------------------------------------------------------------
+==> Git Hook :
+         Git hook are scripts that run automatically every time a particluar event occur in a git repository
+
+--------------------------------------------------------------------------------------------------------------
+==> What are the advantages of using GIT?
+      a) Data redundancy and replication
+      b) High availability
+      c) Only one. Its directory per repository
+      d) Superior disk utilization and network performance
+      e) Collaboration friendly
+     f) Any sort of projects can use GIT	
+--------------------------------------------------------------------------------
+==> What language is used in GIT?
+  GIT is fast, and ‘C’ language makes this possible by reducing the overhead of runtimes associated with higher languages.
+-----------------------------------------------------------------------------------
+==> What is GIT stash drop?
+      When you are done with the stashed item or want to remove it from the list,run the git ‘stash drop’ command. 
+	  It will remove the last added stash item by default, and it can also remove a specific item if you include as an argument
+------------------------------------------------------------------------------------------------------------------
+==> How will you know in GIT if a branch has been already merged into master?
+       ❖ Git branch --merged (lists the branches that have been merged into the current branch)
+       ❖ Git branch —-no-merged (lists the branches that have not been merged)
+----------------------------------------------------------------------------------
+==> What is the function of ‘git config’?
+    The ‘git config’ command is a convenient way to set configuration options for your Git installation. 
+	Behaviour of a repository, user info, preferences etc. can be defined through this command.
+-------------------------------------------------------------------------------------------------------
+==> What does commit object contain?
+             a) A set of files, representing the state of a project at a given point of time
+             b) Reference to parent commit objects
+             c) A SHAI name, a 40-character string that uniquely identifies the commit object.
+----------------------------------------------------------------------------------------------------------------
+==> Git Remote ?
+    The git remote command lets you create, view, and delete connections to other repositories
+-------------------------------------------------------------------------------------------------------	
+==> What is GIT version control?
+     With the help of GIT version control,you can track the history of a collection of files and includes the functionality 
+	 to revert the collection of files to another version. Each version captures a snapshot of the file system at a 
+	 certain point of time. A collection of files and their complete history are stored in a repository
+--------------------------------------------------------------------------------------------------------------
+==> What is the function of ‘git rm’?
+      To remove the file from the staging area and also off your disk ‘git rm’ is used.
+------------------------------------------------------------------------------------------------  
+reate git hub account ,clone push and pull the files	
+
+GIT Personal Acess Token :
+                             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
+
+----------------------------------------------------------------------------------------
+Interview Questions ??
+
+1.What is difference between Merge and Rebase ??
+2.Branching Strategy ??
+3.Difference between fetch and pull ??
+4.merge conflict ??
+5.Git Stash ??
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Git bisect:
+            initialise the commit id as good or bad 
+			to mark current commit id--> git bisect good/bad
+			after that-> git bisect reset 
+		=>  let say you have lot of commit version some versions are working properly some are having bug 
+            by going each commit and checking is hectic task by using git bisect we solve this problem
+            git bisect start
+			git bisect good commit_id
+			git bisect bad commit_id
+			
+Git blame : git blame <filename>
+     I want to see the details of file with respect line 
+     who was modified when did he/she modified (timestamp)
+     git blame -L 1,2 <filename>
+     git blame -L 1,+4 <filename>
+     git blame <commit_id or tag> <filename>
+     git blame --sence=1.week <filename> 
+
+GIT Fork ??
+     A fork is a copy of a repository. Forking a repository allows you to freely experiment with changes 
+	 without affecting the original project.
+
+git rm --cached <filename> (move back from staging to working)
+
+git clean -f -> to delete all untracked file
+git ls-files -> list out the files from your local git repo 
+git push --all -> push all the local branches into the remote repo 
+
+GIT, GITHUB, BITBUCKET, GITLAB,  (subversion) SVN, (centralized)CVS
+
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+git remote set-url origin new.git.url/here (to change the url)
+--------------------------------------------------------------------------------------------------------------	
+can we create folder in github ?
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+different typs of option you will use in git clone?
+Q) How to clone specific branch in git? 
+ got clone -b <branch_name> --single-branch <URL>  
+
+Q)i should only clone master branch and only last commit  
+  got clone -b <branch_name> --single-branch --depth 1 <URL>
+------------------------------------------------------------------------------------------------------------------
+Q) difference between clone and fork and pull 
+- both are used to copy the repo 
+------------------------------------------------------------------------------------------------------------------
+Q) how to update the PR ?
+change the file, 
+git add *
+git commit -a -m "edited the file which are in PR request"   (((-a amend)))
+----------------------------------------------------------------------------------------------------------------
+Q) If u want to change something without changiythe commit id , how u can do?  ((git replace))
+-----------------------------------------------------------------------------------------------------------------
+q) git bash? (diff between git bash and git merge)
+----------------------------------------------------------------------------------------------------------------
+Q)How do you push a particular commit id to a remote repositary 
+ git branch onecommit
+ git checkout onecommit
+ git cherry-pick 7300a6130d9447e18a931e898b64eefedea19544 # From the other branch
+ git push origin {branch}
+---------------------------------------------------------------------------------------------------------------
+* git lab is alternative for github and it is owned by gitlab and git hub is owned by microsoft
+  git lab has build in CI-CD tool 
+---------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+		
+
+	

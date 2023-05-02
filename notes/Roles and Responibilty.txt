@@ -1,0 +1,20 @@
+ 
+infrastructure maintanance:
+from infrastructure team i get a pre-build image and i need apply it to diff environment and make 
+sure that all environment is working fine
+
+- grafana panal integration (ready config file if you want add extra panal add it re-deploy)
+
+- multiple builds going on the organisation at the time i need to create relese branch and merge
+  that branch if any merge conflect acccour, I need to fix with help development team
+  
+- And multiple build are going on jenkins dashboard, on daily basis i need to check it if any
+  builds is failure, i need to check with respect to console level if it is build envirenmental issue
+  i need to takecare and if it is compilation issue i need to inform to development team 
+  
+- and I always try to automate the task whhich are manulayy doing and repetatiove one 
+
+- and also i need to check the vulnerabilities(ದುರ್ಬಲತೆಗಳು) of the pre-build image from trivy 3rd party 
+  tool 
+  
+- and also i have the responsibilty to deployment and maintanence of application pod in k8s

@@ -1,0 +1,67 @@
+Docker file:
+
+FROM node:18-alpine
+WORKDIR /app
+COPY package.json .
+RUN npm install 
+COPY . .
+EXPOSE 8000
+CMD ["node","server.js"]
+
+--------------------------------------------------------------------------------
+FROM alpine as git
+RUN apk update && apk add git
+WORKDIR /home/app
+RUN git clone https://github.com/java_repo1
+
+FROM maven as maven
+RUN mkdir /usr/app/
+WORKDIR /usr/app/
+COPY --from=git /home/app/java_repo1/src /usr/app/src/
+COPY --from=git /home/app/java_repo1/pom.xml /usr/app/
+RUN mvn install -DskipTests
+
+FROM tomcat 
+WORKDIR webapps 
+COPY --from=maven /usr/app/target/*.war .
+RUN rm -rf ROOT && mv *.war ROOT.war
+-------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
+FROM maven as maven
+RUN mkdir /usr/src/mymaven
+WORKDIR /usr/src/mymaven
+COPY . .
+RUN mvn install -DskipTests
+
+FROM tomcat 
+WORKDIR webapps 
+COPY --from=maven /usr/src/mymaven/target/java-tomcat-maven-example.war .
+RUN rm -rf ROOT && mv java-tomcat-maven-example.war ROOT.war
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Q) Write a dockerfile to create image from jar file/binary ?
+FROM openjdk:3.8
+ADD target/*.jar app.jar
+ENTRYPOINT ["java","-jar","app.jar"]
+-----------------------------------------------------------------------------------
+Q) write docker file to create jenkins image
+FROM ubuntu:latest
+RUN apt update -y
+RUN apt install openjdk-8-jre -y
+RUN echo "JAVA_HOME=/usr/" >> .bashrc
+ADD tomcat-url/apache-tomcat.tar.gz /tmp
+RUN cd /tmp && tar -xzvf apache-tomcat.tar.gz 
+RUN cd /tmp && mv apache-tomcat /opt
+EXPOSE 8080
+ADD URL/jenkins.war /opt/apache-tomcat/webapps/
+CMD ["/opt/apache-tomcat/bin/catalina.sh","run"] 
+----------------------------------------------------------------------------------
+nginx?  =>  docker run -d -p 80:80 nginx 
+
+FROM nginx:latest
+COPY index.html /usr/share/nginx/html/
+RUN chmod +r /usr/share/nginx/html/index.html 
+ADD nginx.conf /etc/nginx/nginx.conf             //extra
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
+----------------------------------------------------------------------------------

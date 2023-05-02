@@ -1,0 +1,23 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: ingress-path-routing
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+  - http: 
+      paths:
+      - path: /hello
+        backend:
+          serviceName: k8s-hello-svc
+          servicePort: 80
+      - path: /nginx
+        backend:
+          serviceName: nginx-svc
+          servicePort: 80   
+      - path: /nodejsfeed
+        backend:
+          serviceName: nodejs-feedback-svc
+          servicePort: 80
+
