@@ -5,12 +5,17 @@ CLASS 1
 ----------------------------------------------------------------------------------------------------------------
 JENKINS : (CI-CD tool) Continues Integration - Continues Deployment/Delivery
 
-- Jenkins is an open-source automation tool written in Java 
+- Jenkins is an open-source automation tool written in Java (java install ls /usr/lib/jvm)
 - Automate the software development lifecycle like build, test, deploy etc
 - power house of jenkins is plugins 
   (using plugin we can extend the features of jenkins)
 - AWS pipeline, Bamboo, Circle CI, Solano CI, Team City similar to jenkins
-- workdir -> /var/lib/jenkins/ 
+- workdir -> /var/lib/jenkins/   user => jenkins
+
+Tools in Jenkins:
+- you can install maven either in instance level which have jenkins or you specify in jenkins dashboard
+- Dash board -> Manage jenkins -> tools -> based on plugin install it will show jdk,maven,git etc
+- in job you can specify which maven you want to use
 	 
 CI-CD Flow ? (important) (get that picture from aditya)
 - git checkout [git clone](build periodically, POLL SCM, Webhooks)
@@ -385,7 +390,16 @@ environment block: (environment variable) (https://www.youtube.com/watch?v=7KCS7
 How to secure password in jenkinsfile? (Credentials & Credentials Binding plugin)
 * In snippet generater -> withCredentails: Bind credentails to variable -> secret text  
 -----------------------------------------------------------------------------------------------------------
-parameterized build?
+parameterized build? (it will take the user input) 
+- Boolean Parameter
+- Choice Parameter
+- Credentials Parameter
+- File Parameter
+- Multi-line String Parameter
+- Password Parameter
+- Run Parameter
+- String Parameter
+
 It will allow to pass the parameters in jenkins job
 **** Setup AWS EKS Using Terraform | Deploy Nginx | How to Provision EKS in AWS -> 
      you tube see the code example (real time use cases)
