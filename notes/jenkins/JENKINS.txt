@@ -76,6 +76,8 @@ https://www.cidevops.com/2019/02/how-to-create-webhooks-in-github-and.html
 * pipeline plugin
 * Sonar Scanner & sonar quality gates 
 * nexus plugin 
+* build time stamp plugin ${env.BUILD_TIMESTAMP}( manage jenkins-> configure system -> build time stamp [set yymmdd])
+* email extention plugin (SMTP server)
 ------------------------------------------------------------------------------------------------------
 thin backup plugin -> once you install you can see it in manage jenkins dash board
 *  mention the backup directory (where you need to store backups)
@@ -91,24 +93,28 @@ thin backup plugin -> once you install you can see it in manage jenkins dash boa
   python, c-sharp, java, etc 
 * static code analysis tool -> it will going to validate and verify the source code like check-style scanner 
 * Code Quality Assurance tool -> it will check and analyzes source code either it will met with our quality 
-  criteria or not, and provides reports to the jenkins as well 
+  criteria or not, and provides reports to the jenkins target folder in .xml formate as well 
   . It combines static and dynamic analysis tools and enables quality to be measured 
 * in organization usually the quality criteria is kept with 70 to 80% if the source code in not met with that
   further stages is going to stoped and send a notification to developer to rework on sourse code
 
  How to configure sonarqube:
-->  Install sonarqube(7.9) onvirtual machine and java as well and enable it (port 9000)
+->  EC2 = Install sonarqube(7.9) onvirtual machine and java as well and enable it (port 9000)
 ->  Install plugin (sonar qube scanner and sonar quality gates)
-->  allow traffic between jenkins and sonar (SG)
-->  Configure (Manage jenkins->configure system -> SonarQube Server) and mention the sonar token
+    sonar qube scanner = scan the code and generate a report in .xml formate which is present in target folder of worspace.
+    sonar quality gates = it will check Quality criterie met or not.
+->  In jenkins console -> Global tool configuration install sonar
+->  (Integrate sonarqube server to jenkins) Configure (Manage jenkins->configure system -> SonarQube Server) and mention the sonar token
     to access from jenkins and and create a webhook in sonar to sent report to the jenkins 
-->  In jenkins console -> Global tool configuration install sonar 	
+->  allow traffic between jenkins and sonar (SG)	
 
 *****Elements of sonarqube dashboard :(can we add manuall elements)
-  Bugs and Vulnerability -> is related to the security of your software
+  Bugs & Vulnerability -> is related to the security of your software
   code smells -> code is not written using fundamental standards.
   Duplications -> code duplication 
-  Coverage -> how much program source code is covered by a testing plan
+  Coverage -> how much program source code is covered by a testing plan 
+(This all elements you can set specific limit in server quality gates if it cross the pipeline will going to fail 
+ to send the quality gate report of sonar to jenkins we have webhook and pipeline it will wait untill report get)
 
 --------------------------------------------------------------------------------------------------------
 -------------------------------------------------------------------------------------------------------- 
@@ -617,12 +623,13 @@ stage(git){
   }
 }
 -----------------------------------------------------------------------------------------------------------
-NEXUS artifactory upload :--
+NEXUS artifactory upload :-- (download the dependency for maven etc)
  
 - nexus (t2.medium & SG [8081 & 22 & allow jenkins-SG])
-- create repo in nexus -> maven2(hosted) 
+- create repo in nexus -> maven2(hosted) [group,hosted,proxy->download dependency from repo]
+- create a credentail for nexus in jenkins (user & passwd) [to access nexus repo from jenkins]
+  * manage jenkins -> manage credentails -> global credentials -> add credentails (add the credentails which is set to nexus)
 - jenkins console  => install plugin "Nexus Artifact UploaderVersion"
-- create a credentail for nexus in jenkins (user & passwd)
 - pipeline syntax -> nexusArtifactUploader (configure it)
 ----------------------------------------------------------------------------------------------------------
 post build action ? -> email notification, build other project, 
