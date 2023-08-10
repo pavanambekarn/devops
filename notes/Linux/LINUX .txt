@@ -1000,10 +1000,16 @@ charecter file  -> c
 fstab? -> /etc/fstab 
  configuration table designed to ease the burden of mounting and unmounting file systems to a machine.
 ------------------------------------------------------------------------------------------------------------
-There are mainly four types of web servers – Apache, IIS, Nginx and LiteSpeed.
+There are mainly four types of web servers – Apache HTTP Server, IIS, Nginx and LiteSpeed.
 * it can process only http (jar,war)
+  - It serves static content such as HTML, CSS, JavaScript files, images
+  - Web servers are usually deployed in front of application servers. They act as a reverse proxy, forwarding 
+    requests to the application server when dynamic content is needed.
 Application server - tomcat, jboss, glassfish, oracle 
 * it can process http/https (jar,war,ear) 
+  - Application servers are typically deployed behind web servers. When a web server receives a request for 
+    dynamic content, it forwards the request to the application server, which processes the request, 
+    generates dynamic content, and sends the response back to the web server for delivery to the client.
 ------------------------------------------------------------------------------------------------------------
 
 
