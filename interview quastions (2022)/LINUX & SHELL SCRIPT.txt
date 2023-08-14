@@ -1,0 +1,205 @@
+LINUX and shell script :-
+--------------volve cars-------------------------------
+1)TCP vs UDP?
+----------------------SmarDTV------------------------------
+1)shell script to 	list the lines ending with abc with line number
+
+cat -b $1 > temp
+grep 'abc$' temp 
+------------------Cloudifyops----------------------------------
+1)crontab 
+2)Hava a shell script name logoff.sh i want to run
+ this script on every working day at 6pm what is the command
+3) What is Swap space what is the command    //free -m 
+4)What is netstat
+5)Mention few commands related to netstat
+6)Linux Firewall [nftable v/s iptable v/s iptable] (security enhanced linux - SELinux)  (/etc/selinux/config)
+7)Write a shell script for creating directory directory name should 
+be Init  in that you should add a file in that file you have to run few 
+commands related to netstat 
+
+******** sudo tee /etc/systemd/system/tomcat.service<<EOF
+
+         EOF
+
+8)Have a file name .TXT it's created by HR so only  HR should be able 
+to edit others in organization only able to view others are able to 
+do anything  how to you set the permission 
+------------------------------Wipro R2-----------------------------------------------
+1)Write a shell script to reverse a given string
+-----------------------------------Signify ------------------------------------------------
+1)Write a shell script and explain the steps 
+--------------------------------------Mercedes benz--------------------------------------------------
+1)SSH Password less connection
+2)Write a shell script to read & display the 3 letter from all the files from each line ((grep -E -o "([Aa-Zz]{1,3})" *))
+3)what is awk command
+------------------------------------------HUS-------------------------------------------------------
+1)Write a shell script to check if a command got executed?
+2)Write a shell script to check the number of arguments passed is 4 if not 
+ inform to send 4 arguments?
+4)How to execute script in debug mode?
+5)Differnce between RHEL 6 And RHEL 7?
+6)What is the bootup process of Linux?  //linux initilization processes 
+7)In RHEL 7 which process has PID 1?     
+8)How to check the ports running?
+9)what is -tulnp?
+10) What is the file path for ssh logs?   => /var/log/auth.log
+--------------------------------------Altimetrik------------------------------------------------------------------
+1)Command to check disk space?
+2)Command to check memory?
+3)Command to check disk usage of file?
+4)How will you connect two servers?
+-------------------------------------comviva (techconnexions)----------------------------------------------------------------------
+1)shell script: when given input username - output should be user id   ((id $1 | cut -d " " -f1))
+--------------------------------------ENCORA-----------------------------------------------------
+1)namespaces vs c-groups in linux
+2) explain c-groups
+3)write a cron job to run on every last day of month
+4)Python - script to find largest of the 3 numbers
+5)python - script to write fibonacci series -- but instead of 2 we need to add previous 3 numbers
+---------------------------------------ValueLabs round2--------------------------------------------------------
+1)Python - script to write 1 to 20 numbers (not from 0)
+--------------------------------------------------------------------------------------------------
+1) top command in linux?
+----------------------------------Agiliad-------------------------------------------------------------
+1)Sed command
+2)Awk vs sed
+3)Head command
+4)Local linux cluster how do you monitor all
+-------------------------------------DEVON-2/6/2022------------------------------------------------------------
+1)linux-- diskspace, ports opened??--command??
+---------------------------------------globallogic----------------------------------------------------------------
+*shell script for a basic for loop
+------------------------------------------Lntinfotech-------------------------------------------------------------
+how can you send variables in shell scripting
+change the owner of user and group
+list the rpm packages present 
+scp command
+--------------------Alepo:2/6/2022-----------------------------------
+What are AWK and SED commands?
+What is difference between UDP And TCP?
+HTTP comes under UDP or HTTP?
+How to find network data packets in Linux?
+How to debug bash script?
+-----------------------Xoriant------------------------------------
+shells scripting scenario based question
+-------------------------infinite----------------------------------------
+scripting scenario based
+how to check CPU utilization,disk space --command?
+what is sed command?
+what is awk command?
+-----------------------CalsoftInc: 2/6/2022-----------------------------------------------------
+How to parameterise the bash script?           //read command 
+Difference between Awk and Sed?
+What does $0 represent?
+What is a daemon process?How to list daemon process? 
+What is the difference between break and continue in shell scripting?
+-------------------------------ValueLabs-------------------------------------------------------------------
+given a shell script with a scenario
+-----------------------------------BBI 2nd round 07/06/2022----------------------------------------------------------
+Which scripting you have used
+Script to display a last letter of each row in a file
+-----------------------------Mactores 4th round 07/06/2022----------------------------------------------------------------
+Difference between ping and nslookup
+-----------------------------------Hitachi 07-06-22----------------------------------------------------------------------
+Shell script to check email id is valid or not  
+
+                           echo pavvan@gmail.com | grep -o @gmail.com
+                           echo $?
+-------------------------Hoonartek 2nd round-----------------------------------------------
+Which scripting you have used and what will be the use case
+Command for search and replace a string in linux
+------------------------------Capgemini 09/06/22----------------------------------------
+Which scripting language u r working on ?
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+------------------------------------------Lti  R1 - 01/08/2022------------------------------------------------
+Write shell script get disk usage  notification every monday at 6pm
+-------------------------------------TCS  R1- 01/08/2022 -----------------------------------------------------
+Directory of volume attached on linux process its showing busy what is the reason
+How to kill particular process in linux
+----------------------------------------Clear trail (R1) : 02-08-2022----------------------------------------
+Consider u have about 100 nodes, where you want to install something, how u do using shell scripting.
+----------------------------------------Encora- R1- 02-08-2022 ------------------------------------------
+Diff scp &cp command
+-------------------------------Wipro (L1) : 05-08-2022------------------------------------------------
+Write a script for checking the logs which are older than 10 days and delete them.
+What is awk command.
+------------------------------Enphaseenergy (R1) : 05-08-2022----------------------------------------
+Diff between Apache or any other web server.
+Any shell script u used for repitative task. Write and explain.
+How to kill a process?
+Diff between kernel and linux version.
+Grep, sed, awk commands.
+------------------------------cervello------------------------------------------------------
+linux, how to check free memory
+set of permition for file
+what is touch command used for
+hod can i find process id and how do i kill those process
+how can i change port number
+------------------------------09/08/2022 Flocareer.---------------------------------------
+command to show all the running process.
+command to kill the process.
+-----------------------------Wipro (L2) : 09-08-2022------------------------------------------
+Write a script for checking file and print no of lines, words and characters.
+---------------------------09/08/2022 Paragon.-----------------------------------------
+shell script to stop all services 
+---------------------------11/08/2022 - Uniphore----------------------------------
+Do you know the base environment in Linux and windows
+--------------------------Braneenterprises (L2): 16-08-2022-----------------------
+Diff between process and thread in linux
+Script to take some inputs from user, find the logs which are 15 days old, compress then 
+  and copy to the specified server with given IP address.
+Scenario based question on Apache http.
+--------------------------Big Basket 16/8/2022---------------------------------
+linux find command.
+sed command
+umask value
+how will you kill service
+how to check ports are open
+swap memory
+disk check command
+shell script to find the file size more than 100MB and do zip and delete it.
+---------------------------------Big Basket Interview Questions------------------------
+ls of command
+write a shell script for below input and sum of the numbers in the text 
+ hdjsieidnf 24
+ hdiwdhjiwo 432
+ jsoodioejue 21
+ jdieidhbdue 87
+ hdueijdijweom 65
+ hdwiiwiedo 31
+Umask value of a root user
+what is du command in linux?
+what is an inode in linux?
+-------------------------------tmd.net (L1) : 17-08-2022----------------------------
+How u will check process is running?
+How to create zip folder in linux.
+------------------------------Ness----------------------------------
+AWK command
+cron job
+---------------------------Cognizant L1 23-08-2022-----------------------------
+how manage Linux memory 
+Swap space,sed,awk,find,s*,$$,$@ and /etc/password file
+What length file on linux
+-------------------------Happinestminds L2 22-08-2022---------------------------
+write shell script given number is palindrome
+-------------------------EY Interview Questions----------------------------
+Shell script to check the memory utilization
+LVM
+Swap Space in linux
+---------------------------GSPANN Interview Questions 2nd Round-------------------
+Shell script to find the average of numbers
+Fstab 
+---------------------[26/07, 6:55 pm] ..: Leadsquared Interview Questions--------------
+1) write a Bash shell script for input1 (1,n) , input2 (n). Output (how many number repeated twice)
+2) write a shell script for reverse the given IP address!
+Ex- input- 198.12.36.01
+Output- 10.63.21.891
+--------------------[27/07, 7:16 pm] ..: Interview questions --------------------------
+what are different type of file instructions in Linux.
+where do you save passwords in Linux 
+configuration of the existing ec2 instance where we have increase the space of the EBS Volume from 40-80gb.
+-------------------------[28/07, 3:20 pm] ..: Vfislk Interview Questions ----------------
+Passwordless Connection?
+
+

@@ -1,0 +1,183 @@
+DOCKER:-
+------------------------------SmartDTV-------------------------
+1)networks in docker	
+2)cmd , entrypoint
+----------------------------CNC containers------------------
+3) Write Docker multistage build 
+4)Cmd and entry point 
+5)When you install docker  which network it should be use actually
+6)If suppose we have 2 images one is public repo ngnix and private 
+  repo in ngnix what is the difference between 2 images
+------------------------Cloudifyops-------------------------------------
+1)Structure of a Docker file 
+2)what is CMD 
+3)Difference between Copy and ADD
+4)docker image you have to override it which command you will use 
+---------------------------wipro R2--------------------------------------------
+1)Write a Docker file for given Scenario with ubuntu image 
+2)persistent volume
+----------------------------Signify -----------------------------------------------------
+1)application logs in docker 
+----------------------------------HUS--------------------------------------------------------
+1)How to download docker image from a proxy?
+---------------------------------Altimetrik---------------------------------------------------------
+1)Docker networks?
+2)What is image?
+3)What is Docker file?
+4)Differnce between ADD and COPY?
+5)What happens if CMD and ENTRYPOINT given in the same file?
+6)What are dangling images?
+
+1)What is docker multistage build?
+2)Docker compose?
+3)Docker networks?
+
+-----------------------------------Intelliswift ---------------------------------------------------------------
+1)Types of containers?
+-------------------------------------------comviva (techconnexions)-------------------------------------------------------
+1)how to introduce a variable in dockerfile - should be  dockerbuild command
+2)docker build arg command
+3)ssl to be copied to container
+4)listing docker container that are stopped
+------------------------------------Mind tree (round 2)------------------------------------------------------------
+1)How do you create docker file? Using binary
+2)Steps in docker file?
+3)Purpose of multistage
+4)Command for building docker file
+5)Where are you storing images
+6)Parameters to push docker image to repo
+7) If docker image is huge. What should we do?
+------------------------------------------ENCORA-----------------------------------------------------------------
+1) how to build an image out of a running container?
+2)diff btwn VM and container? which one do you prefer?
+3)explain how a container is better than VM on a security perspective?
+4)how isolation is created in docker btwn containers?
+-----------------------------------ValueLabs round2-----------------------------------------------------
+1)how to decrease size of docker image
+2)different namespaces in docker?
+----------------------------- acko technologies round3 (hiring Manager)---------------------------------------------------------------------
+1)how do you write a dockerfile?
+-----------------------------------------Greyamp-------------------------------------------------------------
+1)Where is image stored
+2)Why store both of them image and binary
+-----------------------------------------------hexaware tech----------------------------------------------------
+docker image from a conatiner (docker commmit containr_id image_name)
+-----------------------Alepo:2/6/2022-----------------------------------
+What are networks in docker?
+------------------------Altimetric 6/2/2022----------------------------------
+Docker slave concept
+--------------------------slk group r2-------------------------------------------
+what did you do in docker
+what did you write in docker file?
+---------------------------Encoress 02/06/2022-----------------------------------------------------
+Docker file
+CMD and entrypoint
+Docker compose
+--------------------------CalsoftInc: 2/6/2022------------------------------------------------------
+Write a dockerfile to create image from jar file?
+-------------------------------ValueLabs-------------------------------------------------------------------
+docker containers --some questions
+--------------------------hitachi------------------------------------------------------------------
+how to delete docker containers
+docker file what is it
+different stages of docker container
+-----------------------------------BBI 2nd round 07/06/2022----------------------------------------------------------
+Walk me through Docker multistage file
+How you will build docker file
+------------------------------------Altimetric  09/06/22--------------------------------------------------
+20.	Docker architecture 
+21.	What are docker images
+22.	How do u delete dangling images
+23.	Docker namespace
+24.	Difference between docker images and docker layer
+25.	Under what circumstance will u lose the data stored in a container => The data of a container remains in it until and unless you delete the container
+26.	Command to export docker image as archive
+27.	COPY vs ADD
+28.	Can a container restart itself?
+29.	Where docker volumes are stored?
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+------------------------------------------Lti  R1 - 01/08/2022------------------------------------------------
+write docker file to create jenkins image
+Diff Betn cmd and entrypoint
+-------------------------------------Koantek- R1- 01-08-2022 ---------------------------------------------------
+Docker file without FROM instruction
+--------------------------------------Encora- R1- 02-08-2022 ------------------------------------------
+How get mysql container in docker
+(docker run -itd -e MYSQL_ROOT_PASSWORD=root -p 3030:3306 mysql:5.7)
+------------------------------------5/8/22 sipra steria------------------------------------------------
+write a docker file
+difference between CMD and ENTRYPOINT
+multistage built
+command to build a docker image
+------------------------------cervello------------------------------------------------------
+docker file
+difference between COPY and ADD
+difference between CMD and ENTRYPOINT
+--------------------------------04/08/2022 koantek----------------------------------------------
+Dockerfile
+------------------------------09/08/2022 Flocareer.---------------------------------------
+explain containers.
+explqin docker file
+-----------------------------Brane enterprises L1 09-08-2022 ------------------------------
+Docker diff cmd and entrypoint
+Diff betn add and copy
+-------------------------------10/08/2022 lntinfotech-------------------------------
+docker networks explenation.
+how to create docker image from docker container.
+what is dockerfile
+docker multistage explaination.
+docker registry.
+how will you build your custom image.
+--------------------------10/8/2022  socgen-------------------------------------
+ docker scenario questions
+-------------------------Braneenterprises (L1): 10-08-2022---------------------- 
+ Diff between add and copy
+ Diff between CMD and ENTRY POINT.
+ Have u created multistage docker file? Why exactly it is useful.
+ --------------------------R system-----------------------------------------
+ write a docker file
+----------------------------Mindera L2 16-08-2022-------------------------------- 
+ Diff between CMD and Entrypoint explain by writing
+---------------------------First IPO L1 16-08-2022----------------------------- 
+ What are best practice write docker file
+--------------------------Big Basket 16/8/2022--------------------------------- 
+docker cmd and entrypoint 
+docker multistage explaination.
+why need docker multistage give 5 reason.
+--------------------------------Big Basket Interview Questions------------------------
+how to copy a file to a container?
+-------------------------------tmd.net (L1) : 17-08-2022----------------------------
+Docker from, add, copy.
+Multistage docker build, explain which u have written?
+How u r checking any vulnerabilities in ur base image?
+------------------------------Ness----------------------------------
+docker volumes
+-------------------------------Globant Interview Questions---------------------------
+What is an docker compose in File Instructions
+Difference between Entrypoint and CMD
+Difference between ADD & Copy
+How do you copy a file on a running container
+---------------------------Cognizant L1 23-08-2022-----------------------------
+how to deploy the war file on base image
+-------------------------------Vgroup L1 23-08-2022------------------------------
+How can explain writing in docker file  to your team member with effective way
+-------------------------Happinestminds L2 22-08-2022---------------------------
+Write a docker file explain it
+diff between add and copy
+docker commands
+Docker all services
+--------------------------Intervue L1 at 19/08/2022------------------------------
+write a docker file with using nginx
+-------------------------EY Interview Questions----------------------------
+Configuration of the Host in Docker => /etc/docker/daemon.json
+Command to delete the docker image
+DOcker Vloumes 
+-------------------------Happiest Minds Interview Questions------------------------
+Configuration(ಸಂರಚನೆ) of a Docker file    
+Difference between Copy and Add
+---------------------------GSPANN Interview Questions 2nd Round-------------------
+Docker volumes and networks
+Sceanrios on containers
+--------------------------Gds L1 at 24/08/2022-----------------------------------
+Diff CMD and entrypoint
+Without expose instruction can you access that container from browser

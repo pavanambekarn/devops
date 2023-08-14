@@ -1,0 +1,412 @@
+Kubernetes - 
+-----------------------volve cars-------------------------
+1)how do you upgrade the K8s cluster
+2)how many worker node are running in your k8s cluster
+3)if monitoring tools are to be installed, who does that	
+4)if a new k8s cluster has to be created , who will do it	
+5)whaT is kube api server
+6)you want HPA with k8s cluster, & based on load it has 
+to scale up or down, how you will achive it?	
+7)whats a demon set in k8s & any use case for demon set?
+8)how do you create a namespace in k8s
+9)what is a stateful set in k8s & any example of statefull set?	
+10) how to deploy prometheous
+11) how do you troubleshoot the not working pod?
+12) how do you restart a node without downtime
+13) you want to have 5 replicas of a pod , where do you define it
+14) whats the difference between deployment and replicaset
+15)if you apply a deployment file what all things will get created?
+16)how to list the pods in a perticular NS
+17)how do you manage secrets in k8s	
+18)have you heard of hashicorp vault?
+19)what s a network policy in k8s
+20)if i say you to create a new eks cluster , what are the commands you use to achive this?	
+21)whats kubeconfig?	
+22)have you worked on elastic fluent bit kibana
+23) if there is a application to be exposed to the market , which service you will use?
+24) if there are multiple applications , then which service you will use
+------------------------------------coffeebeans----------------------------------------------------------
+1)K8S architecture
+----------------------------------SmartDTV-------------------------
+1)services in k8s
+2)k8s architecture
+----------------------------CNC containers-----------------------------------------
+1)Kubadem already master is ready add to worker on that how do you do that  ? Generally
+2)It is pod which is running in the namespace ramya in the namespace multiple pods are 
+   their i want complete details of that pod ? How ? What command should be used 
+3)There are master and 3 worker nodes a b c all the nodes have multiple pods 
+   some reason I don't want to deploy new pod to node c 
+4)Kube scheduler is down for some reason  and you want to deploy a 
+   pod to any node without using schedule how it ll be achive
+5)a has 10 pods, b 10 pods, c 10 pods now all these are in cluster 
+   for some reason i want to take some reason  node c remove outoff 
+   cluster wht happened 10 pods in the c nodes cluster
+6)The one pod which it need to be redeployed on different node can 
+    replicaset applied for that r any pod can be redeployed it 
+7)Why modules use for which purpose
+-------------------------------Signify ---------------------------------------------------
+1)What configuration you do to push the logs to Prometheus 
+-----------------------------------HUS---------------------------------------------------
+1)Static pod in K8s?
+2)Deamon Set?
+3)Deployment and stateful set?
+4)Services in K8s?
+5)Port range for node port?
+6)How does two containers in a pod communicate?
+7)How to see the logs for init container named a? (kubectl logs pdoname -c init-container-name)
+8)How to check the ip of the pod?
+9)What is namespace?
+10)How to check all the pods running in a namespace?
+11)CAn we deploy a pod in the master node?
+12)How to access 3 variable files in local machine. How can you access it in the pods?   //config map 
+13)Secrets in K8s? what are they used for?
+14)Command to check the persistant volumes?
+--------------------------------------Altimetrik --------------------------------------------------------
+1)What is Config maps and secrets?
+2)K8S architecture?
+3)Networks in k8s?
+
+1)K8S architecture?
+2)What is HPA?
+3)What is namespace?
+4)What are the different types of namespace?
+5)What is stateful set vs daemon set?
+6)Deployment controller?
+7)What is istio?
+8)Different services of K8s?
+9)Pv and pvc?
+10)How will you list all the stopped containers?
+11)Stateful application vs stateless application?
+---------------------------------------Intelliswift --------------------------------------------------------------------
+1)What is a replica set and replica controller?
+2)What is a deamon set?
+3)How will you connect a pod externally?
+4)ingress controller?
+----------------------------------------comviva (techconnexions)---------------------------------------------------------
+1)readiness and liveliness probes
+2)list all pods with label dev under namespace development
+-------------------------------------solugenix------------------------------------------------------------------
+1)About k8s
+2) K8s architecture
+3)Have you worked on issues at cluster level or object level
+4) If node is not in ready state what will you check ( Make sure kubelet is running)
+5)You have 4 node cluster.. you are going through the update.. have you done upgrading k8s cluster?
+6)Pod is in terminating state for long time. What are possible reasons
+7)Different codes for error in k8s (0,1,125,127,137)
+8)What if the pod is pending possible root causes?
+9) Write a manifest file for deployment with nginx, port 8080 and service
+10)Why there are two specs in deployment
+11)What are the 3 ports in nodeport
+12)Difference btn ingress controller and ingress resource
+13)One ingress controller can support how many ingress resources
+---------------------------------------Mind tree (round 2)------------------------------------------------------------------------
+1)Image is in Ecr, how do you deploy it into k8s
+2)Config maps in k8s
+3)Example for config maps in real time
+4) Liveness and readiness probes, differences
+5)Kubectl permissions to your team member (https://youtu.be/U67OwM-e9rQ)
+------------------------------------------ENCORA---------------------------------------------------------
+1)K8s architecture
+2)what is a pod in K8s?
+3)can you run multiple containers in a single pod? what is a sidecar container?
+4)what monitoring tools did you use?
+5)default namespaces in K8s
+6) write a manifest file to deploy an nginx web server
+-------------------------------------------Srijan-------------------------------------------------------------
+1)your k8s is on-prem or cloud?
+2)how scaling on worker nodes is done?
+3)cluster auto scaling?
+4)did you use service mesh?
+5)in Ingress - how request flows from url to pod? how their targets/destination is assigned?
+6)what is the pending state in k8s
+7)general reasons for pod going into pending state?
+8)affinity and anti-affinity
+9)pod security policy?   //probs 
+10)what all kinds of errors can be seen in k8s pods?
+11)crashloopbackoff?
+-----------------------------------ValueLabs round2---------------------------------------------------
+1)diff btwn k8s service and loadBalancer
+2)diff btwn statefulSet and deployment controller
+3)taints and tolerations in k8s
+4)what are static ports?
+--------------------------------acko technologies round3 (hiring Manager)----------------------------------------------------------------
+1)what tools are you using for deployment? explain k8s architecture
+--------------------------------------Greyamp--------------------------------------------------------------
+1)Where is your cluster running?
+2) Kubeadm? What is your understanding on kubeadm?
+3)What ingress controller?
+4)Native ingress controller?
+5)How do you deploy in k8s
+6)How do you change your manifest file with new image
+7)How is eks configured?
+---------------------------------------Agiliad-------------------------------------------------------------------
+1)How do you manage kubernetes
+2)How do you decide particular eks cluster should have how many nodes
+3)Principal to decide nodes
+4)Disaster recovery and k8s cluster connection
+5)In k8s if you find deployment slow, how do you debug? How do you optimize while deployment
+6)Deployment strategies
+7)Configuration in manifest to make it blue green? ((https://www.haproxy.com/blog/rolling-updates-and-blue-green-deployments-with-kubernetes-and-haproxy/))
+8) Ingress controller?
+9)Probes 
+10)What do we configure in readiness probe
+11)What it means i dont want orchestration but need virtualization
+-------------------------------------------DEVON-2/6/2022------------------------------------------------------------------
+1)pod diagnostics
+2)components in master and worker
+3)kubernetes env how did you integrate with jenkins?
+4)kubernets taints,probes,namespaces--default
+----------------------------------------------hexaware tech-----------------------------------------------------------------------
+*monitoring tools you have worked with 
+*prometheus  what did you monitor
+*summary in prometheus monitoring
+--------------------------------------------globallogic-------------------------------------------------------------------------
+helm have you worked ?
+monitoring tools?
+-----------------------------------------Lntinfotech-----------------------------------------------------------------------------
+volume attachment to the pod in kubernetes
+cron scheduler in kubernetes
+-----------------------------------------6/2/2022  Hexaware--------------------------------------------------------------------------
+how u configured vault with your k8s
+----------------------Alepo:2/6/2022----------------------------
+What are services in k8s?
+Difference between ingress and load balancer?
+What is stateful set in k8s?
+--------------------------TechMahindra------------------------------------------
+    how did you setup your eks
+	different versions of eks
+	how to integrate new nodes with eks
+	eks autoscaling
+	why did you use helm and where
+	how are you taking your ebs backup
+	how do multi-mastercommunication happen in kubernetes
+----------------------------Virtusa-------------------------------------------------------
+kuberenetes components
+-----------------------------slk group r2--------------------------------------------------------
+what are the monitoring tools that you have worked in ?
+components of k8s and whats your kubernetes setup
+------------------------------------infinite-------------------------------------------------------
+	where will store keys in kubernetes
+------------------------------- Persistent System -------------------------------------------------------------------
+How will you check pods running inside a particular name space
+how will you check ns
+How will you apply rolling update on apllication running in aws
+---------------------------------Encoress 02/06/2022----------------------------------------------------------------
+K8s services
+Manifest file
+Brief about statefile 
+Persistent volume and persistent volume claim
+Configmap and secret
+----------------------------------CalsoftInc: 2/6/2022---------------------------------------------------------------------------------
+How to create a k8s cluster using kubeadm?
+Have you configured any monitoring tool?
+--------------------------------2nd round Persistent system 6/4/2022----------------------------------------------------------------
+k8s architecture
+--------------------------hitachi------------------------------------------------------------------
+k8s vs docker
+------------------------------------Altimetric  09/06/22--------------------------------------------------
+30.	Difference between replicaset and replication controller
+31.	Kube scheduler
+32.	K8s Architecture
+33.	Configmap and secret 
+34.	What if node is tainted is there a way to schedule pod on that node
+35.	How to monitor the pod that is always running
+----------------------------------Nagaroo 08/06/2022--------------------------------------------------
+How can you configure a private repository to k8s to get image from private repo
+List a specific pods inside a namespace for a user adarsh and restrict other access
+Deployment strategy in k8s
+What are sidecar containers
+-------------------------Hoonartek 2nd round-----------------------------------------------
+K8s architecture
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+------------------------------------------Lti  R1 - 01/08/2022------------------------------------------------
+K8s architecture
+----------------------------------------Clear trail (R1) : 02-08-2022----------------------------------------
+What exactly u do in K8S on daily basis?
+Monitoring the cluster without Prometheus?
+How to deploy using kubernetes
+How u maintain high availability? Is it automated?
+Tell me the configuration what exactly to be specified in yaml file for HPA
+Taints and tolertions, exact use case.
+Have you done anything out of box? Like using any special tool in kubernetes? For servicing.
+How u troubleshoot a non running pod?
+How u r deploying from one stage to other? Like dev, UAT, prod etc.. (through namespace)
+How u r checking vulnerabilities in kubernetes! Is it automated?  //RIsk->leak information
+In S3, how u do the uploading?
+-------------------------------------Koantek- R1- 01-08-2022 ---------------------------------------------------
+scenario based questions on K8s
+--------------------------------------Encora- R1- 02-08-2022 ------------------------------------------
+Scenario on k8s
+---------------------------------------03/08/2022 Informatica talent acquisition (L1)-------------------
+image-pull secrets
+Taint and tolerations
+Helm explaination.
+Difference between demonset and replicaset
+scenario based quetions on k8s and jenkins
+-----------------------------HTC global (R2): 03-08-2022-----------------------------------------------
+Have u configured Prometheus urself?
+Explain the k8s set up of ur current project including microservices. 
+If u want to setup a DB server, which component of k8s u will use.
+----------------------------Minatoconsulting (R1): 04-08-2022-----------------------------------------
+write deployment file where u have to access to ur DB
+If u r creating 3 tier architecture, and all the tiers should have secure connection how can u achieve it.
+State locking scenario based question.
+What exactly kubelet does?
+What exactly will happen in cluster (backend) when u r creating a pod.
+Types of services in k8s?
+Diff between docker and k8s
+If u want to access only S3, write a deployment file for that.
+------------------------------------5/8/22 sipra steria------------------------------------------------
+can we creat a k8s ?how
+difference between k8s service and ingress
+helm charts
+storage classess
+-------------------------------Wipro (L1) : 05-08-2022------------------------------------------------
+Daemon set and stateful set with use case.
+What is ingress controller.
+What is S3 life cycle policy? Types of storage classes.
+------------------------------Enphaseenergy (R1) : 05-08-2022----------------------------------------
+Difference between stateful and stateless applications.
+Diff between EKS and ECS
+Where u r deploying ur application.
+Have u worked on production team? How deployments get through diff stages.
+How u do monitoring.
+------------------------------cervello------------------------------------------------------
+helm chats debugging if any issues
+if we have a pod in pending state what are the steps u take to debug it
+kubectl commands
+k8s secrets
+--------------------------------04/08/2022 koantek----------------------------------------------
+Deployment script
+Node selector
+-----------------------------08/08/2022 Neustar-------------------------------------------
+Kubernets architecture. 
+write kubernet simple nginix pod.
+which kubernet services used in organization.
+explain services of kubernets.
+explain eks.
+-----------------------------Hilabs L1 09-08-2022 -------------------------------------
+how to manage secrets
+Using replicas set how to version change and manage zero down time how can make it.
+Deploy the applications in k8s loke 3 tier how u will manage applications
+How can get applications logs
+-----------------------------Brane enterprises L1 09-08-2022 ------------------------------
+why we use service
+Deploying pod to services how can communicate each other
+How is request hits particular pod tell details explain
+Config maps manage in kubernetes
+-----------------------------Wipro (L2) : 09-08-2022------------------------------------------
+Eks cluster setup with monitoring configuration.
+Write deployment file for any object and specify the memory requests. 
+Write command to scale up replicas.
+If u want to add microservice to existing app, what steps u follow.
+If u have to merge 2 microservices, how u will do?
+---------------------------09/08/2022 Paragon.-----------------------------------------
+write simple yaml file.
+-------------------------------10/08/2022 lntinfotech-------------------------------
+k8s namespace
+k8s service
+k8s scenario based qustion
+k8s data persistant
+--------------------------10/8/2022  socgen-------------------------------------
+k8s scenario questions
+application deployment questions.
+-------------------------Braneenterprises (L1): 10-08-2022----------------------
+Why are services needed in k8s. Explain cluster level communication.
+Why are side car containers useful..
+Helm chart- how it works.
+How can u access S3 from k8s? How u giving access?
+What is ingress controller?
+How microservices can be accessed from outside. Explain in detail the request flow.
+---------------------------------Infrrd (L1): 10-08-2022---------------------------
+How u r managing security for ur applications?
+Where u mention replicas, how to scale up replicas
+Do u know about request and limit? Which has to be set greater?
+What is context. Why is us required.
+How u create service account.
+Init and side car containers use case.
+How Prometheus works? Where u configure metrics for it? How u get notified?
+Which db? Where it is maintained?
+Scenario questions on k8s pods.
+---------------------------11/08/2022 - Uniphore----------------------------------
+Are you worked with montrioning.
+Are you deployed any kind of application montrioning.
+which tool you used for application montrioning.
+who montiors your project
+--------------------------R system-----------------------------------------
+k8s standard deployment script
+--------------------------Braneenterprises (L2): 16-08-2022-----------------------
+Write yaml file for deployment controller.
+Services in k8s
+Init containers scenario based question.
+-----------------------------Minatoconsulting L2: 16-08-2022--------------------
+How u add a worker node to the existing cluster.
+How can a pod be accessed from outside.
+K8s services scenario based question.
+Init and side car containers, use case. 
+If u have to copy entire namespace of one cluster to other, how can u do?
+Different deployment strategies in k8s.
+----------------------------Mindera L2 16-08-2022--------------------------------
+How request hit to ur Application explain 
+How add security for those servers
+What diff between Https and Http
+Helm 
+8. Name arrangements in proper manner
+  Like 
+  Cluster 
+  Node
+  Nodepool
+  Container
+  Pod 
+  Deployment
+  Replicaset
+  Statefulset
+  Daemon set
+---------------------------First IPO L1 16-08-2022-----------------------------  
+What best practices for writing deployment manifest file
+--------------------------Big Basket 16/8/2022---------------------------------
+stateless and statefull
+k8s pod and node affinity
+use case of init container.
+k8s scenario based questions
+--------------------------------Big Basket Interview Questions------------------------
+Stateless and stateull?
+Ingress Controller?
+services in kubernetes?
+node affinity and node annuity?
+different types of scheduler?
+-------------------------------tmd.net (L1) : 17-08-2022----------------------------
+How u do deployments and rollbacks? Is it automated?
+What is the default memory (cpu) allocation for pod.
+Scenario questions in k8s and docker.
+------------------------------Ness----------------------------------
+K8S ETCD
+K8S cluster setup
+-------------------------------Globant Interview Questions---------------------------
+Difference between Kubelet and Kubectl
+Why do you need a kubeproxy
+What is an ingress Controler and how do you configure it
+what is the procedure for a failing container
+What is a C-name in Kubernetes
+-------------------------Happinestminds L2 22-08-2022---------------------------
+Kubernetes deployment 
+--------------------------Intervue L1 at 19/08/2022------------------------------
+deployment process in project
+---------------------------GSPANN Interview Questions 2nd Round-------------------
+kubernetes architecture
+difference between kubelet, kubectl and kube proxy
+write a deployment controller for Daemon set 
+what is Ingress controller
+What is network Polices in kuberenetes
+Types of probes 
+configuration of Probes
+--------------------------Gds L1 at 24/08/2022-----------------------------------
+Which kind of topology used in kubernetes ->  Node topology (topology.kubernetes.io/zone  /hostname  /zone)
+Suppose pod with configmap . Some change in the configmap how can update that pod without restart
+--------------------[27/07, 7:16 pm] ..: Interview questions --------------------------
+statefull(Telnet, FTTP) and stateless(IP, Http, UDP, DNS) example
+-------------------------[28/07, 3:20 pm] ..: Vfislk Interview Questions ----------------
+What are the services you worked in Kubernetes?
+Explain how to connect from linux to kubernetes? -> kubectl tool 
+-------------------------[29/07, 9:24 pm] ..: Interview questions------------------------
+Deployment tools -> minikube, kops, kubeadm,EKS, ECS 

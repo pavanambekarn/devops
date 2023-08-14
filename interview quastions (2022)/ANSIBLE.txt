@@ -1,0 +1,108 @@
+ANSIBLE:-
+--------------------------SmartDTV---------------------------
+1)ansible uses
+--------------------------CNC containers------------------
+2)Ansible role
+3)Ansible module
+-------------------------Hitachi vantara R2	----------------------
+1)have you done patching using ansible and all 
+------------------------------ Wipro R2--------------------------------------	
+1)what you have implemented in your project using ansible
+2)Write a playbook  to install jdk to all the servers 
+-----------------------------------HUS------------------------------------------
+1)Setup module in Ansible?
+2)Gather fact in ansible?
+3)Have you done conditional execution of the tasks in playbook?
+4)Handlers in Ansible?
+-------------------------------------Altimetrik---------------------------------------------
+1)What is Ansible?
+----------------------------------------ENCORA----------------------------------------
+1)Ansible handlers
+2)what is dynamic inventory
+-----------------------------------------Agiliad------------------------------------------------
+1)Terraform vs ansible
+2)Which is better ansible or terraform?
+----------------------------------------DEVON-2/6/2022----------------------------------------------------
+1)prerequisites for ansible
+-----------------------------------------hexaware tech--------------------------------------------------------
+ansible roles?
+-------------------------------------------globallogic-------------------------------------------------------------
+ansible playbook-- for copy
+------------------------------------------Lntinfotech------------------------------------------------------------
+how will you configure the targets to the controller in ansible
+have you worked with ansible tower? (it is installed only for redhat not going to work in ubuntu)
+------------------------------------CalsoftInc: 2/6/2022----------------------------------------------------------------
+How Ansible controls the host machines?
+Explain Ansible architecture?
+----------------------------hitachi-----------------------------------------------
+using ansible can you do deployment into a tomcat server integrate all these in jenkins--was given a scenario
+----------------------------trainz--------------------------------------------------------------
+1.	delegate in ansible
+2.	on only one machine a particulartask should run 
+3.	become =root why?
+4.	can we install ansible on windows  ((no ))
+5.	echo that the task is successful once its done-- how will you write a play book for this
+6.	ansible roles
+7.	what are handles
+8.	create a file and copy that file in the target using playbook. ( https://www.ansiblepilot.com/articles/create-a-text-file-ansible-module-copy/)
+-----------------------------------Global Logic 07/06/2022--------------------------------------------------------------
+Where have you been used ansible
+-----------------------------------BBI 2nd round 07/06/2022----------------------------------------------------------
+Ansible roles
+-------------------------Hoonartek 2nd round-----------------------------------------------
+Difference between host and task
+Static and dynamic inventory
+------------------------------Capgemini 09/06/22----------------------------------------
+3.	Configuration management tool which u have used
+4.	Have you written playbook
+5.	Explain the ansible playbook 
+6.	Ansible roles structure 
+7.	How do u copy the files from ansible to host.
+8.	copy the files from Host A to Host B
+9.	all Scenario based Questions on Ansible
+10.	Ansible tower
+11.	How do u make communication if u want to add new host machine
+12.	Scenario based Question on Ansible
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+----------------------------------------Clear trail (R1) : 02-08-2022----------------------------------------
+Consider you have several environments with different servers(dev, DB etc) and you want to run some command 
+on specific servers using ansible, how u do?
+--------------------------------------Litlite- R1- 02-08-2022 --------------------------------------------
+Diff between ansible and terraform
+--------------------------------------Encora- R1- 02-08-2022 ------------------------------------------
+Ansible role
+-------------------------------Wipro (L1) : 05-08-2022------------------------------------------------
+Write playbook for installing nginx in the particular servers i mention.
+What are ansible roles.
+What are all the modules u used in ansible.
+--------------------------------04/08/2022 koantek----------------------------------------------
+Write ansible-play book
+Ansible Tower
+-----------------------------08/08/2022 Neustar-------------------------------------------
+write ansible playbook to Jenkins deployment.
+------------------------------08/08/2022 encora.----------------------------------------
+whatvis ansible how we configure
+scenario based questions on ansible.
+-----------------------------Wipro (L2) : 09-08-2022------------------------------------------
+Ansible role, create it and push to galaxy. 
+Write a playbook to update https in all servers. 
+---------------------------11/08/2022 - Uniphore----------------------------------
+What you do in ansible.
+------------------------------Ness----------------------------------
+sinario based questions on ansiable
+-----------------------------Mindera L3 17-08-2022---------------------------------
+Why you use ansible
+ansible role
+Dynamic inventory
+Ssh authentication playbook
+Scenario based questions on ansible
+-------------------------------Univariety L1 18-08-2022----------------------------
+Ansible roles
+---------------------------Cognizant L1 23-08-2022-----------------------------
+ansible playbook
+Ansible.cfg
+-------------------------Happinestminds L2 22-08-2022---------------------------
+Ansible playbook
+ansible role
+---------------------------GSPANN Interview Questions 2nd Round-------------------
+anisible playbook for configuring the autoscaling

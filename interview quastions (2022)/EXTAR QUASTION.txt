@@ -1,0 +1,173 @@
+EXTRA QUASTIONS:-
+----------------------------volve cars---------------------------
+1)whats a PKI?	
+2)where do you see your logs of your applications
+--------------------------------Hitachi vantara-----------------------------------------------
+1)what mazjor services you have worked
+2)you are working as infra devops or what exactly
+
+4)explain your project, like how complex is your infrastucture	
+--------------------------TCS-------------------------------------------------------------------
+1)Project related questions
+2)What are the tools you used to deploy the microservices
+-------------------------------Wipro R2-------------------------------------------------------
+1)Difference between Devops and the agile
+-------------------------------- Signify-----------------------------------------------------------
+1)The application service is keep stopping how do you trouble shoot
+2)Process to release the application
+----------------------------------Mercedes benz--------------------------------------------------------
+1)Your application is developed on which language 
+2)only Scenario question on coding part
+-------------------------------------comviva (techconnexions)---------------------------------------------------------------
+1)how to give parallel staeps
+-----------------------------------------solugenix----------------------------------------------------------
+1)daily acticvities
+2)tools stack we are using
+3) Port num of api server
+4)How to make calls between services
+5)Are you involved in Building and troubleshooting infra?
+---------------------------------------------ENCORA---------------------------------------------------------
+1)what is elastic search?
+2)how do you design a 3 tier web application?
+3)wht are your day-to-day activities?
+4)what is dry run?
+--------------------------------------Srijan--------------------------------------------------
+1)what kind of project were you involved in?
+2)daily responsibilities?
+---------------------------------------ValueLabs round2--------------------------------------------------------------
+1)daily activities and explain your project
+2)components required to setup 3 tier application in aws? without CLI or console - using IAC
+---------------------------------------acko technologies round3 (hiring Manager)--------------------------------------------------------
+1)what is your application technology stack
+2)what if your product technology architecture? what all applications do you support? 
+3)how many environments do you have? what exactly happens there?
+4) Python - eloborate what exactly have you done?
+5)what exactly are the automated deployments you have done?
+6)name 3 of your strengths in terms of technology
+7)Python - how memory is managed in python?
+8) Python - how many namespaces are there in python?
+9) Python - whate are built-in datatypes? Tuples?
+10)what are you looking for in Acko - after working for 8yrs in your company?
+11)Why Acko?
+--------------------------------------------Greyamp-----------------------------------------------------------
+1)Project details 
+2)Had any issues in the way you work with team?
+-----------------------------------------------Agiliad----------------------------------------------
+1)Release management vs devops?
+2)How do you decide cidr block?
+3) I am doing a complete ci cd.. what tools do you use to make it effective, faster,
+-------------------------------------------hexaware tech-------------------------------------------------------
+any scripting you have worked??
+how did you check vulnerabilities in your code?
+----------------------------------------globallogic--------------------------------------------------------
+log monitoring-- how did you do ?
+troubleshooting microservices
+explain your project setup
+---------------------------------------Lntinfotech---------------------------------------------------------------
+have you worked with JIRA?
+any other Agile tools ?
+what is story board
+what is EPIc 
+difference bwteen scrum and kanban
+---------------------------------------Infinite:------------------------------------------------------
+1.	Basic project role they are expecting was explained.-SRE
+2.	Introduction
+3.	Roles I have worked in my project
+--------------------------------------Hexaware------------------------------------------------------------------
+What is your remote backend
+--------------------------Alepo:2/6/2022--------------------------------
+Difference between Container and VMWARE?
+What is Openstack? Difference between VMware and Openstack?
+What is smoke test?
+How to configure webhook trigger?
+--------------------------Altimetric 6/2/2022-----------------------------
+do you know python 
+what language u you use to create pipeline
+Do you know groovy completely
+-------------------------------Xoriant-------------------------------------------
+scenario--use terraform jenkins-ansible docker and deploy an application
+-----------------------TechMahindra------------------------------------
+dailyactivities
+-----------------------------Virtusa------------------------------------------------------
+instead of using dokcerhub in want to deploy directly in to kubernetes-- explain the pipeline setup
+------------------------------slk group r2--------------------------------------------
+scenario basedquestion how can two micro services can talk to each other 
+how is microservices communication in your appliation 
+what is single-signon
+---------------------------------------------------------------------------------
+how are you bringing automation in devops
+--------------------------------------Hoonartek 07/06/2022---------------------------------------------
+Overview of Tools which you have used
+Basic yaml file
+-----------------------------------Hitachi 07-06-22----------------------------------------------------------------------
+What is code stack
+---------------------------------ACL digital-----------------------------------------------
+1. Introduction
+2. Which client yours working
+3 your company was hospitalized projects r industrial 
+4. Total year of experience how many projects u did 
+5 . Tel me your existing project  with new one  project complexity of that
+
+
+******** each tool experience 
+******** which client your working 
+********How many member in organisation.
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Day today activities with roles and responsibilities.
+Introduction with education 
+Project related details
+Hiw mny environment in ur organisation
+Which project and which language ur using for ur project
+Company Address 
+Can u explain project in details which purposes development
+How many member in organisation.
+Project estimation roughly explain
+How u can switch to devops
+Roles and responsibility
+Walk me through ur profile.
+Details about project and current offer.
+what kimk of application you where worked
+how big was your team in your project
+Project explaination
+you already have a job offer why you searching.
+why you changing the company
+explain your project in your organization.
+Explain your project and what ur role in that project
+your company branch in India
+Where is Headquarter of ur company
+Explain what do you understood from JD.
+
+--------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------
+client company stelintees client will be in german (3.5Hous beside) and canada (9.5hours beside)
+offer company if-every thing goes well i will inform you, sorry  
+
+ 3rd floor, Grape Garden, Municipal No. 29 & 30, 17th H Main Rd, behind Apollo Cradle, 6th Block,
+ Koramangala, Bengaluru, Karnataka 560095
+ 
+ Pratul Shroff - CEO 
+ 
+ head quater - in india it is Ahmedabad(HQ) Gujrat  (gujrat, pune, banglore,Noida,Hyderabad)
+ the main head quarter comes in (San Jose (HQ)California -> USA)
+ 
+ With 25-plus years of experience in the semiconductor industry
+ 
+ https://www.einfochips.com/contact-us/ 
+ 
+ payroll company 
+ Address: 113, 4th floor, MSM Complex, Service Rd, Horamavu, Bengaluru, Karnataka 560043
+ head quarter - banglore 
+-------------------------------------------------------------------------------------------------
+RSTT -> regulatory submission tracking tool project
+it is pharmacitical project the main aim of the project is to track the status of drug
+
+let say if you want to launch a new drug with respect to the country it has a several 
+Govt authority approval processes to track the each stage that 
+
+In that the development team build diff kind of module such as login module, registration module, 
+batching and unbatching and modified batching module and UI module and api gatway module like this 
+we have 10 t0 15 microservices 
+
+in order access this application to the end user (the devops team come into the picture)
+jenkins for CI-CD, sonar, nexus,Docker,k8S,AWs 
+------------------------------------------------------------------------------------------------  

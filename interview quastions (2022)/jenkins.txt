@@ -1,0 +1,294 @@
+----------------------Cloudifyops -------------------------------------------
+1)Different types of pipeline and what is the difference between
+2)different types of job and the difference between all
+3)Different types of job triggers 
+4)Tell about post build actions 
+5)Authorization and authentication in Jenkins
+6)Assume your pipeline is based on single agent when 
+you are running the job if the agent go offline what will happen to your job
+7)how to take Jenkins back-up 
+8)Write a pipeline for creating docker image and push it to dockerhub 
+----------------------------TCS-----------------------------------------
+1)Questions on Sonarqube
+2)What are the different testing tools are there in your pipeline
+3)How you get to know that the pipeline had failed on a particular point
+4)If the number of release is very high like 50000 releases per month  
+  manual monitoring is not feasible have you ever used automated monitoring
+  tools to monitor the pipeline  => nagios 
+5)After installing all the tools if the issue is not with the pipeline
+  Issue is with the tools itself how you will resolve this
+-----------------------------Mercedes benz------------------------------------------------ 
+1)How to configure sonarqube 
+2)What is sonar scanner
+3)What are the code quality checks it will do (sonar qube?
+4)Write a groovy script for password strength and gave some conditions
+------------------------------------Altimetrik-------------------------------------------------------
+1)How will you create a jenkins pipeline?
+2)Different types of polls in jenkins?
+3)Differnce between poll scm and periodical polling?
+4)Scripted and declerative pipline?
+--------------------------------------Intelliswift--------------------------------------------------------------
+1)What is ci?
+2)What is the pipline used in your organisation
+3)How will you use variables in a jenkins script?
+4)What is jenkins playbook?
+5)What is jenkins tasks?
+6)What is jenkins role?
+7)What is jenkins  handlers?
+-------------------------------------- comviva (techconnexions)-----------------------------------------------------------------
+1)how to make a step conditional in jenkins pipeline
+2)what is agent in jenkinsfile
+----------------------------------------Mind tree (round 2)-----------------------------------------------------
+1) In jenkins which branch is pointed out in git
+2)Have you integrated any quality tools?
+3)Sonarqube dashboard
+4)Elements of sonarqube dashboard
+5)Quality gate in sonarqube
+6)Integration of sonarqube
+7)Stages in pipeline?
+------------------------------------------ENCORA----------------------------------------------------
+1)explain your CICD setup
+2)give me an example of pipeline issues that you solved
+3)diff between declarative and scripted pipeline?
+4)what is webHooks? how does it communicate? How jenkins knows that Source Code is updated?
+5)during build process, where do you store external data?
+6)diff btwn freestyle job and pipeline?
+--------------------------------------------Srijan---------------------------------------------------------
+1)jenkins shared library concept
+-----------------------------------acko technologies round3 (hiring Manager)--------------------------------------------------------------
+1)explain your CICD pipeline
+------------------------------------------Greyamp-----------------------------------------------------------------
+1)Talk about pipeline
+--------------------------------------------Agiliad----------------------------------------------------------
+1)In jenkins how do you communicate to aws cloud? (attach a role to instance of jenkins)
+-------------------------------------------DEVON-2/6/2022----------------------------------------------------
+1)jenkins-- scm how did you integrate?
+-------------------------------------------hexaware tech----------------------------------------------------------------
+*customized plugin in jenkins
+*maven--pom.xml?? what does that contain
+*jenkins setup
+*how do we use tools in declarative pipeline
+-------------------------------------------Lntinfotech-----------------------------------------------------------------------
+difference between declarative and scripted pipelines
+-----------------------------------------------SLK Software---------------------------------------------------------------------
+how are you doing your quality check for your code
+how did you intergrate kubernetes with jenkins 
+----------------------------------------------Hexaware------------------------------------------------------------------------
+Are you using jenkins pipeline to deplay the terraform resources or Local system
+--------------------------------Alepo:2/6/2022--------------------------------------------------------
+How do you secure jenkins server?
+----------------------------Xoriant------------------------------
+how to you skip stages in jenkins
+how to integrate terraform and jenkins 
+-----------------------TechMahindra---------------------------------------
+jenkins given a scenario-- asked to explain various tools and setup
+triggersin jenkins
+-----------------------CalsoftInc: 2/6/2022----------------------------------------------------
+How to add worker node in jenkins?
+What is the use of label in jenkins?
+Explain your CICD setup?
+How to move jenkins job from one server to another?
+How do add restrictions on a user in jenkins?
+--------------------------2nd round Persistent system 6/4/2022---------------------------------------------------------------
+how jenkin knows when to trigger the job 
+explain shared library
+expaline cicd setup
+-------------------------capGemini-----------------------------------------------------------------
+what is pollscm
+--------------------------------------Hoonartek 07/06/2022---------------------------------------------
+Plugins In Jenkins
+CICD stages
+Write Jenkins pipline
+-----------------------------------Global Logic 07/06/2022--------------------------------------------------------------
+CICD setup
+Snoarqube
+-----------------------------------BBI 2nd round 07/06/2022----------------------------------------------------------
+Jenkins triggers
+Multi-branch pipeline
+Declarative script and stages which you used in project
+-----------------------------Mactores 4th round 07/06/2022----------------------------------------------------------------
+Jenkins pipeline
+-----------------------------------Hitachi 07-06-22----------------------------------------------------------------------
+    Jenkins job setup
+	Diff between continuous delivery and deployment
+	Important component which are integrated with Jenkins
+	List of plugins in Jenkins
+	Brief Multi branch plugin
+	Assume that First job is success and 2nd job is failed how do u manage => clean and update his local workspace
+	Build is broken what can be done
+	Steps to integrate git with Jenkins  
+	How do you integrate Jenkins and k8s
+    Master salve setup
+	Security mechanism in Jenkins server
+	Explain backup plugin
+------------------------------------Altimetric  09/06/22--------------------------------------------------
+9.	have u worked on Jenkins
+10.	how do u copy the files from one server to another?
+11.	Jenkins pipeline 
+12.	Write the pipeline
+13.	How do u take the back up in Jenkins
+14.	Custom code build plugin
+15.	How do u integrate git with Jenkins
+16.	Maven archetype generate command 
+17.	Maven 3 build lifecycle
+18.	Maven repository
+19.	Why maven plugins are used
+----------------------------------Nagaroo 08/06/2022--------------------------------------------------
+How can we execute 2 stages of single pipline simultaneously
+---------------------------------Hoonartek 2nd round----------------------------------------------------
+Write a declarative block for pipeline
+Pom.xml file
+Master and slave concept
+------------------------------Capgemini 09/06/22----------------------------------------
+13.	Type of pipeline u have used ?
+14.	Significance of agent/ node
+Have u used scripted pipeline ?
+------------------------------Greenway - 22-06-2022------------------------------------------------------
+Jenkins pipeline
+Jenkins Approached format of groovy
+Jenkins Pipeline configuration steps
+---------------------------------ACL digital-----------------------------------------------
+ Jenkins you worked on existing  r  creating new environment
+ ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+-----------------------------------------Lti  R1 - 01/08/2022------------------------------------------------
+How build 100 job at time in single click
+Create ur first jenkins job
+Sonarqube intigration with jenkins
+----------------------------------------Clear trail (R1) : 02-08-2022----------------------------------------
+Which registry u r using?
+--------------------------------------Encora- R1- 02-08-2022 ------------------------------------------
+jenkins slave concept
+Scenario on jenkins
+---------------------------------------03/08/2022 Informatica talent acquisition (L1)-------------------
+Jenkin parallel stages
+------------------------------------5/8/22 sipra steria------------------------------------------------
+which kind of pipeline you have followed on jenkins
+are you familer with groovy script
+-------------------------------Wipro (L1) : 05-08-2022------------------------------------------------
+How u integrated docker with jenkins?
+What are parameterized variables in jenkins?
+CI CD script for given scenario.
+Explain what's CI and CD
+------------------------------Enphaseenergy (R1) : 05-08-2022----------------------------------------
+In jenkins, who is starting the jobs.
+------------------------------cervello------------------------------------------------------
+what kind of ci/cd setup
+--------------------------------06/08/2022 First american india private ltd----------------------
+how you will add slave in jenkins
+master and slave concept
+in jenkin workspace is full then what you will do?
+if your jenkins master and server both are offline then how you will get jenkin configuration back?
+-----------------------------08/08/2022 Neustar-------------------------------------------
+explin junkins pipeline.
+------------------------------08/08/2022 encora.----------------------------------------
+scenario based questions on the tomcat server.
+scenario based questions ci/cd pipeline.
+how you create ci/cd pipeline, what are all the tools you used.
+solution for pipeline is not pickup the code error.
+how do you configure Jenkins.
+you not able access Jenkins getting 402 error how to solve this.
+jenkins port already occupied by tomcat how do yo change it 
+jenkins port number.
+what is Java
+why do you need Java for Jenkins.
+------------------------------09/08/2022 Flocareer.---------------------------------------
+jenkin pipeline
+-----------------------------Brane enterprises L1 09-08-2022 ------------------------------
+Diff betn continuous delivery and continuous deployment
+-----------------------------Wipro (L2) : 09-08-2022------------------------------------------
+Write groovy script to checkout code from git, use variables, and to deploy to different environments on conditions.
+---------------------------09/08/2022 Paragon.-----------------------------------------
+write script for pipeline
+simple groovy script 
+explain master and slave concept.
+-------------------------------10/08/2022 lntinfotech-------------------------------
+jenkins environment.
+master and slave configuration.
+where you run your stages. (is in master or slave)
+in pipeline stage how you will define agent?
+what is Jfrog?
+---------------------------11/08/2022 - Uniphore----------------------------------
+what you do with jenkins
+coding in jenkins and maven you write or someday else.
+--------------------------R system-----------------------------------------
+ci/cd setup
+--------------------------Braneenterprises (L2): 16-08-2022-----------------------
+Configuration of webhook trigger. 
+Scenario question on plugins, if u want to have 2 versions of same plugin, how u will do it?
+Different ways to install plugins.
+-----------------------------Minatoconsulting L2: 16-08-2022--------------------
+Shared library? Why needed? Configuration.
+Continuous deployment and continuous delivery.
+Descriptive and scripted syntax difference.
+---------------------------First IPO L1 16-08-2022-----------------------------
+Write pipeline for docker image creation and push into artifactory
+--------------------------Big Basket 16/8/2022---------------------------------
+ci/cd explaination 
+------------------------------Ness----------------------------------
+jenkins pipeline job
+-------------------------------Univariety L1 18-08-2022----------------------------
+CICD set up
+Master slave setup
+-------------------------------Globant Interview Questions---------------------------
+How do you configure Multi-Branch Pipeline and where the action will be happened
+What is the procedure to save a particular job in jenkins
+-------------------------------Brillio L1 22-08-2022---------------------------------
+Set up cicd
+Maven pom.xml files
+Project you working flow ur project
+write pipeline for deploy application on image in docker
+Use of condition playbook
+How you identify the which os running on which server
+---------------------------Cognizant L1 23-08-2022-----------------------------
+Artifactory
+artifactory cli
+scenario based jfrog artifactory nearly 8 questions
+explain junit and automation testing
+Explain pom.xml file
+Explain nexus sonarqube and port number
+-------------------------Happinestminds L2 22-08-2022---------------------------
+Jenkins cicd
+write pipeline for cicd with credentials
+--------------------------Intervue L1 at 19/08/2022------------------------------
+pipeline for cicd
+-------------------------Happiest Minds Interview Questions------------------------
+Explain Jenkins Pipeline
+---------------------------GSPANN Interview Questions 2nd Round-------------------
+What is Multi branch pipeline
+can you write a multibranch pipeline
+--------------------------Gds L1 at 24/08/2022-----------------------------------
+How you do stage1 build fail  i need build second stage2 how can you do it
+diff between count loop and for loop in terraform
+-------------------------[26/07, 6:17 pm] ..: ELSEVIER INTERVIEW-----------------
+Master-slave configuration
+scenario based questions on master -slave concept like what happens one of slave node is not is disconnected from the server
+if the build is working for few days and suddenly next morning is stopped where do you troubleshooting.
+-------------------------[28/07, 3:11 pm] ..: Koan tek Interview Questions--------------
+Write a Pipeline Code to validate a SSH with Private Key?
+--------------- [28/07, 7:43 pm] ..: CSS Corp Interview Questions----------------------------
+Write any declarative pipeline.
+What is sdlc and explain any worked cases in previous company.
+Why you require CI/CD tool for an application and benifits of CI/CD Tool.
+Configuration of Master and Slave.
+what is LDP in Jenkins.
+-------------------------[29/07, 9:24 pm] ..: Interview questions------------------------
+Sonarcube
+Maven lifecycle
+What is jar/war file
+What does pom.xml file contains
+Why you need Apache Tomcat
+-----------------------ALTAIR Interview Questions----------------------------------------
+9.write a simple pipeline code for below stages
+ prepare->build->test->deploy
+10.write a complexx pipeline code for below mentioned stages
+ prepare->build_win->test_unit->deploy
+          build_lin  test_functiona
+		  build_mac
+11.write a complexx pipeline code for below mentioned stages
+ prepare->build_win->post_build------------>test_unit->deploy
+          build_lin  only build failed      test_functiona
+		  build_mac
+what are different pipeline jobs
+configuration on realtime pipeline job
+how do you list only the job id instead of full details (realtime)
+how do you differentiate the job id from Blr to Hyd (realtime)

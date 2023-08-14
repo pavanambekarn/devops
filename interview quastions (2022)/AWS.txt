@@ -1,0 +1,448 @@
+AWS:-
+--------------------volve cars-------------------------------
+1)what is an autoscaling group?
+2)how to map dns to application running in the k8s cluster
+3)what are the different loadbalancers in aws?
+4)which kind of applications require N\W loadbalancer?
+5)how do you define a vpc in your project
+6)wheere do you deploy your bastian host?
+7)whats kubeconfig?
+-----------------------coffebeans--------------------------------------------
+8)how are you managing disaster recovery strategies		
+  how much time will it take to recover from a disaster, explain
+  (srever gyan - 25min) [ RTO ->8h and RPO -> 1hour ]
+9)how do you connect between 2 networks in different regions
+10)what things you will add during the vpc setup and connection setup
+11)how do you manage backups for ec2 machines
+12)what are the steps to take ami and snapshot backups
+13)do you know how to setup application database (RDS or Dynamo DB)
+14)how to share s3 contents to different accounts(valexY 6m) 
+15)what changes you make to s3 before sharing
+16)Ephimeral disk?
+17)have you ever used to store codes in s3 bucket
+--------------------------------Hitachi vantara R2------------------------------------
+1)any data base platforms (RDS)
+2)rds what exactly
+3)have you migrated from on premises to cloud (VPN)
+4)how your aws infrastructure looks like
+5)what is the data base management system you use
+6)how you deployed your eks cluster is it manual 
+7)so if you run eksctl , what exactly happens inside the cloud, likke how exactly it launches the components
+8)do you use cloudformation  
+9)do you know serverless aws services
+10)have you written any lambda
+11)one lambda has to connect to s3 buccket privately , how u can do that			
+12)nacl vs SG
+13)like on premise infra is there and cloud is  there, there is a direct or 
+   vpn connectivity whatever, there is a scenario like, issue connectivity 
+   not happening from on premises to cloud and there is security one case 
+   risk from infra team. how you troubleshoot this or tell me your approach on this
+14)how do you check vpc logs		VPC Flow Logs
+15)how to configure your groups (20min valexy)
+16)load balancer services in aws
+------------------------------------Cloudifyops -----------------------------------------------------------
+1)Security group in AWS 
+2)You have ec2 instance in one account you have to recreate it in different account how can you do it
+3)you have a machine how to add autoscaling group to it 
+4)I have a instance that instance in private subnet the machine you are accessing is in different 
+  vpc and different subnet how do you get the data from my machine to you machine
+5)if i want to monitor the memory in AWS how you will do that
+6)Is memory is accessible in cloud watch
+7)You have two AWS account and in one account you have route 53 where you have enabled devops.com 
+   and In second AWS account you want to add another link like dev.test.com how to do it 
+8)Have you worked on any database
+-----------------------------------------wipro R2--------------------------------------------------
+1)How to configure NAT gateway tell me the steps 
+------------------------------------------Signify ----------------------------------------------------------
+1)What are load balancer health check what are the roles
+2)What is listener in loadbalancer 
+3)ECS EKS cluster creation steps with ec2 as a backend
+4)Did you configured the autoscaling group while creating the eks 
+5)Have you created RDS
+6)S3 command to download the object from S3 bucket to local
+7)if a bucket in private is it possible to access that via internet 
+8)what are roles and policies
+9)what is the difference between roles and policies 
+10)I have 3 vpc I have done vpc peering b/w A B C then A is connected to B ,
+   B is connected to C can instances in c can communicate with instances in A is it possible ??? 
+11)What is route table  how do you associate the subnet to route table 
+12)What is the use of Internet gateway 
+13)Is there any other way where instance or any 
+   other services in subnet can access internet without Internet gateway 
+14)What is NATgateway 
+15)EBS is bean storage or block 
+16)TNCP option set in VPC 
+17)Have you configured cloud watch what role it takes place in your project 
+18)Have you pushed custom metrics to cloud watch
+19)Hava you configured memory utilisation
+20)What is route 53 have you used or any 3rd party DNS
+21)How you will Take the backup
+-----------------------------------Mercedes benz-----------------------------------------------------------------------
+1)what is ebs
+2)Some scenario questions on EC2 instance
+-----------------------------------------Altimetrik----------------------------------------------------------------
+1)What is cloud watch and cloud trail?
+2)Different types of load balancers?
+3)What is route53?
+
+1)What is vpc? What are its components?
+2)Nacl vs SG?
+
+-------------------------------------------Intelliswift---------------------------------------------------------------------
+1)How do you configure a db in private subnet?
+2)What is lambda?
+3)What is cloud formation?
+-----------------------------------------------comviva (techconnexions)------------------------------------------------------------
+1)what is elastic ip
+2)what is required to configure https route in elb
+3)prerequisite for https
+4)what is spot instance
+---------------------------------------ENCORA-----------------------------------------------------
+1)what is VPC in AWS?
+2)process of connecting VPC to internet
+3)where exactly will you place a load balancer? (in Pvt or public subnet?)
+---------------------------------------Srijan------------------------------------------
+1)have you worked on custom metrics?
+2)aws ECS?
+3)diff btwn NACL and security security group
+4)have you worked on aws RDS?
+---------------------------------------Microland----------------------------------------------
+1)how will you troubleshoot status check failure (2nd check) while launching ec2 instance?((ceate status check alarm option))
+2)how would you increase root volume for an ec2 instance (not to create new instance nor add additional volume)
+3)just modifying volume size is enough to reflect in the machine?
+4)how to reduce root volume of an ec2 instance?
+5)steps to do manual patching on a specific server?
+6)how can you setup selected objects inside s3 as public without making entire bucket public?
+---------------------------------acko technologies round3 (hiring Manager)---------------------------------------------------------------
+1)which services did you use in aws?
+2)hat is EKS?
+3)what algorithm does load balancer use?
+---------------------------------------------Agiliad----------------------------------------------------------------
+1)Provisioned s3 bucket using lambda suddenly you should destroy but it is no getting deleted why?
+2)Resources in aws you handled
+3)If you want to store only one liner data not use s3, what can we use?
+-----------------------------------------------DEVON-2/6/2022-------------------------------------------------------------------
+1) ALB , CLB v/s NLB
+2) autoscaling
+3) dns
+4) s3,classes,security, encryption
+5)nacl vs sg
+--------------------------------------globallogic---------------------------------------------------------------------
+working with databases?
+---------------------------------------Lntinfotech--------------------------------------------------------------------------
+wip--in load balancer
+what have you configured using aws
+autoscaling ? what is it ?
+how did you monitor your logs ?
+what do you understand by ec2 instance?
+-----------------------------------------Hexaware-----------------------------------------------------------------------------
+How you have deployed template in AWS any one you can explain
+--------------------------Altimetric 6/2/2022----------------------------------------
+How will you connect ec2 instance in account a to account b S3 bucket
+How can you connect 10 different account in aws [AWS Single Sign-On (AWS SSO)]
+how will you give access to a user so that he can upload file to s3 when it is encrypted
+On what basis you will choosed the vpc
+how will you select cidr block in vpc is 10.0.0.0/8 is alowed in AWS to create vpc Use of nat gate way
+----------------------------Xoriant------------------------------------------
+how will you trouble shoot your aws environment
+how will you access and s3 on an instance and at user level
+how to integrate s3 as a backend to an instance rather than an ebs 
+-------------------------------TechMahindra---------------------------------------------
+aws LB examples
+cloudwatch logs
+switch role
+---------------------------------Virtusa-------------------------------------------------
+vpc peering vs transitive gateway
+-----------------------------slk group r2-------------------------------------------
+what is IAM
+how to integrate on-prem user or active directory permissions with IAM
+--------------------------------infinite-------------------------------------------------
+aws load balancer ALB vs NLB
+what are ssl certificates and where to get 
+how to resources in private subnet get patches and updates
+how can an s3 bucket be accessed from the private subnet resources
+----------------------- Persistent System ------------------------------------------------------------------
+How willl you configure 2 application in same vpc using and both should be isolated from each other
+ (Even inside Single VPC you can manage the traffic by routing them via seperate Route table.)
+how will you increase the memory of the ec2 instance without downtime (select diff instance type)
+
+on what all services you have worked on AWS
+What is cloud formation
+Q)How can you configure ec2 instance in a way the it can be deployed in multiple AZ and we can use 
+that configure later also and as soon as it bootup some required services should be installed on it.
+-------------------------------CalsoftInc: 2/6/2022------------------------------------------------------------------------------------
+How to configure Load Balancer?
+------------------------2nd round Persistent system 6/4/2022---------------------------------------------------------------------------------
+How to change private ip address of the instance ((while creating we can set custom private ip ith in cidr block of VPC))
+what is connection drain in aws (AWS ELB Target Group Draining Mode 4min)
+-------------------------------ValueLabs-------------------------------------------------------------------
+how do you login in your aws account
+who is managing the account and authentication in aws
+did you write any lamda code
+what is a vpc
+what is autoscaling
+-------------------------capGemini-----------------------------------------------------------------
+explain the aws architecture for an application
+--------------------------hitachi------------------------------------------------------------------
+vpc end points
+how do you secure your instances
+how to troubeshoot an application that has moved from on prem to cloud where it has become very slow
+nacl and sg
+--------------------------------------Hoonartek 07/06/2022---------------------------------------------
+Aws services which you have used
+Scenario based qsns on EC2 instance
+Route53
+S3 Storage types
+-----------------------------------Global Logic 07/06/2022--------------------------------------------------------------
+S3 bucket
+Vpc creation and components
+Nacl and sg
+Vpc peering
+-----------------------------------BBI 2nd round 07/06/2022----------------------------------------------------------
+Vpc components
+-----------------------------Mactores 4th round 07/06/2022----------------------------------------------------------------
+What all the Services you have used in aws
+Difference between public and private subnets
+3tier Architecture
+Scenario qsns on AWS
+EC2 instance types
+VPC endpoints
+Difference between ppk and pem
+-----------------------------------Hitachi 07-06-22----------------------------------------------------------------------
+Best practices for security in aws
+What is aws in devops
+AWS CDK
+Main components of cloud formation
+What is cloudwatch 
+RTO and RPO in aws (disaster recovery) 
+Autoscaling => What is policy and different types of policy
+Load balancer
+----------------------------------Nagaroo 08/06/2022------------------------------------------------------------------------------------
+Cooldown period in autoscalling
+How can you restrict specific IP address for s3 access
+-------------------------Hoonartek 2nd round-----------------------------------------------
+Scenario qsns on vpc and s3
+What all the aws service which you have used
+What is the difference between sqs and sns
+How many VPN you manage in your project
+----------------------------Newtglobal 22/06/2022-----------------------------------------------
+2)What is VPC end point
+3)What is IGW how u use?
+4)Some scenario questions aws?
+10)How increase the volume size?
+11)Difference between NACL and SG
+------------------------------sleevesup 22/06/2022------------------------------------------------------
+2)cicd setup
+3)Vpc components
+4)Details about project
+5)How we send request to amazon s3
+6)Some scenario questions aws
+---------------------------Altimetrik - 22-06-2022---------------------------------------------
+Experience on cloud
+Last project details
+Ec2 scenario based quesns
+S3 scenario based quesns
+vpc scenario based quesns
+aws logs scenario based quesns
+--------------------------------Greenway - 22-06-2022-------------------------------------------------------------
+Types of storage classes in s3
+security grps vs nacls
+Vpc scenario based quesns
+ec2 scenario based quesns
+s3 scenario based quesns
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+-------------------------------------Koantek- R1- 01-08-2022 ---------------------------------------------------
+how to troubleshoots ur application with having different security groups
+Give examples real time use  for ALB and  NLB
+Scenario based question instance types
+----------------------------------Litlite- R1- 02-08-2022 ---------------------------------------------------
+Scenario based question types instance and why use m5 xlarge
+M5 xlarge increases traffic that instance how can u handle that without autoscaling
+Scenario based questions on LB
+--------------------------------03/08/2022 Bootlabs (R1)----------------------------------------------
+services used in AWS
+scenario based quetions on aws
+Monitoring tool
+-----------------------------HTC global (R2): 03-08-2022-----------------------------------------------
+How u migrate from on prime to cloud. Explain in detail from scratch. 
+----------------------------Minatoconsulting (R1): 04-08-2022-----------------------------------------
+Diff between SG and NACL
+Diff between NatGW and NATinstance
+Diff between user and role in IAM
+What are inline policies
+VPC peering scenario based question.
+S3 scenario based question.
+Types of LB, in which case u r using each LB
+If an ec2 instance have to access S3 bucket, how can it be done
+------------------------------------5/8/22 sipra steria------------------------------------------------
+load balancer and different types of load balancers
+how to create a high avaliablity architechure
+s3 sinario questions
+-------------------------------Wipro (L1) : 05-08-2022------------------------------------------------ 
+Diff between role and policy.
+NLB and ALB difference with usecase.
+------------------------------Enphaseenergy (R1) : 05-08-2022----------------------------------------
+NACL vs SG
+If u have to give access to the user to S3, how will u do?
+Which LB u r using, what about NLB?
+If ur app has HTTP protocol, and ur client asking to secure it, how u will do?
+Who is responsible to make it secure.
+If u have to scale up instances, how u r achieving?
+While launching instance, what are all the security measures u r taking.
+which db u r using. Where is it configured n maintained.
+--------------------------------04/08/2022 koantek----------------------------------------------
+Give real time use for ALB and NLB
+Aws scenario questions
+--------------------------------06/08/2022 First american india private ltd----------------------
+aws cloud watch
+aws Region.
+cloudfront 
+do you have cloud migration experiance?
+autoscaling and its types
+Edge Location
+aws scenario questions.
+load balncer and its types.
+where exactly you will use ALB and NLB 
+------------------------------08/08/2022 encora.----------------------------------------
+what is sns 
+what is topic and subscribers
+whatvis secret manager
+------------------------------09/08/2022 Flocareer.---------------------------------------
+can you create 2 subnets in vpc.
+scenario based questions on load balancer
+example for sns
+vpc architecture
+how you deploy software into the cloud.
+-----------------------------Wipro (L2) : 09-08-2022------------------------------------------
+ If new team member has come, how u give him access to ur project. Who does that. 
+ If u get alarm from cloud watch, u have utilised 80% above, what u will do? If u can't afford autoscaling?
+---------------------------09/08/2022 Paragon.-----------------------------------------
+give example for software deployment in the cloud.
+--------------------------10/8/2022  socgen-------------------------------------
+asw scenario questions.
+-------------------------Braneenterprises (L1): 10-08-2022----------------------
+ALB configuration steps.
+------------------------------Epsilon (L1): 10-08-2022-------------------------------
+If an instance is not starting. U r not able to access. How u will resolve. What steps u take n act.
+Cloud watch scenario based question.
+What is instance profile?
+DB scenario based question.
+Hosted zone.
+Configuration of route 53 for given scenario.
+---------------------------------Infrrd (L1): 10-08-2022---------------------------
+EC2 instance types. Example for general purpose 
+2 types of volumes in EC2. Scenario based question on volumes.
+How u r managing security for ur applications?
+-----------------------------Epsilon (L2): 11-08-2022-------------------------------
+How can u check if ur subnets are public or private.
+What is target group, what are listeners.
+If ur S3 was public, now u have made it private. But still u want ur users to access it being in private. How can u do.
+---------------------------11/08/2022 - Uniphore----------------------------------
+what is db project.
+are you doing 100% in Aws.
+--------------------------Braneenterprises (L2): 16-08-2022-----------------------
+IAM? Explain the types of policies and structure of policy.
+Diff between inline and resource based policy.
+VPC components, explain how u configure IGW and NGW
+LB? Types. 
+Diff between aurora and RDS. Many scenarios on DB.
+-----------------------------Minatoconsulting L2: 16-08-2022--------------------
+Scenario based question on checking logs and configuring private subnet.
+If u have to start and stop instance at particular time in automated way, how can u do.
+S3 bucket scenario based question (on accessing it).
+If ur instance has utilised complete disk space, and u r not able to ssh into it. How u will resolve?
+Lambda scenario based.
+Cloud front scenario based.
+----------------------------Mindera L2 16-08-2022--------------------------------
+TCP and handshake in TCP for troubleshooting ((netstat))
+Cloud front senario questions
+OSI model by acting security levels
+---------------------------First IPO L1 16-08-2022-----------------------------
+What are best practices in IAM in AWS
+Diff between role & policy
+AMI and types AMI
+--------------------------Big Basket 16/8/2022---------------------------------
+aws major servicess worked and what are the servivess you configured from scrach? 
+what lambda usefull
+--------------------------------Big Basket Interview Questions------------------------
+what is VPC traffic mirroring ? copy network traffic from one insance and send it to other instance which have moniteuing applience
+ (inspection and monitring and trouble shooting)
+what is a subnet and how do you interact a subnet from outside?
+EBS Types?
+what is an Glacier?
+what is an Ec2 metadata?
+4 instances are running and what if an instance is terminated what is the procedure for troubleshoot?
+-------------------------------tmd.net (L1) : 17-08-2022----------------------------
+Subnets scenario based question
+Any customized policy which u have written.
+Data life cycle manager in autoscaling.
+How u have setup DB's
+------------------------------Ness----------------------------------
+s3 storage classes
+sinario based question on AWS LAMBDA
+VPC components
+-------------------------------Univariety L1 18-08-2022----------------------------
+Load balancer and  explain round Robbin method
+Client requirement to set a wep app how is approach
+OSI model set up with ur application
+-------------------------------Globant Interview Questions---------------------------
+Types of records in DNS
+Explain me S3 lifecycle and with a case study
+Types of subnet and Cidr blocks
+Limitations of an VPC Peering
+NACL & Security Groups Difference
+How do you protect you secrets in kubernetes
+What is an Daemon set controller
+---------------------------Cognizant L1 23-08-2022-----------------------------
+vpc
+key pair
+Where you use real example AWS cli
+Lost key instance how to recovery that instance
+-------------------------------Vgroup L1 23-08-2022------------------------------
+How to migrate your project to AWS
+Explain 3 tier architecture
+-------------------------EY Interview Questions----------------------------
+Scenario based on vpc
+Difference between Vertical and Horizontal Scaling
+S3 bucket can be attached to a running Ec2 Instance
+-------------------------Happiest Minds Interview Questions------------------------
+Ec2 Purchasing options and Scenario based on Ec2 Purchasing
+Configuration of the VPC Peering
+Load Balancer types and scenarios 
+AWS Lambda
+How Private subnet can be communicated with outside world
+---------------------------GSPANN Interview Questions 2nd Round-------------------
+Difference Cloud watch and Cloud Trail
+Monitoring Tools in AWS 
+Configuration of an Autoscaling
+What is a template in Autoscaling 
+Scenarios abot VPC
+--------------------------Gds L1 at 24/08/2022-----------------------------------
+How connect multiple vpc using diff regions
+suppose your give role user and access s3 bucket in bucket policy deny access 
+                    that s3 bucket ..what happen can you access bucket or not.
+-------------------------[26/07, 6:17 pm] ..: ELSEVIER INTERVIEW-----------------				
+Explain any three services in AWS 
+what is cloud watch metrics and logs
+explain lamda
+explain what work you have done in lamda.
+--------------------[27/07, 7:16 pm] ..: Interview questions --------------------------
+ explain LVM  => Logical volume 
+ explain lamb server
+ Explain endpoint
+ explain three tier architecture
+ components of three tier architecture
+ lifecycle of S3
+ EBS volumes and types of volumes and scenario based questions.
+ what is user data in ec2 instance
+ Vpc peering and transitive peering
+what is load balancer and types 
+-------------------------[28/07, 3:20 pm] ..: Vfislk Interview Questions ----------------
+Explain any two AWS services which you have worked on?
+S3 Bucket Lifecycle?
+Load Balance types and explain ELB with real time experience?
+--------------------------[29/07, 9:24 pm] ..: Interview questions------------------------
+How do you connect two vpc and how do you connect the both vpc are in different region
+Types of CIDR Blocks (IPv4 and IPv6) 
+S3 bucket 
+Cloud watch case study 

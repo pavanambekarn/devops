@@ -1,0 +1,152 @@
+GIT & GITHUB:-
+------------------coffebeans--------------------------------------
+1)in what cases it is very useful to use github?
+2)what are all the functionalities you use in git	
+3)i want you to put all the terraform files in git , 
+from theree all the infrastructure has to be managed. 
+how do you achieve this?
+--------------------------Signify ---------------------------
+1)Command to create branch 
+-----------------------------Mercedes benz----------------------------------------------
+1)Git fetch and pull difference
+2)Git clone
+3)Have you used force or depth while cloning (((git clone -b master --single-branch --depth 1 url)))
+------------------------------------------Intelliswift --------------------------------------------
+1)How will u check for merge conflict?
+2)How will u access a particular commit id?
+3)Rebase and merge?
+--------------------------------- comviva (techconnexions)----------------------------------------------------------
+1)creating a branch from commit id  ((git checkout -b NEW_BRANCH_NAME COMMIT_ID))
+2)git rebase
+------------------------------------Mind tree (round 2) -------------------------------------------------------------------------
+1)Git?
+2)Branching strategy
+----------------------------------------ENCORA-------------------------------------------------------------------
+1)what is git squash?
+2)diff btwn git rebase and merge?
+---------------------------------------Agiliad-------------------------------------------------------------
+1)Version control system
+2)Branching strategy
+3)Git stash
+4)Merge conflict
+5)Merge only second commitID to the branch
+----------------------------------------hexaware tech------------------------------------------------------------------
+git merge vs rebase
+------------------------------------------Lntinfotech---------------------------------------------------------------------
+git rebase?
+how do you resolve the merge conflicts?
+---------------------------------Alepo:2/6/2022------------------------------------------------------------
+Have you configured any pre commit hook?
+---------------------------------Xoriant-----------------------------------------------
+how to resolve merge conflicts
+git merge vs rebase
+what happens on git revert
+how to solve merge conflicts
+-------------------------------CalsoftInc: 2/6/2022-----------------------------------------------------------
+What is the main purpose of Build Tool?Why we need it for?
+--------------------------------2nd round Persistent system 6/4/2022--------------------------------------
+git clone and git remote
+git pull and fetch
+-------------------------capGemini-----------------------------------------------------------------
+svn vs git
+why to have a local repo
+github vs gitlab
+git rebase
+why do we need different branches 
+--------------------------------------Hoonartek 07/06/2022---------------------------------------------
+Git merge and rebase
+-----------------------------------Global Logic 07/06/2022--------------------------------------------------------------
+How do you configure webhook
+-----------------------------------BBI 2nd round 07/06/2022----------------------------------------------------------
+Git architecture
+Difference between git pull and fetch
+Git fork
+------------------------------------Altimetric  09/06/22--------------------------------------------------
+	What is git reflog
+	How merge conflicts occurs 
+	how do u resolve the conflict
+	explain git Lifecyle
+	git pull vs git fetch
+	what is subgit
+-------------------------Hoonartek 2nd round-----------------------------------------------
+Git stash
+Diff between reset and revert
+Git fetch and pull
+-----------------------------Capgemini 09/06/22------------------------------------------------------
+Scenario based questions on git
+----------------------------Newtglobal 22/06/2022-----------------------------------------------
+Difference between git merge and rebase
+12)Difference between git fetch and git pull
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+------------------------------------------Lti  R1 - 01/08/2022------------------------------------------------
+Diff betn git merge and git fetch
+--------------------------------------Encora- R1- 02-08-2022 ------------------------------------------------
+git stash and git revert
+--------------------------------03/08/2022 Bootlabs (R1)----------------------------------------------
+git life cycle
+-------------------------------Wipro (L1) : 05-08-2022------------------------------------------------
+Merge and rebase in which scenario u use them.?
+------------------------------Enphaseenergy (R1) : 05-08-2022----------------------------------------
+What is rebasing.
+How u r maintaining versions, if u have to switch to previous or particular version how u can do
+------------------------------cervello------------------------------------------------------
+version controll tool
+merge conflict
+difference between clone and fork
+-----------------------------08/08/2022 Neustar-------------------------------------------
+Difference between Git Revert and Git Reset.
+explain pull and fetch.
+expain Git Squash.
+------------------------------08/08/2022 encora.----------------------------------------
+git rebase,revert,fetch,merge.
+-----------------------------Hilabs L1 09-08-2022 -------------------------------------
+Explain branching strategy
+How create a release branch 
+In local repo u changed code and pull code from central repository what happen
+In .Git directory contains
+-----------------------------Wipro (L2) : 09-08-2022------------------------------------------
+Git Cherrypick, pull, fetch commands.
+---------------------------09/08/2022 Paragon.-----------------------------------------
+git fetch,revert, rebase commands.
+------------------------------Epsilon (L1): 10-08-2022-------------------------------
+If u want to change something without changiythe commit id , how u can do? 
+-----------------------------Epsilon (L2): 11-08-2022-------------------------------
+Shell script for given scenario to search pattern and give the count.
+-------------------------------tmd.net (L1) : 17-08-2022----------------------------
+Branching strategy. (scenario on a PR) 
+CI CD setup in current project
+How u r doing code analysis? Configuration of Sonarqube
+Git pull and fetch real time usage.
+------------------------------Ness----------------------------------
+GIT squash
+-------------------------------Univariety L1 18-08-2022----------------------------
+Git flow and GitHub flow
+Which type of Branching strategy 
+-------------------------------Vgroup L1 23-08-2022------------------------------
+Git lab
+Git actions
+-------------------------Happinestminds L2 22-08-2022---------------------------
+Branching strategy
+-------------------------Happiest Minds Interview Questions------------------------
+Git Stash 
+Git Stash Up live
+Git Pull and Git fetch
+---------------------------GSPANN Interview Questions 2nd Round-------------------
+What is Git Stash?
+Git fetch and Git Clone difference?
+branch 3 commit id has to be merged to branch 45 how do you do it?
+Branching Statergy 
+How do you push a particular commit id to a remote repositary 
+Scenario based git Push and Clone
+-------------------------[26/07, 6:17 pm] ..: ELSEVIER INTERVIEW-----------------
+branching strategy
+if you update in the what are changes can been seen in master branch.
+explain release branch
+-------------------------[28/07, 3:20 pm] ..: Vfislk Interview Questions ----------------
+Explain GIT & GITHUB & Differennces between them?
+Rebase and Merge?
+docker killall?
+Explain role of an admin in git
+-----------------------ALTAIR Interview Questions----------------------------------------
+merge conflict and explain case study
+how do you know it is merge conflict

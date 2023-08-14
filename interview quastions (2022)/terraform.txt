@@ -1,0 +1,239 @@
+Terraform:-
+-----------------------volve cars-----------------------------------
+1)with terrafor what are you achieving or creating?	
+2)how do you create namespace in kubernetes using terraform
+3)where do you store the terraform state files?
+-----------------------coffebeans---------------------------------------------------
+1)for what you use terraform
+2)what kind of changes you will make to the terraform code to 
+  use it in different regions, environments
+3)what makes terraform special
+-----------------------------SmartDTV--------------------------------------
+1)terraform plan	
+------------------------------Hitachi vantara R2-----
+1)how complex infra u deployed using terraform
+---------------------------------- Cloudifyops ------------------------------------------------------
+1)Null module
+2)Difference between ansible and terraform
+3)EKS module in terraform
+-------------------------------------Wipro R2------------------------------------------
+1)Explain Terraform life cycle of your project
+---------------------------------------Signify -------------------------------------------------------- 
+1)What is terraform modules what it do
+2) I do some changes i do terraform plan it will apply two changes one is 
+   for security group and another is related to the instance , i don't want 
+   to modify the instance but I want only security group changes to be applied
+   is it possible in terraform to apply a specific change 
+3)what is terraform backend
+---------------------------------------Mercedes benz--------------------------------------------------------------
+1)How to run terraform file 
+2)Write a terraform file to the given Scenario 
+-------------------------------------------Altimetrik-----------------------------------------------------------------
+1)How to create a ec2 instance using terraform
+--------------------------------------------Intelliswift---------------------------------------------------------
+1)How to provision using terraform?
+-------------------------------------------ENCORA-----------------------------------------------------------
+1)what is terraform taint
+2)what is your terraform backend?
+3)what is remote and local state file
+4)how to get manually created ec2 instance into terraform?
+5)what are terraform variables?
+6)what is dynamic block in terraform?    
+7)what are modules in terraform?
+-------------------------------------------Srijan-----------------------------------------------------
+1)terraform workspaces?
+2)terraform lockstate - how to lock/unlock them?
+-------------------------------------------ValueLabs round2---------------------------------------------
+1)how are you automating the setting up of infrastructure?
+2)can you provision EKS using terraform?
+--------------------------------------acko technologies round3 (hiring Manager)----------------------------------------------------
+1)features of terraform?
+2)what is the first command you write in terraform? what does it do?
+------------------------------------------DEVON-2/6/2022-------------------------------------------------------------
+1)terraform console
+2)terraform state
+3)terraform locking and unlocking
+4)terraform life cycle
+--------------------------------------------Lntinfotech----------------------------------------------------------------------
+what exactly have youprovisioned using terraform?
+--------------------------------------------SLK Software-------------------------------------------------------
+terraform setup -- where are you storing your terraform files?
+installed terraform locally or usin terraform cloud
+how did you maintain your terraform config files?
+------------------------------------------Hexaware-------------------------------------------------------------------
+How many resources you have deployes using terraform
+how are your securing your terraform 
+How you have configured vault in your terraform
+How are you mainiting secrets in teraform
+How will you give access to user to vault in terraform
+--------------------------Alepo:2/6/2022--------------------------------------------
+Terraform is declarative,why?
+Is Terraform stateful or stateless?
+---------------------------Altimetric 6/2/2022----------------------
+How will you use terraform module to deploy defferent environment
+How to write module in terraform
+--------------------------Xoriant----------------------------------------
+terraform taints-- when will it be applied?
+	what are provisioners in terraform
+	how to secure keys in terraform
+	what hapens on your nect apply if you lost your state file
+	where are you storing your terraform code
+	how willyou work with terraform workspace
+--------------------------Virtusa--------------------------------------------
+dependencies in terraform
+how do you break down larger infrastructure in terraform
+terraform state
+terraform providers
+terraform installation
+what is used to gather resources utilizations 
+---------------------------infinite-------------------------------------------
+where will you store keys in terraform?
+-------------------------- Persistent System --------------------------------------------------
+Difference bewteen terraformand cloud formation
+---------------------------------Encoress 02/06/2022---------------------------------------------------------
+Why terraform and lifecycle of terraform
+--------------------------------------Hoonartek 07/06/2022---------------------------------------------
+Write terraform for EC2 instance
+-----------------------------------Global Logic 07/06/2022--------------------------------------------------------------
+Key commands in terraform
+-----------------------------------BBI 2nd round 07/06/2022----------------------------------------------------------
+Terraform stages
+-----------------------------------Hitachi 07-06-22----------------------------------------------------------------------
+	Modules in terraform
+	How can 2 people can use same terraform cloud can create 2 different infrastructure using same working directory
+	What happens when same state file gets used by multiple team
+	Null resource in terraform 
+	How can u use same provides with multiple configuration?
+    What happens when resource get created successfully and failed during provision
+	How do u recover from failed apply in terraform? 
+	Terraform apply auto approve
+	Write terraform to provision ec2
+----------------------------------Nagaroo 08/06/2022--------------------------------------------------
+Terraform provisioners
+List the resources in terraform
+How can you spin 5 ec2 instance
+-------------------------Hoonartek 2nd round-----------------------------------------------
+Terraform workspace
+Terraform playbook
+
+----------------------------Newtglobal 22/06/2022-----------------------------------------------
+7)Terraform module
+9)Terraform script
+------------------------------sleevesup 22/06/2022------------------------------------------------------
+7)Why terraform is needed?
+---------------------------Altimetrik - 22-06-2022---------------------------------------------
+Terraform scenario based quesns
+--------------------------------Greenway - 22-06-2022-------------------------------------------------------------
+Terraform data source 
+Terraform code for ec2 
+Terraform scenario based questions 
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+---------------------------------------TCS  R1- 01/08/2022-----------------------------------------------------
+how set a provider in terraform
+What is use state file
+What kind issues u faced in terraform 
+how configure ur terraform provider for diff cloud provider
+--------------------------------------Encora- R1- 02-08-2022 ------------------------------------------
+Terraform state file
+Terraform configure with aws
+---------------------------------------03/08/2022 Informatica talent acquisition (L1)-------------------
+Terraform senario
+---------------------------------03/08/2022 Bootlabs (R1)----------------------------------------------
+Terraform life cycle
+Terraform state file and lock
+----------------------------Minatoconsulting (R1): 04-08-2022-----------------------------------------
+If u r not able to find TF statefile, what u will do?
+Provisioners scenario based question.
+------------------------------------5/8/22 sipra steria------------------------------------------------
+how to identify terraform created resource
+-----------------------------Wipro (L1) : 05-08-2022-------------------------------------------------
+Terraform script for configuring ec2 and also attach a S3 bucket.
+Provisioners in TF.
+Modules in TF. Have u configured using modules?
+How u r using TF and ablnsible in ur current project.
+------------------------------cervello------------------------------------------------------
+terraform life cycle
+conside the statfile got locked,whatb command do you use to unlock it
+list map objects
+types of variables u have used in terraform
+--------------------------------04/08/2022 koantek----------------------------------------------
+Terraform scenario questions
+Terraform modules
+why not using terraform to delpoyment of application
+--------------------------------06/08/2022 First american india private ltd----------------------
+Terraform life cycle.
+terraform statefile.
+terraform state lock
+Terraform scenario questions
+-----------------------------08/08/2022 Neustar-------------------------------------------
+terraform provisioner's.
+execution process of terraform.
+write terraform file to create and destroy S3.
+-----------------------------Hilabs L1 09-08-2022 -----------------------------------------
+how to manage resources using terraform its created by console
+How to atach disc using terraform
+------------------------------09/08/2022 Flocareer.---------------------------------------
+write script to terraform for S3.
+explain tfvars
+-----------------------------Wipro (L2) : 09-08-2022------------------------------------------
+Write a TF file to create SG, and make this automated using Jenkins.
+------------------------------Epsilon (L1): 10-08-2022-------------------------------
+What is null resource. How exactly u define null resource in ur configuration file..
+Terraform destroy scenario question.
+-----------------------------Epsilon (L2): 11-08-2022-------------------------------
+TF null resource, write syntax for that.
+How do u use env variables in TF? In how many ways this can be done? What are those.
+What exactly u have used TF for.
+Have u written any modules by urself from scratch? Explain it. 
+What TF init command will do.
+Scenario questions on using variables. Many other scenario questions on TF.
+What is instance profile.
+---------------------------11/08/2022 - Uniphore----------------------------------
+Are you buliding infrastructure.
+How you build infrastructure manually  or automation.
+where you using terraform
+Do you know to write all the terraform scripts .
+--------------------------Braneenterprises (L2): 16-08-2022-----------------------
+Exact diff between ansible and terraform
+---------------------------First IPO L1 16-08-2022-----------------------------
+Best practices in terraform
+Terraform workspace explain with command
+--------------------------------Big Basket Interview Questions------------------------
+What is statefile locking in terraform?
+what is terraform providers?
+what are terraform modules?
+used case of terraform modules?
+-------------------------------tmd.net (L1) : 17-08-2022----------------------------
+Data block in TF
+-----------------------------Mindera L3 17-08-2022---------------------------------
+Terraform import scenario based questions
+Terraform statefile
+statefile loss then wt happen how you will recover statefile
+Scenario based questions on terraform 
+scenario based questions on terraform daily activity
+Explain how to set up a 3 tier architecture
+-------------------------------Univariety L1 18-08-2022----------------------------
+Using terraform how to automate a ur 3 tier infrastructure
+-----------------------------------------------------------------------------------
+What is an Statefile in terraform and how do you save it 
+What are the modules you worked on
+what are terraform providers
+-------------------------Happinestminds L2 22-08-2022---------------------------
+write a terraform script ec2 instance 
+Write a terraform variable script
+explain terraform state file
+--------------------------Intervue L1 at 19/08/2022------------------------------
+Terraform script for autoscaling
+-------------------------Happiest Minds Interview Questions------------------------
+What is terraform Workspace
+What are the terraform Modules
+Terraform Null Resource
+---------------------------GSPANN Interview Questions 2nd Round-------------------
+What is terraform Init
+How do you save the statefile 
+Statefile accidentily deleted and it is not available in Remote location how do you recover it?
+--------------------------Gds L1 at 24/08/2022-----------------------------------
+How you pass argument one child module another child module
+--------------------[27/07, 7:16 pm] ..: Interview questions --------------------------
+Scenario based related terraform.
+what happen when we launch 5 instance from terraform and other collegue lauch an instance manually.
