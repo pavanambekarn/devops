@@ -2,7 +2,7 @@
 **** (Pythoholic 117 video must watch ,KnowledgeIndia AWS Azure Tutorials -85 video)
 ***** (interview quastions KnowledgeIndia ->  https://www.youtube.com/playlist?list=PLTyrc6mz8dg_tEexS22k_gmssDmkWkEMd)
 ----------------------------------- --------------------------------------------------------
-==>What is Cloud Computing ??
+==>What is Cloud Computing ?? 
 
 cloud computing is the delivery of computing services over the internet
 as pay as you go basis.
@@ -13,6 +13,8 @@ Different types of clouds ??
 there are 3 types of clouds
 1.Public cloud :it can be acess every where through the network ,
                   ex: aws,azure,gcp
+				  
+	Netflex : Completely setup by AWS
 2:Private Cloud:  it owns particular organization,
 
 3:Hybrid Cloud :is mixture of both private and public
@@ -26,11 +28,18 @@ Salesforce
 IBM cloud
 Oracle Cloud
 ------------------------------------------------------------------------------------------
+AWS Prizing model:
+Compute
+Storage
+Data Transfer (upload or Download)
+------------------------------------------------------------------------------------------
 ==> How cloud computing work? which model working in your organization?
 
 cloud computing has three service models:
 
-1.IASS(Infrastructure as a service) :Infrastructure as a service offers a standardized way of acquiring
+1.IASS(Infrastructure as a service) :
+=> basically cloud will provide the OS(ubuntu, redhat etc) whatever you want to you can resposbility is your's.
+Infrastructure as a service offers a standardized way of acquiring
 computing capabilities on demand and over the web. Such resources include storage facilities, networks,
 processing power, and virtual private servers. ex- EC2 ( you have all the information about virtual machine)
 Cloud Formation 
@@ -40,7 +49,10 @@ Cloud Formation
    services are using like apache, tomcat and no of cpu and RAM Allocation
    if you know this much about perticular virtual machine then your working on IAAS (launch web server)
    
-2.PASS(Platform as a service ):It offers access to a cloud-based environment in which users can build
+2.PASS(Platform as a service ):
+=>basically you can install mysql DB in ec2 level with your own but os, runtime it suppose maintain by your end.
+  but aws will manage this task like OS, runtime just you need to maintain the data and application.
+ It offers access to a cloud-based environment in which users can build
  and deliver applications without the need of installing and working with IDEs  ex-RDS, SNS,SQS,SWF
  * you should not bother about what operating system is running
    you should not bother about users 
@@ -51,7 +63,7 @@ Cloud Formation
    
 3.SAAS (Software as a service):  Software as a Service offers applications that are accessed over the web 
 and are not managed by your company, but by the software provider. ex- CloudWatch, google drive
- * google drive - you don't know nothing about background like O/S, versions, what services being used 
+ * google drive, email - you don't know nothing about background like O/S, versions, what services being used 
    then your going to working about SAAS
     
 4.FASS(Function as a Service): we are only use particular function for this models
@@ -62,7 +74,10 @@ AWS Service: is a cloud enterpise where we will host our resources.
 AWS Region: it is a geographical area where we cluster data centers/zones 
              in this region where physical servers are there
 -->	aws regions are independent of each other.creating instance in region they are confines only to that 
-region		 
+region
+=> every aws service availabil for all the region (No) it's depends	
+=> same service with diff region cost may very	
+=> DR (for back up) 
 ----------------------------------------------------------------------------------------------------					   
 Avalability Zones: are with in the aws regions.they are isolated with each other to avoid 
                    fault tolerence. az's are created
@@ -77,7 +92,7 @@ A site that cloud front uses to cache copies of your content for faster delivery
               to users at any location
 			  
 --------------------------------------------------------------------------------------
-Assaignment :How many AWS Regions in Mumbai ??
+Assaignment :How many AWS Regions in India?
 There are two Regions :1.Mumbai
                        2.Hyderabad (Recently Launched)
 ------------------------------------------------------------------------------
@@ -417,11 +432,14 @@ We can setup a vpn server in the public subnet and configure it to connect to re
 ---------------------------------------------------------------------------------------------------------------
    
 -->Security groups:* firewall at instance level ,
-                   * it is a statefull,Can add rules for “allow” only
+                   * it is a statefull,
+				   * Can add rules for “allow” only not for deny
                    * Security group is mendatory no default security group 
+				   
 
 -->NACL ->Network Acess control list -> firewall at the subnet level,
-          * it a stateless,Can add rules for both “allow” and “deny”
+          * it a stateless,
+		  * Can add rules for both “allow” and “deny”
 		  * it's not mendetory by default all traffic allow and all trafic deny is there
 		  * order is important like (based on the rule order it will exicute)
 
@@ -530,7 +548,25 @@ Q) how to resources in private subnet get patches and updates?
 CLASS 6 
 ---------------------------------------------------------------------------------------------------
 ==> Ec2 Instance Types: 
+while creating the EC2(elastic compute cloud) some configuration parameter's 
+OS, Instance Type, Key Pair, Network Setting's(VPC, SG etc), Storage like hard disk ex:gp2 
 
+while keypair creating public key in Ec2 and private key you downloded in pem formate and 
+.pem permission is 400 else AWS will not allow permission to access that instance.
+- you can open in gitbash (ssh -i .pem ec2-user@private_ip) 
+- You can connect by Session manager (but for that you need to Install the SSM Agent in ec2 and attach the SSM Policy)
+- In Company level usually it is created in private subnet which will not going to have a public Ip so we can't 
+  connect by Ec2 Instance Connect.
+- Userdata always runs on root user.
+- You can attach multiple SG in single EC2 and 1 SG can use multiple EC2.
+- curl 169.254.169.254/lates (you can get metdata or dynamic data of instance)
+  EX: In Industry while creating the Instance need public IP or private IP etc of the instance
+  
+Which OS: cat /etc/os-release
+harddisk: df -h
+free -h --> To check the system memory (RAM) and swap memory
+lscpu --> To check CPU of the system
+ 
     categorized :- cpu, storage, memory, network
 
     There are 5 types of Instances
@@ -540,7 +576,7 @@ CLASS 6
 	4.Accelarated computing(faster)
 	5.storage optimized                
 					 
--->1.General Purpouse:t2,m4,m5
+-->1.General Purpouse:t2,m4,m5,mac (memory and network in balance like 1 CPU 2GB RAM or 2CPU 4GB RAM)
    * t2 : burstable performance,used for many general purpouse
    Many general purpose workloads are on average not busy, and 
    do not require a high level of sustained CPU performance
@@ -549,11 +585,11 @@ CLASS 6
 -->2.compute : c4 and c5 (CPU intensive workload)
    * high performance web servers,science/engineering apps and serving
 
--->3.memory :x1e,x1,r4
+-->3.memory :x1e,x1,r4 (faceBook)
    * High performance database,in memory databse,large data processing engines
    ex:- Relational databases, such as MySQL and PostGreSQL.			  
 
--->4.Accelarated computing(faster):p2,p3,g3,f1
+-->4.Accelarated computing(faster):p2,p3,g3,f1 (Graphics Processing unit GPU Instance)
       p2 & p3 :Machine/Deep learning,high performance database,server size GUP compute workloads
       g3 : 3D visualising and rending,application streaming,video encoding,server side graphic workloads
       f1 : Genomics research,financial analytics,big data and security	   
@@ -581,18 +617,21 @@ in this you will choose instance at any time
 it is expensive and most flexible
 your only charged when the instance is running
 
--->2.reserved instance: (lower cost compare to all)
+-->2.reserved instance: (lower cost compare to all like max 72% Discount)
+=> Convertable(t2 to t3) and Non-convertable  
 to buy a instance at a set of time period (3 year)
 if you are not using you will definetly pay the entire amount
 Reserved Instances are not physical instances
  
--->3.Spot Instnaces: (bid on the instance) (nefty)
+-->3.Spot Instnaces: (bid on the instance price may fluctuate you may get 90% Discount) (nefty)
 prize may up and down (when it is 5$ it would be allocated for me)  
 The Spot price of each instance type in each Availability Zone is set by Amazon EC2
 The hourly price for a Spot Instance is called a Spot price
-data analysis, batch jobs, background processing
+data analysis, batch jobs, background processing 
+Ex: need to run the test case need more cpu but not a specific time to test if it late OK.
 
--->4.dedicate host:
+-->4.dedicate host: (High Cost/most expensive)
+Ex: Security so need to interrupt other server.
 A dedicated Physical machine you will have full control .
 you have permanently perchased the physical machine
 --------------------------------------------------------------------------------
