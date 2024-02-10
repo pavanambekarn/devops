@@ -427,6 +427,7 @@ sed -n '2p;7p' <file_name> -->  To print the line 2th and 7th
 ----------------------------------------------------------------------------------------------------
 Find --> To find files and directories path in Linux
 (by default recursive option is there)
+find /pathToFinf -type f -name 
 
 find -name <string_name> --> To search and display all the files and directories with the particular name
 find -iname <string_name> --> Case Insensitive search
@@ -1000,18 +1001,28 @@ charecter file  -> c
 fstab? -> /etc/fstab 
  configuration table designed to ease the burden of mounting and unmounting file systems to a machine.
 ------------------------------------------------------------------------------------------------------------
-There are mainly four types of web servers – Apache HTTP Server, IIS, Nginx and LiteSpeed.
+web servers – Apache HTTP Server, IIS, Nginx and LiteSpeed.
+=> typically sits behind the firewall in a private network and directs client requests to the appropriate backend server
 * it can process only http (jar,war)
   - It serves static content such as HTML, CSS, JavaScript files, images
   - Web servers are usually deployed in front of application servers. They act as a reverse proxy, forwarding 
     requests to the application server when dynamic content is needed.
+	
 Application server - tomcat, jboss, glassfish, oracle 
 * it can process http/https (jar,war,ear) 
   - Application servers are typically deployed behind web servers. When a web server receives a request for 
     dynamic content, it forwards the request to the application server, which processes the request, 
     generates dynamic content, and sends the response back to the web server for delivery to the client.
 ------------------------------------------------------------------------------------------------------------
-
+Nginx - for C10K (concurrent 10k request) problem it started (port number 80 or 443 no need to manage the port)
+=> /etc/nginx/nginx.conf (public_key & provate_key need to extract from KeyStore)
+Advantage: Load balancing, Web acceleration(cache), Security, reverse proxy
+------------------------------------------------------------------------------------------------------------
+TLS Termination Stertegy:
+1) pass through (what ever encrupted is pass through end)
+2) re-encrypt   (1st decrypt madi again encrypt madi)
+3) de-crypt at load balancer level and send (it is not recommended)
+-------------------------------------------------------------------------------------------------------------
 
 
 
