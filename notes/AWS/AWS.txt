@@ -562,6 +562,7 @@ while keypair creating public key in Ec2 and private key you downloded in pem fo
 - curl 169.254.169.254/latest (you can get metdata or dynamic data of instance)
   EX: In Industry while creating the Instance need public IP or private IP etc of the instance
 - To maintain the Constant public IP after start and stop of EC2 we can attach elestic Ip to that EC2.
+- Can we change the instant type while instance is running? No 
   
 Which OS: cat /etc/os-release
 harddisk: df -h
@@ -648,19 +649,21 @@ you have permanently perchased the physical machine
 SSD & HDD --> HDD is Cheaper than SSD and also less performance compare to SDD
 -----------------------------------------------------------------------------
 ==>Elast Block Store Volumes (EBS) : There are 4 types  (zone specific)
-                                 1.General Purpouse SSD
-								 2.Provisioned IOPS SSD [high cost]
-								 3.ThroughPut Optimized HDD and Cold HDD
-								 4.EBS Magnetic(Previious Generation) [low cost]
+                                 1.General Purpouse SSD (gp2, gp3)
+								 2.Provisioned IOPS SSD [high cost] (io1, io2)
+								 3.ThroughPut Optimized HDD and Cold HDD (sc1, st1)
+								 4.EBS Magnetic(Previious Generation) [low cost] (standard)
 
 1.General Purpouse SSD : (Volume size of 1GB to 16TB)
 used for dev/test environments and smaller DB Instances
                            
 2.Provisioned IOPS SSD : ( 4GB to 16TB) 
+- IOPS means input output per sec
 high input output per second
 large database
                          
 3.ThroughPut Optimized HDD and Cold HDD :(500 GB  to 16 TB)
+- ThroughPut means how much data you will transfer
 cold HDD - infrequent access 
 ex- big data, ware houses, log processing 
                          
@@ -674,7 +677,7 @@ Low Storage  cost
  =>  you can create a smaller volume attach it ec2-instance create a partition, make a file system and mount it 
      and then migrate your data from big volume to smaller by using rsync then unmount big volume.
  * 1 ebs can attach to one instance (gp2, gp3 & sc1)
- * we can attach multiple ec2 (io1, io2)
+ * we can attach multiple ec2 (io1, io2). but t2 will not support only nitro instance hyperviser will support.
  * ec2 store the data in EBS some latency will be there because data travelling by network so while stop and start
    data will not going to loos but we have other option EC2 backby instance-store where it will store the data in instance level
    but when you stop and start it will lose the data also.
@@ -769,7 +772,7 @@ Q) decrease the root volume? https://cloudacademy.com/blog/amazon-ebs-shink-volu
 ----------------------------------------------------------------------------------------------------------	
 ==>Snapshot:
     -> You can back up the data on your Amazon EBS volumes to Amazon S3 by taking point-in-time snapshots.
-	Snapshots are incremental backups 
+	-> Snapshots are incremental backups (first 50Gb + next 5GB + next 2GB).
 	
 -----------------------------------------------------------------------------------------------------	
 ==>AMI (Amazon Machine Image): 
