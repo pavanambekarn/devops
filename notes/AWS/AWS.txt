@@ -559,8 +559,9 @@ while keypair creating public key in Ec2 and private key you downloded in pem fo
   connect by Ec2 Instance Connect.
 - Userdata always runs on root user.
 - You can attach multiple SG in single EC2 and 1 SG can use multiple EC2.
-- curl 169.254.169.254/lates (you can get metdata or dynamic data of instance)
+- curl 169.254.169.254/latest (you can get metdata or dynamic data of instance)
   EX: In Industry while creating the Instance need public IP or private IP etc of the instance
+- To maintain the Constant public IP after start and stop of EC2 we can attach elestic Ip to that EC2.
   
 Which OS: cat /etc/os-release
 harddisk: df -h
@@ -672,19 +673,46 @@ Low Storage  cost
   (through we can increase the volume [we could not able to decrease the volume])
  =>  you can create a smaller volume attach it ec2-instance create a partition, make a file system and mount it 
      and then migrate your data from big volume to smaller by using rsync then unmount big volume.
- * 1 ebs can attach to one instance 
+ * 1 ebs can attach to one instance (gp2, gp3 & sc1)
+ * we can attach multiple ec2 (io1, io2)
+ * ec2 store the data in EBS some latency will be there because data travelling by network so while stop and start
+   data will not going to loos but we have other option EC2 backby instance-store where it will store the data in instance level
+   but when you stop and start it will lose the data also.
 ------------------------------------------------------------------------------------------
- *  increase the root volume and decrease the root volume ? (Tech Kala Knowledge)
+Attach the another volume:
+=> Create a new volume and attach that volume to the EC2.
+=> fdisk -l (it list all disk with partition) 
+   but for newly created volume is showing disk only not partition and it is not mounted also check by (df -h)
+=> Create a partition
+   - fdisk /dev/xvdf   (follow the commands n, p, 1, enter, enter, p, w) and check it by (fdisk -l)
+=> next we need to formate 
+   - mkfs (double tab) & mkfs.ext4 /dev/xvdf1 (In linux bydefault it will store the all devisces in /dev)
+=> we need to mount 
+   - create a dirc test (mount /dev/xvdf1 /test) to verify (df -h) but it is temporary.
+   - permaanently:  vi /etc/fstab (/dev/xvdf1  /test/ ext4  defaults 0 0) & mount -a to verify (df -h).
+=> unmount (umount /test) check by (df -h)
+
+**** Linux offers many file systems such as Ext, Ext2, Ext3, Ext4, JFS, ReiserFS, XFS, btrfs, and swap.
+task: Create volume attach it to 1 ec2 and add some volume and detach it
+      again attach it to another ec2 2 verify the data is present.
+------------------------------------------------------------------------------------------
+Q) increase the root volume? (Tech Kala Knowledge)
+https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/recognize-expanded-volume-linux.html#extend-file-system
     stop the instance first (it is not a compulsary if you do it well and good) 
  => in EBS -> volume -> action -> modify volume change to 8 to 10gb 
-  * fdisk -l (showing 10gb) but df -h (showing 8GB) so find out root volume file type (vi /etc/fstab -> xfs)
-  * run 2 command -> "growpart /dev/xvda 1"  &   "xfs_growfs -d /"
-  - use the growpart command to extend the partition. Notice that there is a space 
-    between the device name and the partition number.
-  - [XFS file system] To extend the file system on each volume, use the xfs_growfs command. In this example, 
-    / and /data are the volume mount points shown in the output for df -h.
+ => fdisk -l or lsblk (showing 10gb) but df -h (showing 8GB it indicates the filesystem)  
+    - it indicate that block storeg is done but you need to grow the partition and grow the file system also.
+    so find out root volume file type (vi /etc/fstab -> xfs)
+ => run 2 command -> "growpart /dev/xvda 1"  &   "xfs_growfs -d /"
+  - use the growpart command to grow the partition of root volume. 
+  - [XFS file system] "xfs_growfs -d /" to extend a file system mounted on /
+  - [Ext4 file system] Use the resize2fs "resize2fs /dev/xvda1"
   
- => https://cloudacademy.com/blog/amazon-ebs-shink-volume/ (decrease the root volume) 
+  
+Q) decrease the root volume? https://cloudacademy.com/blog/amazon-ebs-shink-volume/ 
+=> Create a small volume and attach it the ec2 and copy the data from root volume to small volume.
+=> umount the root volume and mount the small volume as root volume. 
+
 ------------------------------------------------------------------------------------------
 ==> EFS (Elastic File System):
     Amazon Elastic file system is a regional service storing data within and across multiple Availability
@@ -757,15 +785,23 @@ Low Storage  cost
  ->An EBS snapshot is a backup of a single EBS volume. The EBS snapshot contains all the data stored on 
   the EBS volume at the time the EBS snapshot was created.
   
- ->An AMI image is a backup of an entire EC2 instance. Associated with an AMI image is EBS snapshots.
+ ->An AMI image is a backup of an entire EC2 instance (volume + metedata). Associated with an AMI image is EBS snapshots.
   Those EBS snapshots are the backups of the individual EBS volumes attached to the EC2 instance at the
   time the AMI image was created.
 
-1.Snapshort are asscoiated with ebs , while AMI are associated with ec2 instances
-2.snapshot are backup of the data on EBS volumes,, where as AMI are bootable copy of the whole instance
-3.AMI are used to store the current instance configuration  
-4.Taking snapshots of non EBS backed instances are not possible but AMI of a non EBS backed instances can
- be created
+- Snapshort are asscoiated with ebs , while AMI are associated with ec2 instances  
+- AMI will help if EC2 harddisk is instance-store.
+
+snapshot (copy from one to other region as well account ) 
+- while creating volume from snapshoot we can select zone (transfer for diff zone)
+- we can create image from snapshot (no choice to select the zone) 
+----------------------------------------------------------------------------------------------------
+copy ec2 to different region:  (and diff account as well)
+create ami -> copy ami to diff region -> launch ec2-instance
+---------------------------------------------------------------------------------------------------
+copy ec2 to different zone: 
+create AMI -> launch instance from AMI it will ask zone 
+----------------------------------------------------------------------------------------------------
  -----------------------------------------------------------------------------------------
 Data life cycle Manager:
 - take the buck up of root volume
@@ -779,45 +815,6 @@ Data life cycle Manager:
 - through snapshot we can create image from that you launch a ec2-instance 
 
 ---------------------------------------------------------------------------------------------------------
-CLASS 7 
-------------------------------------------------------------------------------------------------
- == >Creation of Block Volumes 
-
-•	Launch two ec2 instance in different az’s(instance1 & instance2)
-•	Create EBS volume and attach it to instance1
-•	The volumes are attached to instance1 you can verify it by logging into instance1 and executing “lsblk” command,
-=> fdisk -l
-   fdisk /dev/xvdf
-   mkfs.ext4 /dev/xvdf1
-   vi /etc/fstab (/dev/xvdf1  /var/www/html/images ext4  defaults 0 0)
-   mount -a 
-•	you can verify that disk is mounted by running “df -h” command.
-•	Create some files 
-=>	Take a snapshot 
-•	Unmount the disk 
-  -->	umount /mnt/mydisk
-  -->	Detach the volume from ec2 instance.
-  -->	delete the volume
-•	Create a new volume from snapshot 
-•	Attach the volume to newly created instance2.
-•	Mount the volume to instance2
-   -->	Create a directory in root:   1. cd /     2. mkdir /mnt/mydisk
-•	mount /dev/xvdf /mnt/mydisk
-
-Assaignment : Create SnapShot in the Block Volumes
-
-**** Linux offers many file systems such as Ext, Ext2, Ext3, Ext4, JFS, ReiserFS, XFS, btrfs, and swap.
-----------------------------------------------------------------------------------------------------
-snapshot (copy from one to other region as well account ) 
-- while creating volume from snapshoot we can select zone (transfer for diff zone)
-- we can create image from snapshot (no choice to select the zone) 
-----------------------------------------------------------------------------------------------------
-copy ec2 to different region:  (and diff account as well)
-create ami -> copy ami to diff region -> launch ec2-instance
----------------------------------------------------------------------------------------------------
-copy ec2 to different zone: 
-create AMI -> launch instance from AMI it will ask zone 
-----------------------------------------------------------------------------------------------------
 ----------------------------------------------------------------------------------------------------
 -----------------------------------------------------------------------------------------------------
 
