@@ -637,13 +637,21 @@ Ex: Security so need to interrupt other server.
 A dedicated Physical machine you will have full control .
 you have permanently perchased the physical machine
 --------------------------------------------------------------------------------
-==>EBS(Elastic Block Store ) :has upto 16tB (zone specific)
-->ebs is one of the storage 
+--------------------------------------------------------------------------------
+==>EBS(Elastic Block Store (zone specific)
+ 
 ->can we attch same volume to diff instance 'NO' (one volume for one instance)
   can we attch volume in one az to diff az no (but through snapshot we can achive)
 ->if instance is terminated ,ebs secured so our data is secured in ebs 
 ->multipe ebs can attach one ec2 instance 
--> snapshot is stored in S3 bucket
+ * For one instance we can attach upto 20 ebs volumes
+ * 1 ebs can attach to one instance (gp2, gp3 & sc1)
+ * we can attach multiple ec2 also by (io1, io2) volume. but t2 will not support only nitro instance hyperviser will support.
+ * ec2 store the data in EBS some latency will be there because data travelling by network so while stop and start
+   data will not going to loos but we have other option EC2 backby instance-store where it will store the data in instance level
+   but when you stop and start it will lose the data also.
+ * we can encrypt the EBS, While creating the snapshot from EBS it will also encrypted.
+   -> you can do setting like if any new ebs is created by default it will encrypted like.
 
 -------------------------------------------------------------------------------
 SSD & HDD --> HDD is Cheaper than SSD and also less performance compare to SDD
@@ -659,7 +667,6 @@ used for dev/test environments and smaller DB Instances
                            
 2.Provisioned IOPS SSD : ( 4GB to 16TB) 
 - IOPS means input output per sec
-high input output per second
 large database
                          
 3.ThroughPut Optimized HDD and Cold HDD :(500 GB  to 16 TB)
@@ -670,18 +677,7 @@ ex- big data, ware houses, log processing
 4.EBS Magnetic(Previous Generation) :(min 1GB max 1 TB)
 ex- archive 
 Low Storage  cost
-------------------------------------------------------------------------------------------                                        
- * For one instance we can attach upto 20 ebs volumes
- * EBS we can have action-> modify volume size 
-  (through we can increase the volume [we could not able to decrease the volume])
- =>  you can create a smaller volume attach it ec2-instance create a partition, make a file system and mount it 
-     and then migrate your data from big volume to smaller by using rsync then unmount big volume.
- * 1 ebs can attach to one instance (gp2, gp3 & sc1)
- * we can attach multiple ec2 (io1, io2). but t2 will not support only nitro instance hyperviser will support.
- * ec2 store the data in EBS some latency will be there because data travelling by network so while stop and start
-   data will not going to loos but we have other option EC2 backby instance-store where it will store the data in instance level
-   but when you stop and start it will lose the data also.
-------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
 Attach the another volume:
 => Create a new volume and attach that volume to the EC2.
 => fdisk -l (it list all disk with partition) 
@@ -689,7 +685,8 @@ Attach the another volume:
 => Create a partition
    - fdisk /dev/xvdf   (follow the commands n, p, 1, enter, enter, p, w) and check it by (fdisk -l)
 => next we need to formate 
-   - mkfs (double tab) & mkfs.ext4 /dev/xvdf1 (In linux bydefault it will store the all devisces in /dev)
+   - mkfs (double tab) & "mkfs.ext4 /dev/xvdf1" (In linux bydefault it will store the all devices in /dev)
+   - verify by "file -s /dev/xvdf1" 
 => we need to mount 
    - create a dirc test (mount /dev/xvdf1 /test) to verify (df -h) but it is temporary.
    - permaanently:  vi /etc/fstab (/dev/xvdf1  /test/ ext4  defaults 0 0) & mount -a to verify (df -h).
@@ -703,8 +700,8 @@ Q) increase the root volume? (Tech Kala Knowledge)
 https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/recognize-expanded-volume-linux.html#extend-file-system
     stop the instance first (it is not a compulsary if you do it well and good) 
  => in EBS -> volume -> action -> modify volume change to 8 to 10gb 
- => fdisk -l or lsblk (showing 10gb) but df -h (showing 8GB it indicates the filesystem)  
-    - it indicate that block storeg is done but you need to grow the partition and grow the file system also.
+ => fdisk -l or lsblk (showing 10gb) but df -h indicates the file system (showing 8GB).  
+    - it indicate that block storeg is done but you need to grow the partition and file system also.
     so find out root volume file type (vi /etc/fstab -> xfs)
  => run 2 command -> "growpart /dev/xvda 1"  &   "xfs_growfs -d /"
   - use the growpart command to grow the partition of root volume. 
@@ -742,7 +739,51 @@ Q) decrease the root volume? https://cloudacademy.com/blog/amazon-ebs-shink-volu
 4.EFS One zone Infrequent Acess Storage Class :
        EFS One zone Infrequent Acess Storage Class used for less frequent accessed data ,dont require
            highest durability and availability	   
+------------------------------------------------------------------------------------------------------	
 ------------------------------------------------------------------------------------------------------
+==>Snapshot:
+    -> You can back up the data on your Amazon EBS volumes by snapshot and it will store in s3 which is managed by AWS.
+	   and basically it is point in time snapshot and we don't have the access of that s3 bucket.
+	-> Snapshots are incremental backups (first 50Gb + next 5GB + next 2GB).
+	-> 1st 2nd 3rd backup if you deleted the 2nd backup by default the backup data in 2nd will shift to 3rd backup
+	-> You can create a volume and image from snapshot(AMI). {Transfering from one region to other and diff zone}
+	-> while creating the volume from snapshot you can change the EBS type and diff zone also. 
+	-> Copy snapshot you can select the region also. 
+	
+-----------------------------------------------------------------------------------------------------	
+==>AMI (Amazon Machine Image): 
+
+  -> An AMI is a template that contains the software configuration (operating system, application server,
+   and applications) required to launch your instance. 
+  -> You can launch multiple instances from a single AMI when you need multiple instances with the same
+  configuration.
+  -> copy to diff region "create ami -> copy ami to diff region -> launch ec2-instance"
+  -> "create AMI -> launch instance from AMI it will ask zone"
+  
+----------------------------------------------------------------------------------------------------
+==>Difference between Sanpshot and AMI(Instance level snapshot) :
+                               
+ ->An AMI image is a backup of an entire EC2 instance (volume + metedata). Associated with an AMI image is EBS snapshots.
+  Those EBS snapshots are the backups of the individual EBS volumes attached to the EC2 instance at the
+  time the AMI image was created.
+
+- Snapshort are asscoiated with ebs , while AMI are associated with ec2 instances  
+- AMI will help if EC2 harddisk is instance-store.
+
+----------------------------------------------------------------------------------------------------
+Q) Take a back of ec2 instance?
+life cycle Manager: (we can take instance or volume backup)
+
+- filter the instance with respect to the tag 
+- select the default rule or specify the custom rule
+- time to take backup specify in hours and specify retaintion as well like 20 
+  (The amount of time to retain each snapshot)
+	
+* through snapshot we can create image from that you launch a ec2-instance 
+
+Q) you deleted the snapshot/AMi from console can we retain it? Yes
+- From Recycle Bin in snapshot/AMI you need to configure that (you can specify retention period also)
+---------------------------------------------------------------------------------------------------------
 ==> Difference Between EBS and EFS : 
 * S3 v/s EBS v/s EFS (KI-3min) 
 
@@ -769,55 +810,7 @@ Q) decrease the root volume? https://cloudacademy.com/blog/amazon-ebs-shink-volu
  4.Can be Publically Acessible (by end point)
  5.Good for Storing Backups
  6.Web Interface
-----------------------------------------------------------------------------------------------------------	
-==>Snapshot:
-    -> You can back up the data on your Amazon EBS volumes to Amazon S3 by taking point-in-time snapshots.
-	-> Snapshots are incremental backups (first 50Gb + next 5GB + next 2GB).
-	
------------------------------------------------------------------------------------------------------	
-==>AMI (Amazon Machine Image): 
 
-   -->An AMI is a template that contains the software configuration (operating system, application server,
-   and applications) required to launch your instance. 
-  -->You can launch multiple instances from a single AMI when you need multiple instances with the same
-  configuration.
-  
-----------------------------------------------------------------------------------------------------
-==>Difference between Sanpshot and AMI(Instance level snapshot) :
-                                 
- ->An EBS snapshot is a backup of a single EBS volume. The EBS snapshot contains all the data stored on 
-  the EBS volume at the time the EBS snapshot was created.
-  
- ->An AMI image is a backup of an entire EC2 instance (volume + metedata). Associated with an AMI image is EBS snapshots.
-  Those EBS snapshots are the backups of the individual EBS volumes attached to the EC2 instance at the
-  time the AMI image was created.
-
-- Snapshort are asscoiated with ebs , while AMI are associated with ec2 instances  
-- AMI will help if EC2 harddisk is instance-store.
-
-snapshot (copy from one to other region as well account ) 
-- while creating volume from snapshoot we can select zone (transfer for diff zone)
-- we can create image from snapshot (no choice to select the zone) 
-----------------------------------------------------------------------------------------------------
-copy ec2 to different region:  (and diff account as well)
-create ami -> copy ami to diff region -> launch ec2-instance
----------------------------------------------------------------------------------------------------
-copy ec2 to different zone: 
-create AMI -> launch instance from AMI it will ask zone 
-----------------------------------------------------------------------------------------------------
- -----------------------------------------------------------------------------------------
-Data life cycle Manager:
-- take the buck up of root volume
-- filter the instance with respect to the tag 
-- time to take backup specify in hours and specify retaintion as well like 20 
-  (The amount of time to retain each snapshot)
-- select the default rule or specify the custom rule 
-- You can use Amazon Data Lifecycle Manager to automate the creation, retention, and 
-	deletion of snapshots taken to back up your Amazon EBS volumes
-	
-- through snapshot we can create image from that you launch a ec2-instance 
-
----------------------------------------------------------------------------------------------------------
 ----------------------------------------------------------------------------------------------------
 -----------------------------------------------------------------------------------------------------
 
