@@ -678,6 +678,7 @@ ex- big data, ware houses, log processing
 ex- archive 
 Low Storage  cost
 --------------------------------------------------------------------------------
+Q) want to extarct .zip file in ec2 and extracted zip file again please it to s3? NRS
 Attach the another volume:
 => Create a new volume and attach that volume to the EC2.
 => fdisk -l (it list all disk with partition) 
@@ -713,7 +714,7 @@ Q) decrease the root volume? https://cloudacademy.com/blog/amazon-ebs-shink-volu
 => Create a small volume and attach it the ec2 and copy the data from root volume to small volume.
 => umount the root volume and mount the small volume as root volume. 
 
-------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------
 ==> EFS (Elastic File System):
     Amazon Elastic file system is a regional service storing data within and across multiple Availability
 	Zones (AZs) for high availability and durability
@@ -746,19 +747,23 @@ Q) decrease the root volume? https://cloudacademy.com/blog/amazon-ebs-shink-volu
 	   and basically it is point in time snapshot and we don't have the access of that s3 bucket.
 	-> Snapshots are incremental backups (first 50Gb + next 5GB + next 2GB).
 	-> 1st 2nd 3rd backup if you deleted the 2nd backup by default the backup data in 2nd will shift to 3rd backup
-	-> You can create a volume and image from snapshot(AMI). {Transfering from one region to other and diff zone}
-	-> while creating the volume from snapshot you can change the EBS type and diff zone also. 
-	-> Copy snapshot you can select the region also. 
+	-> You can create a volume and image from snapshot(AMI).
+	-> copy to diff region "SnapShot -> Action -> copy SnapShot to diff region"
+    -> copy to diff zone "while creating the volume from snapshot you can change the EBS type and diff zone"
 	
 -----------------------------------------------------------------------------------------------------	
 ==>AMI (Amazon Machine Image): 
-
+  
+  -> Action -> imgae & Template -> Create image
+  BackEnd: when you create a AMI from instance first it will take the SnapShot from there it will create AMI
   -> An AMI is a template that contains the software configuration (operating system, application server,
    and applications) required to launch your instance. 
+  -> Golden Image: when you create a image from cofigured software EC2.
   -> You can launch multiple instances from a single AMI when you need multiple instances with the same
   configuration.
-  -> copy to diff region "create ami -> copy ami to diff region -> launch ec2-instance"
-  -> "create AMI -> launch instance from AMI it will ask zone"
+  -> copy to diff region "AMI -> Action -> copy ami to diff region -> launch ec2-instance"
+  -> copy to diff zone "create AMI -> launch instance from AMI it will ask zone"
+  -> copy to diff Account "AMI -> Action -> Edit AMI Permission"
   
 ----------------------------------------------------------------------------------------------------
 ==>Difference between Sanpshot and AMI(Instance level snapshot) :
@@ -771,7 +776,7 @@ Q) decrease the root volume? https://cloudacademy.com/blog/amazon-ebs-shink-volu
 - AMI will help if EC2 harddisk is instance-store.
 
 ----------------------------------------------------------------------------------------------------
-Q) Take a back of ec2 instance?
+Q) Take a backup of ec2 instance?
 life cycle Manager: (we can take instance or volume backup)
 
 - filter the instance with respect to the tag 
@@ -818,11 +823,20 @@ Class 8
 -----------------------------------------------------------------------
 -----------------------------------------------------------------------
 ---------------------------------------------------------------------
-Load Balancer : (ex:ngnix) [PAAS]
+Load Balancer : (ex:ngnix) [PAAS] [region specific]
 - if you have cluster of service you need single end point to access them 
 - A load balancer distributes incoming application traffic across multiple EC2 instances or containers
    in multiple Availability Zones
 
+OSI Model: 
+ 1.Application Layer           ----
+ 2.Presentation Layer             | -> https,ssh,http,dns (web server ,mail server and browser)
+ 3.Session Layer               ----
+ 4.Transport Layer             --> TCP and UDP (host to host connection)
+ 5.Network Layer               --> router (internet)
+ 6.Data Link Layer             --> switchs (computer printer connection) 
+ 7.Physical Layer              --> data transfer in form of bit   
+ 
 There are 4 types of Load Balancer
             1.Classic Load Balaner 
             2.Application Load Balancer
@@ -831,60 +845,52 @@ There are 4 types of Load Balancer
 		
 1.Classic Load Balancer :
 * No Target group -> Irrespective of the path it will navigate the traffic any of the service
-* it works on Network layer (layer 4 [router])-> route the traffic based on IP address and TCP ports
+  -> path/query/header based routing we can't able to achive here
+* it works on network and transport layer both.
 * 1st load balancer of aws which supports http, https, TCP and UDP protocals but we couldn't explore on it 
   that's why 2 load balancer will be created ALP and NLB  
 
 2.Application Load Balancer : 
+* what algorithm does load balancer use? Round-robin 
+  1st request 1st server, 2nd request 2nd server etc
 * target group is required -> let say you have two cluster of service in your
   web application based the request it is going to perticular cluster
-* it just not route the traffic to network layer but the application layer
-  because of this it is in layer 7 of OSI layers
-* Used mainly for web application running http and https protocols.
-* works at request level (nodejs,angular lke multiple routing)
+=> In Target Group we can place: Instance, IP address, Lambda Function, Application LB,
+* route the traffic to application layer (OSI layer 7) (http and https protocols)
+=> it will know the path & query etc(learning/login?platform=mobile) because it in 0SI 7th layer 
+ - so we can configure with diff path/query also by using the new TG (diff micro services for diff path).
+ - Once the new TG has been created you need to conf in listener and add rules in that.
+* after creation of ALB check the attributes. (enable logs lot of functionality it will provide)
+* works at request level (nodejs,angular like multiple routing)
 
-3.Network Load Balancer :  (route the tarffic to vpc)
+3.Network Load Balancer : 
 * Traget group is required
-* it route the traffic to network layer 
-  layer 4 of OSI model (transport layer)
-* mainly used for web applications, run on TCP,UDP protocols
-* used when we need high performace with low latency 
-  it will handel millions of request and expensive alsoo
-* works at connection level (route the traffic to vpc)
+* it route the traffic to network layer {layer 4 of OSI model} (run on TCP,UDP protocols)
+* used when we need high performace with low latency (it will handle millions of request)
+* works at connection level (route the traffic to vpc).
 					  
 4.Gateway Load Balancer : This one is recently created in 2020
 *No target group is required 
 *we are not using this load balancer in our organization					  
 *security and policy controls (banking)
 *when we want to deploy and manage of third party applications
-					 
+
+
 ==> Layers in Load Balancer : layer 7 and layer 4
 layer 7 traffic (http and https) are used in classic and application load balancer
-layer 4 traffic(tcp,udp) are used in network load balancer					 
+layer 4 traffic(tcp,udp) are used in network load balancer					                         
 
-==> Types of Layers in Load Balancer: 
- 1.Application Layer           ----
- 2.Presentation Layer             | -> https,ssh,http,dns (web server ,mail server and browser)
- 3.Session Layer               ----
- 4.Transport Layer             --> TCP and UDP (host to host connection)
- 5.Network Layer               --> router (internet)
- 6.Data Link Layer             --> switchs (computer printer connection) 
- 7.Physical Layer              --> data transfer in form of bit                         
-
-==>Load Balancer Creation :
-  step 1: Create VPC
-  step 2 :Create Internet Gateway attach to VPC
-  step 3:Create Two Public Subnets in different AZ's
-  Step 4:Create Route Table for subnets,do subnet association and give routes
-  step 5:create two Ec2 Instances in different AZ's
-  step 6:in security configuration give user data for response from server
-  step 7:create Load balancer
-  
+LB Creation Steps:
 - create target group  
-- load balancer -> type of load balancer -> select vpc and subnet -> 
-  SG ( create for LB) -> select the target group -> create 
+- load balancer -> type of load balancer -> select vpc and subnet(public subnet) -> 
+  SG ( create for LB) -> configure healt check -> select the target group -> create 
+  
+confiure Health Check: Healthy threshould, respons time out, interval, Health threshould 
+                       (if one server is not working it route to healty server)
 
-* check with Listeners option in LB
+After Creattion LB:
+Listeners -> information of target group.
+Load balancer endpoint  -> DNS Name **************(A record).
 
 ==>Load LB Inside :load balancer request from which port ,which port should be opened
 
@@ -898,8 +904,7 @@ Target Groups :
  ------------------------------------------------------------------------------------------- 
 Q) Sticky sessios?  (udemy) 
   .Same client always redirect to same ec2 instance behind load balancer 
-  .Support both CLB/ALB
-  .(it can imbalane load balance the load balancer)
+  .State full application we can enable it (some point of it will imbalance the load balancer)
   .in target group -> Action -> Edit attribute -> enable stickiness (60 sec) [like TTL in Route 53] 
   -------------------------------------------------------------------------------------------
 Q) Connection Draining?
@@ -912,6 +917,12 @@ Q) Connection Draining?
   target group -> group deatils -> attributes -> edit -> 300sec
   
 --------------------------------------------------------------------------------------------------------------------  
+TLS Termination Stertegy:
+1) pass through (what ever encrupted is pass through end)
+2) re-encrypt   (1st decrypt madi again encrypt madi)
+  NRS: decrypt at nginx server and encrypt -> NLB -> when traffic route to one of the webapplication again it will decrypt
+3) de-crypt at load balancer level and send (it is not recommended)
+-------------------------------------------------------------------------------------------------------------
 Q) SSL Certificate? (certificate manager service and it is region specific and it is free)
 - when we setup our project we also setup https secure connection, it validate the certificate which is tight to you domain.
 - we need to create public certificate for our domain we purchased the domain and we will use certificate
@@ -931,6 +942,8 @@ when it comes to network load balancer (path based routing is not possible)
 here configure with respect to port like one microservice able to access on port 80 by target group and other 
 microservice on port 8080 another target group
 -------------------------------------------------------------------------------------------------------
+Q) the target instance only access by LB not by there IP/3rd party 
+  - then we can update the SG of Instance by LB SG.
 -------------------------------------------------------------------------------------------------
 -------------------------------------------------------------------------------------------------
 -------------------------------------------------------------------------------------------------
