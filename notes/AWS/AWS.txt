@@ -99,7 +99,7 @@ There are two Regions :1.Mumbai
 ------------------------------------------------------------------------------------------------------			  
 Services:     (IAM)---Identity Access Management Service {Global}
 - to provide privilages to users and control an that perticular privilages
-- is used to manage users groups,roles and policies.it helps to securely control acess to aws resources.
+- is used to manage users, groups(DevOps team),roles and policies.it helps to securely control acess to aws resources.
 
 Q) Best practices for security in aws
 -  Validate IAM roles.(no exposure of access key and secret key)
@@ -110,22 +110,30 @@ let say new joiney to the company we will going to create a credentail to that u
 which have certain policies like ec2 access and s3 bucket access 
 -----------------------------------------------------------------------------------------------------
 2 types of user - ROOT user (admin),IAM user (user)  while login with aws account console.
+
+Q) What is the diff between root user and AWS Admin Full access policy ?
 				  
 user can login either console(AWS) or cli mode [programatic access]
 for cli - mood you need to install 'awscli' provide accesskey and secret key
           linux => yum install awscli -y
           windows => choco install awscli -y (windows power shell & administrater user)	
           aws --version 		  
-		  aws configure 
+		  => aws configure 
 		  /c/Users/pavan/.aws/config (you can see a hidden direc) 
           cat ~/.aws/config => regoin,output
           cat ~/.aws/credentials => access_key and secret_key
 		  rm -rf .aws/credentials 
+		  
 command -> aws sts get-caller-identity
            aws ec2 describe-instances 
+		   
+- aws help  
+- aws ec2 help (like that you can get the commands)
 you can get the command - command referance in CLI and PDF refer that	   
 		  
-console login - 12 digit account number and password
+=> use of multiple aws account using aws cli -> aws configure --profile account1 (access key, secret key, us-east-1)
+   - aws ec2 describe-instances --profile=account1
+   Q) How to change the default profile? "export AWS_DEFAULT_PROFILE=account1"
 -----------------------------------------------------------------------------------------------------
 -----------------------------------------------------------------------------------------------------
 -----------------------------------------------------------------------------------------------------
@@ -187,9 +195,8 @@ we can edit policy in json format
  aws cli or create iam rule attche to ec2-instance to communicate s3 bucket) 
    
 --> Roles can be attached to services 
---> we can attach multiple policies to a role.
-   ( we can attach upto 20 poicy in a role) 
--->  for a service only a single role attached
+--> we can attach multiple policies to a role. ( we can attach upto 20 poicy in a role)  
+--> for a service only a single role attached
 
 ***** there is no chance of exposing access key and secret key
 
@@ -226,6 +233,10 @@ we can edit policy in json format
 can we attch role to running instance - yes we can (action-security-iam) 
 -----------------------------------------------------------------------------------------------------------
 MFA - multi factory authentication know about this 
+    -> we can assign to root user and normal user also
+-----------------------------------------------------------------------------------------------------------
+CloudShell -> symbal in console where you will get cloudsell user with default aws cli installed by AWS.
+           - region specific.
 -----------------------------------------------------------------------------------------------------------
 -----------------------------------------------------------------------------------------------------------
 CLASS -3
