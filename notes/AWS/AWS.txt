@@ -97,13 +97,9 @@ There are two Regions :1.Mumbai
                        2.Hyderabad (Recently Launched)
 ------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------------------			  
-Services:     (IAM)---Identity Access Management Service
- => to provide privilages to users and control an that perticular privilages
- 
-         is used to manage users groups,roles and policies.it helps to
-         securely control acess to aws resources.
-		 
-==> IAM is global, it is not restricted to region specific.
+Services:     (IAM)---Identity Access Management Service {Global}
+- to provide privilages to users and control an that perticular privilages
+- is used to manage users groups,roles and policies.it helps to securely control acess to aws resources.
 
 Q) Best practices for security in aws
 -  Validate IAM roles.(no exposure of access key and secret key)
@@ -113,8 +109,7 @@ Q) Best practices for security in aws
 let say new joiney to the company we will going to create a credentail to that user and added to the group
 which have certain policies like ec2 access and s3 bucket access 
 -----------------------------------------------------------------------------------------------------
-2 types of user - ROOT user (admin)
-                  IAM user (user)
+2 types of user - ROOT user (admin),IAM user (user)  while login with aws account console.
 				  
 user can login either console(AWS) or cli mode [programatic access]
 for cli - mood you need to install 'awscli' provide accesskey and secret key
@@ -563,6 +558,8 @@ while keypair creating public key in Ec2 and private key you downloded in pem fo
   EX: In Industry while creating the Instance need public IP or private IP etc of the instance
 - To maintain the Constant public IP after start and stop of EC2 we can attach elestic Ip to that EC2.
 - Can we change the instant type while instance is running? No 
+- Termination Protection we can set in instance level.
+- you can attach multiple NIC for EC2 (Network interface like modem connecting port in lap)
   
 Which OS: cat /etc/os-release
 harddisk: df -h
@@ -864,8 +861,11 @@ There are 4 types of Load Balancer
 * works at request level (nodejs,angular like multiple routing)
 
 3.Network Load Balancer : 
+=> written a letter for your lover but it reach to the destination but letter was pick by his father 
+   that much of information NLB has.
+* It don't have much information about the request because it is in layer 4
 * Traget group is required
-* it route the traffic to network layer {layer 4 of OSI model} (run on TCP,UDP protocols)
+* it route the traffic to network layer {layer 4 of OSI model} (run on TCP,UDP & TLS protocols)
 * used when we need high performace with low latency (it will handle millions of request)
 * works at connection level (route the traffic to vpc).
 					  
@@ -889,7 +889,8 @@ confiure Health Check: Healthy threshould, respons time out, interval, Health th
                        (if one server is not working it route to healty server)
 
 After Creattion LB:
-Listeners -> information of target group.
+=> Listeners -> information of target group.
+*****  while creating the listeners you can add the SSL/TLS Certificate also.
 Load balancer endpoint  -> DNS Name **************(A record).
 
 ==>Load LB Inside :load balancer request from which port ,which port should be opened
@@ -901,27 +902,35 @@ Round-robin load balancing - what algorithm does load balancer use
 
 Target Groups :
   We can create target groups in order to route to traffic to the respective paths 
- ------------------------------------------------------------------------------------------- 
+ -------------------------------------------------------------------------------------------------
+Q) Cross zone LB?
+  1 zone 2 instance and another zone 10 instance if you enable it by default it will route the request 
+  to each instance equaly (100 request distribute to each EC2 by 10 request) else one zone 50 request and 
+  other zone 50 request 
+
+  target group -> Action -> Edit attribute -> enable  
+---------------------------------------------------------------------------------------------------
 Q) Sticky sessios?  (udemy) 
   .Same client always redirect to same ec2 instance behind load balancer 
   .State full application we can enable it (some point of it will imbalance the load balancer)
-  .in target group -> Action -> Edit attribute -> enable stickiness (60 sec) [like TTL in Route 53] 
-  -------------------------------------------------------------------------------------------
+  
+  target group -> Action -> Edit attribute -> enable stickiness (60 sec) [like TTL in Route 53] 
+  -------------------------------------------------------------------------------------------------
 Q) Connection Draining?
   by default the cooldown period is 300 sec which means if you derigister the instance from loadbalancer
   it will first move to 'draining' status which means connection will not lost suddenly the connection still 
   there for 300 sec
-  (it will there in the draing untill 300 sec then it will force fully removed) 
-  in between this if you want to do any changes to the instance you can do that like reboot etc
+  => Connection draining is a process that ensures that existing, in-progress requests are given time to 
+    complete when a VM is removed from an instance group or when an endpoint is removed from a zonal network 
+	endpoint group (NEG).
   
-  target group -> group deatils -> attributes -> edit -> 300sec
-  
+  target group -> group deatils -> attributes -> edit -> 300sec 
 --------------------------------------------------------------------------------------------------------------------  
 TLS Termination Stertegy:
-1) pass through (what ever encrupted is pass through end)
-2) re-encrypt   (1st decrypt madi again encrypt madi)
+1) pass through: (what ever encrupted is pass through end)
+2) re-encrypt:  (1st decrypt madi again encrypt madi)
   NRS: decrypt at nginx server and encrypt -> NLB -> when traffic route to one of the webapplication again it will decrypt
-3) de-crypt at load balancer level and send (it is not recommended)
+3) Edge routes: de-crypt at load balancer level and send (it is not recommended)
 -------------------------------------------------------------------------------------------------------------
 Q) SSL Certificate? (certificate manager service and it is region specific and it is free)
 - when we setup our project we also setup https secure connection, it validate the certificate which is tight to you domain.
@@ -951,15 +960,19 @@ CLASS - 9
 -------------------------------------------------------------------------------------------------
 -------------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------------
-diff b/w launch template and launch configuration
-where we find out the logs of load balancing and autoscaling
-how do you trouble shoot issues with ec2 auto scaling ? (before terminating i want to troble shoot it)
+Q)diff b/w launch template and launch configuration
+Q)where we find out the logs of load balancing and autoscaling?
+Q)how do you trouble shoot issues with ec2 auto scaling ? (before terminating i want to troble shoot it)
 -------------------------------------------------------------------------------------------------
-==>Auto Scaling : Automatically moniter and adjust the compute resources to maintain
-performance for web application hosted in the awso
+Auto Scaling : To maintain the infra performance
+(we build our infra for 10000user because it goes viral 100000users are using
+then to maintain the performance we need to add extra conf to our infra similarly if the users only 
+2000 then we need to reduce the our infra because of cost)
+=> Automatically moniter and adjust the compute resources to maintain performance for web application hosted in the aws
 ex:- let say if CPU utilization is high it will create a new instances 
 to maintain performance, if the cpu utilization low it will reduce the instance
-to maintain over cost  
+to maintain over cost 
+ 
 [based on minimum size (1), desired capacity(2) and maximum size(4)]
 .let say if cpu utlization is above 70% 4 instance is running
 .if  cpu utilization is below 40% it will terminate the 4 instances and 
@@ -977,10 +990,10 @@ terminate minimum size
 
 Scaling: there are two types
 1. Horizontal Scaling 
-2.Vertical Scaling
+2. Vertical Scaling
 		 
 -> Horizontal scaling: similar instance spinned up 
--> vertical scaling: it will increase the capacity of same instance 
+-> vertical scaling: it will increase the capacity of same instance (AWS RDS)
 
 
 How to Create Template ??
@@ -999,15 +1012,20 @@ How to Create Template ??
 1) select the launch template or launch configration(old)  
 2) select the vpc and zone (all zone) 
 3) select LB or without LB  (create LB before it select the Target group)
-4) Health check by default ec2 is selected, select ELB as well(to check services in instances)
+4) Health check by default ec2 is selected, select ELB as well
+   * grace period -> default 300sec (once the instance has been ready then you do the health check not before)
+   * warmup period it is also similar like grace period
 5) Group size ( minimum capacity, Desired Capacity, Maximim capacity)
-6) Scaling Policy (after creating ASG in the parameter Autoscalling you will find out this) 
-  * target traking scalling - Average CPU stay around 50%
-  * Simple/Step Scalling - select the metrix -> set a  alarm -> mention the threshould 
-    from cloud watch and set cooldown period 
+6) Scaling Policy (after creating ASG in the parameter Autoscalling you will find out this)
+  * Dynamic Scalling policy (CPU, network traffic & Custom application metrix)
+    - target traking scalling -> (AWS metrix is there you need to select one amoung them) Average CPU stay around 50%
+    - Simple Scalling -> select the metrix -> set a  alarm -> mention the threshould 
+      from cloud watch and set cooldown period 
+	- Step Scalling -> similar to simple scalling but here you can add multple condition like 2 alarams.
   => cooldown period (300 sec)-> helps to ensure ASG doesn't launch or terminate addition instance before 
   previous scalling activity take effect 
-  * Scheduled Action - increase the minimum capacity to 5 at 10 AM on monday (based on know usage pattern) 
+  * Scheduled Scalling - increase the minimum capacity to 5 at 10 AM on monday (we know when traffic will high) 
+  * prdective scalling policy - based on data it will deside (machine learning)
    
 7) SNS Notification
 
@@ -1030,9 +1048,7 @@ instance refresh:- (diff launch templete version attached)
 
 -----------------------------------------------------------------------------------------------------------
 q) Autoscalling AWS EC2 instance based on memory utilization ? 
-q) diff b/w  harizontal scalling and vertical scalling ? 
-vertical scalling - downtime, AWS RDS 
-
+q) diff b/w  harizontal scalling and vertical scalling ?  
 -----------------------------------------------------------------------------------------------------------------
 --------------------------------------------------------------------------------------------------------
 Class 10 ( vipin gupta udemy 2h )
@@ -1541,6 +1557,9 @@ let say for protect yout AWS-RDS secrets (username,password)
 you have a chances to forget your password or expose and and it may be updateing for 3 months (rotating)
 * we can use this like environmental variable in shell-scipt
 --------------------------------------------------------------------------------------------------------
+q) How to update the major version of RDS?
+Q) How to add user to that
+Q) How do you maintain the credentials of RDS?
 --------------------------------------------------------------------------------------------------------
 --------------------------------------------------------------------------------------------------------
 Class 13  
