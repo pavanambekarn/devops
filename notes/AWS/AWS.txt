@@ -85,11 +85,8 @@ Avalability Zones: are with in the aws regions.they are isolated with each other
 	 if one zone is down we can able to continue that work in other zone    	 
 
 --------------------------------------------------------------------------------------------
-Edge Location: cache memory to raduce latency we can use it
-=> it will store what users access frequantly   
-
-A site that cloud front uses to cache copies of your content for faster delivery 
-              to users at any location
+Edge Location: cache memory to raduce latency we can use it   
+It will use in -> s3 accelerater & Cloud Front
 			  
 --------------------------------------------------------------------------------------
 Assaignment :How many AWS Regions in India?
@@ -236,7 +233,7 @@ MFA - multi factory authentication know about this
     -> we can assign to root user and normal user also
 -----------------------------------------------------------------------------------------------------------
 CloudShell -> symbal in console where you will get cloudsell user with default aws cli installed by AWS.
-           - region specific.
+              - region specific.
 -----------------------------------------------------------------------------------------------------------
 -----------------------------------------------------------------------------------------------------------
 CLASS -3
@@ -1218,14 +1215,9 @@ aws kms decrypt --ciphertext-blob fileb://MyEncryptedFile --output text
 Class 11
 ----------------------------------------------------------------------------------------------------
 --------------------------------------------------------------------------------------------------
-==> Permission
-* S3 policy
-* Access control list 
+--------------------------------------------------------------------------------------------------
+ 
 ==> Properties
-* static website hosting (properties)
-* Bucket versioning : if you are overwritten any object or deleted any object
-that really does not go any ware still in the bucket you can recover if you are enable the versioning
-but this is going to increase your storage size 
 * server access log 
 * event notification (event with lamda see the example) 
 ==> Management
@@ -1233,25 +1225,47 @@ but this is going to increase your storage size
 * Replication rule
 ------------------------------------------------------------------
 AMAZON S3 (Simple Storage Service)
+* object storage
+* bucket name must be globally unique and must not contain spaces, special character, should not extent 3 to 63 character
+  and uppercase letter etc.
 * S3 is global but bucket is regional specific (you have to select the region)
 * Amazon S3 has a simple web services interface that you can use to store and retrieve 
   any amount of data, at any time, from anywhere on the web.
-* object storage 
-
-Bucket -> logical unit of storage in Aws
-Object -> Computer data storage architecture that manages data as object 
-    
-==>Types of Uploads :
-  we have 2 types of uploads in s3
-                      1.Single operation upload
-					  2.Upload object in parts
-
-1.Single operation upload:
+  
+Object Overview :
+-> it will contain Object URL, tags, metedata, arn, Etag, Object lock, Storage class, encryption, additional checksum etc. 
+-> 1.Single operation upload:
       ->	It’s a traditional upload where you will upload the object in one part
       ->	A single operation upload can upload the file up to 5GB in size.
-2.Upload object in parts (Multi upload operation) :
+   2.Upload object in parts (Multi upload operation) :
       -> objects up to 5TB.
       -> You can use multipart upload for the objects from 5MB to 5TB in size.
+
+Bucket Property:
+-> What is versioning in s3 bucket?	(Cost Increases)				
+   * if you enable it 'if you override(update) any file or deleted any file the data will not deleted permanently
+    you can get back it' 	
+   - click on the object -> Version (you can see there old version)[download it and override]
+   - if you deleted -> (List versions check mark)
+-> Static website Hosting?
+   Basically your providing a build file (index.html etc) which is not processing by server.
+   - "static-URL/folder/.html" it will open (like that you can access number .html file in the bucket).
+   - Redirection rules while cong the static website hosting: if it is /dirc it will redirect to /document in static-URL.
+   - you can add error documentation file also while cong the static website hosting.
+   - while performing domain thing in the 'CNAME' section we need to provide the static-URL.
+   - we can redirect: static object present in 1st bucket and we can access that from 2nd bucket
+     with static-URL of 2nd bucket.
+-> Transfer Accelaration? (it will use edge location)
+   - we can't do by console while upload or download object for s3 accelerater. (while SDK we can)
+     "aws s3 cp .html s3://s3-bucket-name --endpoint-url s3_accelerater_url" through error 
+	 "configure set s3.addressing_style virtual"
+   - Increase the download and upload speed. 
+-> CRR/SRR (CrossRegionReplication/SameRegionReplication) we can use for Disaster recovery
+   - Management -> Replication Rules (we need enable versioning for both bucket for replication).
+
+=> Permission
+Bucket Policy: By default block all public acces is true you need to off and update the S3 Policy.
+Access control list: 
  
 ==> Limitation of S3 bucket:
 	     -> Only 100 buckets can be created per account.
@@ -1327,14 +1341,6 @@ IAM Policy: Relates to specific Users or Groups
    Specify perticular user and account holder (other account user can access it)
    ->An ACL can have up to 100 grants.
 				
- --------------------------------------------------------------------------------------------------------
-What is version of s3 bucket ??					
-	if you enable it 'if you override any file or deleted any file the data will not deletd permanently
-    you can get back it 	
-	
-	click on the object -> Version (you can see there old version)[download it and override]
-	if you deleted -> (List versions check mark)
-----------------------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------------------	 
 * VPC endpoint for S3 - Java Home Cloud
 * AWS S3 with lamda
