@@ -1217,8 +1217,6 @@ Class 11
 --------------------------------------------------------------------------------------------------
 --------------------------------------------------------------------------------------------------
  
-==> Properties
-* server access log 
 * event notification (event with lamda see the example) 
 ==> Management
 * Life cycle rule
@@ -1227,7 +1225,7 @@ Class 11
 AMAZON S3 (Simple Storage Service)
 * object storage
 * bucket name must be globally unique and must not contain spaces, special character, should not extent 3 to 63 character
-  and uppercase letter etc.
+  and uppercase letter etc. ( only 2 special character (.) (-) allow)
 * S3 is global but bucket is regional specific (you have to select the region)
 * Amazon S3 has a simple web services interface that you can use to store and retrieve 
   any amount of data, at any time, from anywhere on the web.
@@ -1262,6 +1260,8 @@ Bucket Property:
    - Increase the download and upload speed. 
 -> CRR/SRR (CrossRegionReplication/SameRegionReplication) we can use for Disaster recovery
    - Management -> Replication Rules (we need enable versioning for both bucket for replication).
+-> server access log ( if some buddy get/put object to the s3):
+   - when you enable it by default bucket policy will update.
 
 => Permission
 Bucket Policy: By default block all public acces is true you need to off and update the S3 Policy.
@@ -1275,48 +1275,38 @@ Access control list:
      - Amount of storage
      - Storage class
      - frequent of accessing 
-     - reginal replication 	 
-		 
-==> Nameing convention 
- all are small letters
- only 2 special character (.) (-)   
+     - reginal replication 	   
 
-==> S3 Storage classes:
-       1.Standard
-	   2.Reduced Redundancy storage - frequently access, non-critical data 
-	   3.Infrequent access
-	   4.One Zone-IA
-	   5.Glacier
-       6.Glacier Deep Archive
-	   7.intelligent tiering
+==> S3 Storage classes: (Based Availability & Durability)
 			 			  
 1.Standard :
 - general purpose storage frequently accessed data
-- object replication multi Azure
 - Expensive -low latency 
  
 2.Infrequent access :
 - less infrequently accessed data
-- object replication multi AZ 
 - less expensive compare to standard
-	      
-3.Glacier : (long term data)
-- Data Archiving once in a year  
-- May take several hours to retrieve the objects from this storage 
-- Low cost storage
 
-4.One Zone - IA :
-  stores in single aws availability zones, infrequently access 
+3.One Zone - IA : (all support multi AZ object storage background except this)
+  stores in single aws availability zones, infrequently access & Low Cost
+
+Note: For backup or DR you can use the Glacier and low cost.
+	      
+4.Glacier Instant retrieval : 
+- Data Archive in minutes  
+
+5.Glacier flexible retrieval:
+- Data Archive in minutes/hours
+
+6.Glacier Deep archive : (Govt/medical records)
+- Data Archive in hours
 			
-5.intelligent tiering :
+7.intelligent tiering :
 -(if you don't no the frequent of access of object)
   move the data from one storage class to another storage class depending 
   on accessing the data
+- Property -> intelligent tiering archive conf
 
-6.Glacier Deep archive : 
-  lowest cost storge, retrivel time of 12h  (Govt record, old medical record)
-------------------------------------------------------------------------------------------------------
-S3 Accelaration ? -- 
 ---------------------------------------------------------------------------------------------- 
 Object Access Control List (ACL): Setting the permission directly on the object
 Bucket Policy: Relates to the bucket, can define rules relating to sub-directories, key name (filenames), 
@@ -1324,6 +1314,7 @@ Bucket Policy: Relates to the bucket, can define rules relating to sub-directori
 IAM Policy: Relates to specific Users or Groups
 ---------------------------------------------------------------------------------------------------
 ==> S3 Life cycle policy :
+   - Management -> Create a life cycle rule -> 
     An object lifecycle policy is a set of rules that automate the migration of the object
  	storage class to different storage class  ex:- usually for logs archive
 	
@@ -1365,11 +1356,11 @@ IAM Policy: Relates to specific Users or Groups
 How do I access private S3 bucket in browser?
 make it as public and through the end point of bucket we can access it 
 -----------------------------------------------------------------------------------------------
-How can I grant a user access to a specific folder in my Amazon S3 bucket?
-yes specifying prefix in resource section 
+Q) How can I grant a user access to a specific folder in my Amazon S3 bucket?
+- yes specifying prefix in resource section 
 
-suppose in userpolicy gice access to s3 and s3 policy it is deny..what happen can you access bucket or not.
-=> not able to access
+Q) suppose in userpolicy give access to s3 but in s3 policy it is deny..what happen can you access bucket or not.
+- not able to access
 -------------------------------------------------------------------------------------------------------------
 - when you move from standar to glacier you couldn't able to download that object 
   first you have to restore it then the object is available to you (restore time is 3 to 4 hours) 
@@ -1390,8 +1381,6 @@ suppose in userpolicy gice access to s3 and s3 policy it is deny..what happen ca
 
 ------------------------------------------------------------------------------------------------
 * can we upload object directly as deep archive in s3 = yes 
--------------------------------------------------------------------------------------------------
-s3 acceleration => it act like cloud front to optimize the transfer acceleration speed we use it (cost)
 ------------------------------------------------------------------------------------------------
 You can send requests to Amazon S3 using the REST API or the AWS SDK
 * For example, a REST API would use a GET request to retrieve a record, a POST request to create one,
@@ -1404,6 +1393,8 @@ Q)how to restore the s3 bucket?
 managment -> replication rule -> basically we are creating new s3 bucket with other account 
 and what are all the data present in main bucket it syncking with respect backup bucket in the 
 glacier storage class 
+------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------------
 Class 12  (Simple real time example to use lambda)
 ---------------------------------------------------------------------------------------------
