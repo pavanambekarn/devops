@@ -1216,12 +1216,6 @@ Class 11
 ----------------------------------------------------------------------------------------------------
 --------------------------------------------------------------------------------------------------
 --------------------------------------------------------------------------------------------------
- 
-* event notification (event with lamda see the example) 
-==> Management
-* Life cycle rule
-* Replication rule
-------------------------------------------------------------------
 AMAZON S3 (Simple Storage Service)
 * object storage
 * bucket name must be globally unique and must not contain spaces, special character, should not extent 3 to 63 character
@@ -1247,12 +1241,12 @@ Bucket Property:
    - if you deleted -> (List versions check mark)
 -> Static website Hosting?
    Basically your providing a build file (index.html etc) which is not processing by server.
-   - "static-URL/folder/.html" it will open (like that you can access number .html file in the bucket).
-   - Redirection rules while cong the static website hosting: if it is /dirc it will redirect to /document in static-URL.
-   - you can add error documentation file also while cong the static website hosting.
-   - while performing domain thing in the 'CNAME' section we need to provide the static-URL.
+   - "static-URL/folder/.html" it will open (like that you can access n number .html file in the bucket).
+   - Redirection rules while conf the static website hosting: if it is /dirc it will redirect to /document in static-URL.
    - we can redirect: static object present in 1st bucket and we can access that from 2nd bucket
      with static-URL of 2nd bucket.
+   - you can add error documentation file also while cong the static website hosting.
+   - while performing domain thing in the 'CNAME' section we need to provide the static-URL.
 -> Transfer Accelaration? (it will use edge location)
    - we can't do by console while upload or download object for s3 accelerater. (while SDK we can)
      "aws s3 cp .html s3://s3-bucket-name --endpoint-url s3_accelerater_url" through error 
@@ -1262,22 +1256,15 @@ Bucket Property:
    - Management -> Replication Rules (we need enable versioning for both bucket for replication).
 -> server access log ( if some buddy get/put object to the s3):
    - when you enable it by default bucket policy will update.
+-> S3 Life cycle policy :
+   - Management -> Create a life cycle rule -> 
+    An object lifecycle policy is a set of rules that automate the migration of the object
+ 	storage class to different storage class  ex:- usually for logs archive
+	
+               30days            30days                     30days                400days
+   	standard -----------> IA ---------------> one-zone IA -------------> Glaciar---------> delete it permaanently   
 
-=> Permission
-Bucket Policy: By default block all public acces is true you need to off and update the S3 Policy.
-Access control list: 
- 
-==> Limitation of S3 bucket:
-	     -> Only 100 buckets can be created per account.
-	     -> Can hold unlimited objects
-		 
-==> charges
-     - Amount of storage
-     - Storage class
-     - frequent of accessing 
-     - reginal replication 	   
-
-==> S3 Storage classes: (Based Availability & Durability)
+-> S3 Storage classes: (Based Availability & Durability)
 			 			  
 1.Standard :
 - general purpose storage frequently accessed data
@@ -1307,20 +1294,14 @@ Note: For backup or DR you can use the Glacier and low cost.
   on accessing the data
 - Property -> intelligent tiering archive conf
 
----------------------------------------------------------------------------------------------- 
+---------------------------------------------------------------------------------------------------
+Permission:----------
+---------------------------------------------------------------------------------------------------
 Object Access Control List (ACL): Setting the permission directly on the object
 Bucket Policy: Relates to the bucket, can define rules relating to sub-directories, key name (filenames), 
                time-of-day, IP address, etc
 IAM Policy: Relates to specific Users or Groups
 ---------------------------------------------------------------------------------------------------
-==> S3 Life cycle policy :
-   - Management -> Create a life cycle rule -> 
-    An object lifecycle policy is a set of rules that automate the migration of the object
- 	storage class to different storage class  ex:- usually for logs archive
-	
-               30days            30days                     30days                400days
-   	standard -----------> IA ---------------> one-zone IA -------------> Glaciar---------> delete it permaanently
---------------------------------------------------------------------------------------------------------
 ==>S3 Bucket Policy : (20kb)
    You add a bucket policy to a bucket to grant other AWS accounts or IAM users access permissions 
    for the bucket and the objects in it. Object permissions apply only to the objects that the bucket
@@ -1332,7 +1313,34 @@ IAM Policy: Relates to specific Users or Groups
    Specify perticular user and account holder (other account user can access it)
    ->An ACL can have up to 100 grants.
 				
-------------------------------------------------------------------------------------------------------	 
+------------------------------------------------------------------------------------------------------
+* Introducing AWS S3 CORS: (Cross-Origin Resource Sharing) 
+- let say your hosting website from one domain and your website is trying to access resource from 
+  another domain by default browser does not allow this operation 
+  
+- let say 2 s3 bucket with static website hosting 
+  s1 bucket index.html containing the end point of s2 bucket index.html by default cross 
+  origin resource is blocked  (go to bucket 2 -> pemissions ->  CORS configuration)
+  
+benefit : security (you can access the s2 bucket index.html/photo from the perticular domain that part 
+                    we will specify in cors conf)  
+
+------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------
+=> Pre-signedURL:
+   while bucket is blocked to public but you want to give access for s3 Object in perticular time period 
+   Object -> action -> presignedURL -> specify the time duration it will provide the Presigned URL.
+------------------------------------------------------------------------------------------------
+==> Limitation of S3 bucket:
+	     -> Only 100 buckets can be created per account.
+	     -> Can hold unlimited objects
+		 
+==> charges
+     - Amount of storage
+     - Storage class
+     - frequent of accessing 
+     - reginal replication 	
+--------------------------------------------------------------------------------------------------	 
 * VPC endpoint for S3 - Java Home Cloud
 * AWS S3 with lamda
 * how to share s3 contents to different accounts 
@@ -1340,7 +1348,6 @@ IAM Policy: Relates to specific Users or Groups
   How will you connect ec2 instance account a to account b s3 bucket 
 * Mount S3 Buckets on EC2 Linux Instance | Configure S3FS (valexy)(word)
 => s3fs <bucket_name> <directory> -o iam_role=ec2-to-s3 
-* Give User Access To Only One S3 Bucket Only -> Easy AWS (10min)
 ------------------------------------------------------------------------------------------------------
 * AWS S3 CLI command
  - aws s3 help 
@@ -1352,9 +1359,6 @@ IAM Policy: Relates to specific Users or Groups
  - aws s3 sync maven3/ s3://Bucket_name/ (what is diff cp v/s sync)
   copy from one bucket to other
  - aws s3 sync s3://Bucket_name/filename s3://Bucket_name/filename (same account)
------------------------------------------------------------------------------------------------
-How do I access private S3 bucket in browser?
-make it as public and through the end point of bucket we can access it 
 -----------------------------------------------------------------------------------------------
 Q) How can I grant a user access to a specific folder in my Amazon S3 bucket?
 - yes specifying prefix in resource section 
@@ -1371,15 +1375,6 @@ Q) suppose in userpolicy give access to s3 but in s3 policy it is deny..what hap
 3-5 hours for standard retrievals
 5-12 hours for bulk retrievals
 ------------------------------------------------------------------------------------------------
-* Introducing AWS S3 CORS: (Cross-Origin Resource Sharing) -
-- let say your hosting website from domain one and your website is trying to access resource from 
-  another domain that's called as domain 2 by default browser does not allow this operation 
-  
-- let say 2 s3 bucket with static website hosting 
-  s1 index.html we are providing the end point of s2 index.html of diff domain by default cross 
-  origin resource is blocked  go to bucket 2 -> pemissions ->  CORS configuration (save)
-
-------------------------------------------------------------------------------------------------
 * can we upload object directly as deep archive in s3 = yes 
 ------------------------------------------------------------------------------------------------
 You can send requests to Amazon S3 using the REST API or the AWS SDK
@@ -1389,10 +1384,19 @@ You can send requests to Amazon S3 using the REST API or the AWS SDK
 Q) How can you restrict specific IP address for s3 access?
 https://wasabi-support.zendesk.com/hc/en-us/articles/360000377611-How-to-restrict-access-to-a-bucket-to-specific-IP-address-
 ------------------------------------------------------------------------------------------------
-Q)how to restore the s3 bucket?
+Q)how to restore the s3 bucket? (DR)
 managment -> replication rule -> basically we are creating new s3 bucket with other account 
 and what are all the data present in main bucket it syncking with respect backup bucket in the 
 glacier storage class 
+------------------------------------------------------------------------------------------------
+Q) when you encrypt the bucket with local KMS and if you place any object in the s3 then api will call
+local kms then it will encrypt the object but if you placing the lot of object per day then cost will 
+increase because every time it will call kms by API solution 
+enable bucket key: for some amount of time it will drop the kms in the bucket so no need to call the kms
+by API when you put the object every time. (Cost reduction almost 99%)
+------------------------------------------------------------------------------------------------
+Q) we can able to access the object by object-url it will support http/https but explicity 
+I want to access by Https only then you can take the help of bucket policy.
 ------------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------------
