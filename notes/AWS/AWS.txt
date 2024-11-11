@@ -1830,19 +1830,33 @@ Explain ur organization architecture? ( Three-tier web app ) [Ajit Inamdar]
 Q) server is running slow how will you resolve that?
 - the main cause is utilizing more cpu or memory set up autoscalling and load balancing on it.
 ----------------------------------------------------------------------------------------------------
+AWS DR: 
+UST: RTO & RPO 24 hours
+
+Avalabilty : which is pointing to the zone.
+DR: which is pointing to the region level.
+
+          RPO          {DISASTER}      RTO
+    ----------------------------------------------
+     <--DATA LOSS--->              <--DOWN TIME-->
+
+
 Q) Disaster Recovery (backups) -server gyan (https://d1.awsstatic.com/whitepapers/aws-disaster-recovery.pdf) 
 RTO(recovery time object) -> it will going to take 8 hours
 => if a disaster occurs at 12:00 PM (noon) and the RTO is eight hours, the DR process should restore
    the business process to the acceptable service level by 8:00 PM. 
 RPO(Recovery Point Objective) -> after RTO it will take extra 1 hour 
 => if a disasteroccurs at 12:00 PM (noon) and the RPO is one hour, the system should recover all data
-   that was in the system before 11:00 AM. Data loss will span only one hour, between 11:00 AM and 12:00 PM (noon). 
+   that was in the system before 11:00 AM. Data loss will span only one hour, between 11:00 AM and 12:00 PM (noon).   
    
-there are diff way to tacking backups in aws:
-- backup and restore
-- pilot light
-- warm standby
-- Multi site 
+Fail Back: switching traffic from DR site to the primary site.
+   
+there are diff way to tacking backups in aws based on RTO/RPO:
+- backup and restore  (HOURS) (maintaing the copy in second region)
+- pilot light         (minutes) (data is continuesly replicated with second region) 
+  EX: RDS- read replica, S3- CrossRegionReplication
+- warm standby        (minutes/seconds)
+- Multi site          (zero downtime)
 ----------------------------------------------------------------------
 Q) .pem v/s .ppk ?
 PEM (Privacy Enhanced Mail) is a base64 container format for encoding keys and certificates. 
