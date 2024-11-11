@@ -1671,7 +1671,58 @@ SQS : Simple Queu service
 alternatives:- 	  
  - event bridge -> push model 
  - KINESIS 
--------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------
+ELK: 
+
+3)What is AWS Elastic Search ?? 
+- search engine and distributed no-sql database
+- new version is not fully OPEN SOURCE 7.1
+Used for: 
+log analytics, full-text search, security intelligence, business analytics, 
+It get the data from log Stash to perform there operation 
+--------------------------------------------------------------------------------------------------------
+4) What is Log Stash :
+ * collect data from a variety of sources, transform it on the fly, and send it to
+ your desired destination.  
+ * an open-source analytics and search engine 	
+--> imagine elestic search as database and log stash as the 
+streaming componant which pushes the log on elestic search
+--------------------------------------------------------------------------------------------------------
+kibana: is UI componant which displays data in the way you want 
+------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------
+OPEN SEARCH in AWS:
+- searck engine (like Chrome) and secure by build in certification and even in authentication and authorisation also.
+
+good for: 
+1) Log analytics: 
+application monitoring (Infracture latency and error rate find out).
+secure monitoring (suspecies authenticattion and what data was accessed by that IP).
+2) search engine: find the rigth product quickly.
+
+How does it work:
+- send the data as json via RESTAPI -> DATA IS INDEXED  -> REST API for the fielded matching
+- DATA INDEXED: store the data in the form of inverted index and the index is organized by terms (words), 
+  and each term points to a list of documents or web pages that contain that term.
+
+version in TCR: 2.13
+In Setup:
+- Deployment type like production for that you have dedicated masternode and worker node with multi AZ option.
+  Instance type and EBS 
+  IOPS - Input/Output Operations per second (ex: 32000)
+  throughput - the amount of data that passes through a network in a given period of time (1780 Mib/sec) 
+- Storage like warm and Cold storage.
+  warm storage: retain large amount of data while keeping the same interactive analysis.
+  Cold Storage: cost effective to view the data in cold storage you must move it to warm storage.
+- back by snashot by default hourly basis.
+- network choose vpc, subnet(private subnet).
+- fine grained access control in out case master user name and passwd.
+- encryption by KMS.
+
+CLNR : Scale up and Scale down of EBS storage some time need to change the instane type
+
+-------------------------------------------------------------------------------------------------------------
 -----------------------------------------------------------------------------------------------------
 -----------------------------------------------------------------------------------------------------
 1) What is Cloud Front : (content delivary network for global Auidence) (valaxy technology-28min)
@@ -1686,26 +1737,7 @@ configuration:
  * transfer large amount of data into and out of the aws cloud
  * data trasfer service for S3
  * it supports petabytes of data 
-------------------------------------------------------------------------------------------------------
-ELK: 
---------------------------------------------------------------------------------------------------------
-3)What is AWS Elastic Search ?? 
-- distributed no-sql database 
-(to check the streamed log in ec2-instance)(open sourse)
-search engine (like google specifically ment for AWS) and is commonly used for 
-log analytics, full-text search, security intelligence, business analytics, 
-It get the data from log Stash to perform there operation 
---------------------------------------------------------------------------------------------------------
-4) What is Log Stash :
- * collect data from a variety of sources, transform it on the fly, and send it to
- your desired destination.  
- * an open-source analytics and search engine 	
---> imagine elestic search as database and log stash as the 
-streaming componant which pushes the log on elestic search
-
-kibana: is UI componant which displays data in the way you want 
-
--------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------
 5)What is Elastic Cache or memchache ??
 
   * improve the performance of web application 
