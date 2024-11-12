@@ -1682,12 +1682,11 @@ Used for:
 log analytics, full-text search, security intelligence, business analytics, 
 It get the data from log Stash to perform there operation 
 --------------------------------------------------------------------------------------------------------
-4) What is Log Stash :
- * collect data from a variety of sources, transform it on the fly, and send it to
- your desired destination.  
- * an open-source analytics and search engine 	
+4) What is Log Stash : (Compare with kinesis)
+ * intaking unstructured data from different sources for the purpose mentioned: Extract, transform 
+   and load the transformed data somewhere else (What Glue Job will do).  	
 --> imagine elestic search as database and log stash as the 
-streaming componant which pushes the log on elestic search
+    streaming componant which pushes the log on elestic search
 --------------------------------------------------------------------------------------------------------
 kibana: is UI componant which displays data in the way you want 
 ------------------------------------------------------------------------------------------------------
@@ -1722,7 +1721,9 @@ In Setup:
 
 CLNR : Scale up and Scale down of EBS storage some time need to change the instane type
 
--------------------------------------------------------------------------------------------------------------
+Q) diff b/w elestic search and Open Search?
+
+-----------------------------------------------------------------------------------------------------
 -----------------------------------------------------------------------------------------------------
 -----------------------------------------------------------------------------------------------------
 1) What is Cloud Front : (content delivary network for global Auidence) (valaxy technology-28min)
