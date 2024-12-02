@@ -1,6 +1,7 @@
 import * as cdk from 'aws-cdk-lib';
 import { CodePipeline, CodePipelineSource, ShellStep } from 'aws-cdk-lib/pipelines';
 import { Construct } from 'constructs';
+import { PipelineStage } from './PipelineStage';
 
 
 export class CdkCicdStack extends cdk.Stack {
@@ -8,7 +9,7 @@ export class CdkCicdStack extends cdk.Stack {
     super(scope, id, props);
 
 
-    new CodePipeline(this, 'Pipelin', {
+    const pipeline = new CodePipeline(this, 'Pipelin', {
       pipelineName: 'Pipeline',
       synth: new ShellStep('Synth', {
         input: CodePipelineSource.gitHub('pavanambekarn/devops', 'cdk', {
@@ -21,6 +22,10 @@ export class CdkCicdStack extends cdk.Stack {
         ],
         primaryOutputDirectory: 'cicd/cdk.out'
       })
-    })
+    });
+
+    const testStage = pipeline.addStage(new PipelineStage(this, 'PipelineTestStage', {
+       stageName: 'test'
+    }))
   }
 }
