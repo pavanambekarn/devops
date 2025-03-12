@@ -36,6 +36,52 @@ Parameters:
 
 Resources:
 
+
+  CodePipelineRole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: ['codepipeline.amazonaws.com', 'cloudformation.amazonaws.com']
+            Action: ['sts:AssumeRole']
+      Policies:
+        - PolicyName: 'CodePipelinePolicy'
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - cloudformation:*
+                  - "cloudformation:CreateStack"
+                  - "cloudformation:UpdateStack"
+                  - "cloudformation:DeleteStack"
+                  - s3:*
+                  - "s3:CreateBucket"
+                  - "s3:PutObject"
+                  - "s3:GetObject"
+                  - "s3:ListBucket"
+                  - lambda:*
+                  - codebuild:StartBuild
+                  - codebuild:BatchGetBuilds
+                  - iam:CreateRole
+                  - iam:AttachRolePolicy
+                  - iam:PassRole
+                  - iam:PutRolePolicy
+                  - iam:GetRole
+                  - iam:GetRolePolicy
+                  - iam:ListRolePolicies
+                  - iam:TagRole
+                  - iam:UntagRole
+                  - iam:DeleteRolePolicy
+                  - iam:DeleteRole
+                  - iam:GetPolicy
+                  - iam:ListAttachedRolePolicies
+                  - iam:DetachRolePolicy  # Added to fix permission errors
+                Resource: "*" 
+
   DeployPipeline:
     Type: "AWS::CodePipeline::Pipeline"
     Properties:
