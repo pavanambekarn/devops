@@ -55,14 +55,7 @@ Resources:
               - Effect: Allow
                 Action:
                   - cloudformation:*
-                  - "cloudformation:CreateStack"
-                  - "cloudformation:UpdateStack"
-                  - "cloudformation:DeleteStack"
                   - s3:*
-                  - "s3:CreateBucket"
-                  - "s3:PutObject"
-                  - "s3:GetObject"
-                  - "s3:ListBucket"
                   - lambda:*
                   - codebuild:StartBuild
                   - codebuild:BatchGetBuilds
