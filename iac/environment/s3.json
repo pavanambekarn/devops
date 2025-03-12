@@ -1,0 +1,7 @@
+
+{
+  "Parameters" : {
+      "S3BucketName": "test-s3-12345"
+  }
+}
+
