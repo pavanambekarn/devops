@@ -40,12 +40,13 @@ Resources:
   CodePipelineRole:
     Type: 'AWS::IAM::Role'
     Properties:
+      RoleName: !Ref CodePipelineRoleName
       AssumeRolePolicyDocument:
         Version: '2012-10-17'
         Statement:
           - Effect: Allow
             Principal:
-              Service: ['codepipeline.amazonaws.com', 'cloudformation.amazonaws.com']
+              Service: ['codepipeline.amazonaws.com']
             Action: ['sts:AssumeRole']
       Policies:
         - PolicyName: 'CodePipelinePolicy'
@@ -56,23 +57,100 @@ Resources:
                 Action:
                   - cloudformation:*
                   - s3:*
+                  - kms:*
                   - lambda:*
-                  - codebuild:StartBuild
-                  - codebuild:BatchGetBuilds
-                  - iam:CreateRole
-                  - iam:AttachRolePolicy
-                  - iam:PassRole
-                  - iam:PutRolePolicy
-                  - iam:GetRole
-                  - iam:GetRolePolicy
-                  - iam:ListRolePolicies
-                  - iam:TagRole
-                  - iam:UntagRole
-                  - iam:DeleteRolePolicy
-                  - iam:DeleteRole
-                  - iam:GetPolicy
-                  - iam:ListAttachedRolePolicies
-                  - iam:DetachRolePolicy  # Added to fix permission errors
+                  - codebuild:*
+                  - iam:*
+                Resource: "*" 
+
+  CFTRole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      RoleName: !Ref CFTRoleName
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: ['cloudformation.amazonaws.com']
+            Action: ['sts:AssumeRole']
+      Policies:
+        - PolicyName: 'CodePipelinePolicy'
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - cloudformation:*
+                  - s3:*
+                  - kms:*
+                  - lambda:*
+                  - codebuild:*
+                  - iam:*
+                  - acm:*
+                  - iam:* 
+                  - route53:* 
+                  - servicecatalog:* 
+                  - "acm-pca:*"
+                  - apigateway:*
+                  - application-autoscaling:*
+                  - applicationinsights:*
+                  - athena:*
+                  - autoscaling:*
+                  - autoscaling-plans:*
+                  - budgets:*
+                  - ce:*
+                  - cloudformation:*
+                  - cloudfront:*
+                  - cloudwatch:*
+                  - codebuild:*
+                  - codecommit:*
+                  - codestar:*
+                  - config:*
+                  - controltower:*
+                  - dax:*
+                  - directconnect:*
+                  - dynamodb:*
+                  - ec2-instance-connect:*
+                  - ec2:*
+                  - ecr:*
+                  - ecs:*
+                  - eks:*
+                  - elasticbeanstalk:*
+                  - elasticache:*
+                  - elasticloadbalancing:*
+                  - elasticmapreduce:*
+                  - dms:*
+                  - es:*
+                  - events:*
+                  - firehose:*
+                  - glacier:*
+                  - glue:*
+                  - health:*
+                  - kafka:*
+                  - kinesis:*
+                  - kms:*
+                  - lambda:*
+                  - lex:*
+                  - logs:*
+                  - mgh:*
+                  - opsworks:*
+                  - pipes:*
+                  - ram:*
+                  - redshift:*
+                  - rds:*
+                  - scheduler:*
+                  - secretsmanager:*
+                  - sms:*
+                  - sns:*
+                  - sqs:*
+                  - ssm:*
+                  - states:*
+                  - storagegateway:*
+                  - swf:*
+                  - transfer:*
+                  - waf-regional:*
+                  - waf:*
                 Resource: "*" 
 
   DeployPipeline:
