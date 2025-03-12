@@ -1,0 +1,4 @@
+[
+    {"ParameterKey": "KmsCmkARN","ParameterValue": "arn:aws:kms:us-east-1:193815419068:key/a33e09f1-42de-4bc3-95aa-567077102123"},
+    {"ParameterKey": "CodePipelineArtifactStoreBucketName","ParameterValue": "cloudops-pipeline-artifact-bucket"}
+]

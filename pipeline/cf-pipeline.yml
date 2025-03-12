@@ -1,0 +1,148 @@
+Description: CodePipeline with associated policies and sns notification.
+
+Parameters:
+  TeamName:
+    Type: String
+    Default: cloudops
+  ApplicationName:
+    Type: String
+    Default: dbrestore
+  RepoName:
+    Type: String
+    Default: "994410/pipelinetest"
+  RepoBranchName:
+    Type: String
+    Default: master
+  CodeStarConnection:
+    Type: String
+    Default: "arn:aws:codestar-connections:us-east-1:509802998399:connection/9eabfd4c-8f77-43c6-8646-95d9c3103cec"
+  KmsCmkARN:
+    Type: String
+    Default: "arn:aws:kms:us-east-1:509802998399:key/739c533b-195e-450f-ad88-c465e28c3d9d"
+  NotificationEmail:
+    Type: String
+    Default: "chenthilsa@gmail.com"
+  SourceBucket:
+    Type: String
+    Default: "test-dev-pipeline-artifact-bucket"
+  SourceObjectKey:
+    Type: String
+    Default: "artifact/template.zip"
+  TargetAccountDev:
+    Type: String
+    Default: "886994311950" 
+  # TargetAccountPve:
+  # TargetAccountProd:
+
+Resources:
+
+  DeployPipeline:
+    Type: "AWS::CodePipeline::Pipeline"
+    Properties:
+      Name: !Sub ${TeamName}-${ApplicationName}-pipeline
+      RoleArn: arn:aws:iam::509802998399:role/pipeline-role
+      Stages:
+        - Name: Source
+          Actions:
+            - Name: Source-From-Github
+              ActionTypeId:
+                Category: Source
+                Owner: AWS
+                Version: 1
+                Provider: CodeStarSourceConnection
+              OutputArtifacts:
+                - Name: Source-Artifacts
+              Configuration:
+                BranchName: !Ref RepoBranchName
+                ConnectionArn: !Ref CodeStarConnection
+                FullRepositoryId: !Ref RepoName
+                OutputArtifactFormat: "CODE_ZIP"
+                DetectChanges: True
+              RunOrder: 1
+
+        - Name: Approve_DEV
+          Actions:
+            - Name: Approve_DEV
+              InputArtifacts: []
+              OutputArtifacts: []
+              ActionTypeId:
+                Category: Approval
+                Owner: AWS
+                Version: 1
+                Provider: Manual
+              Configuration:
+                NotificationArn: !GetAtt [SNSTopic, Outputs.SNSTopicArn]
+                CustomData: !Sub "Please approve deployment of ${ApplicationName} to Dev"
+              RunOrder: 1
+
+        - Name: Deploy_To_DEV
+          Actions:
+            - Name: Deploy-DEV-API-Lambda
+              InputArtifacts:
+                - Name: Source-Artifacts
+              OutputArtifacts: []
+              ActionTypeId:
+                Category: Deploy
+                Owner: AWS
+                Version: 1
+                Provider: CloudFormation
+              Configuration:
+                ActionMode: CREATE_UPDATE
+                Capabilities: "CAPABILITY_IAM,CAPABILITY_NAMED_IAM,CAPABILITY_AUTO_EXPAND"
+                RoleArn:  arn:aws:iam::886994311950:role/cloudformation-excution-role
+                StackName: !Sub ${TeamName}-dev-api-lambda
+                TemplatePath: "Source-Artifacts::templates/ec2-test-userdata.yml"
+                #TemplateConfiguration: !Sub "Source-Artifacts::iac/Environments/dev/dev-api-lambda-vars.json"
+              RoleArn: arn:aws:iam::886994311950:role/Cross-account-pipeline-role
+              RunOrder: 1
+
+        - Name: Approve_PROD
+          Actions:
+            - Name: Approve_DEV
+              InputArtifacts: []
+              OutputArtifacts: []
+              ActionTypeId:
+                Category: Approval
+                Owner: AWS
+                Version: 1
+                Provider: Manual
+              Configuration:
+                NotificationArn: !GetAtt [SNSTopic, Outputs.SNSTopicArn]
+                CustomData: !Sub "Please approve deployment of ${ApplicationName} to Dev"
+              RunOrder: 1
+
+        - Name: Deploy_To_PROD
+          Actions:
+            - Name: Deploy-DEV-API-Lambda
+              InputArtifacts:
+                - Name: Source-Artifacts
+              OutputArtifacts: []
+              ActionTypeId:
+                Category: Deploy
+                Owner: AWS
+                Version: 1
+                Provider: CloudFormation
+              Configuration:
+                ActionMode: CREATE_UPDATE
+                Capabilities: "CAPABILITY_IAM,CAPABILITY_NAMED_IAM,CAPABILITY_AUTO_EXPAND"
+                RoleArn:  arn:aws:iam::523397174287:role/pipeline-role
+                StackName: !Sub ${TeamName}-dev-api-lambda
+                TemplatePath: "Source-Artifacts::templates/ec2-test-userdata.yml"
+                #TemplateConfiguration: !Sub "Source-Artifacts::iac/Environments/dev/dev-api-lambda-vars.json"
+              RoleArn: arn:aws:iam::523397174287:role/test-prod
+              RunOrder: 1
+
+      ArtifactStore:
+        Type: S3
+        Location: test-dev-pipeline-artifact-bucket
+        EncryptionKey:
+          Id: !Ref KmsCmkARN
+          Type: KMS
+
+Outputs:
+  PipelineArn:
+    Description: ARN of the pipeline created.
+    Value: !Sub arn:aws:codepipeline:${AWS::Region}:${AWS::AccountId}:${DeployPipeline}
+  SnsTopic:
+    Description: ARN of the sns topic created.
+    Value: !GetAtt [SNSTopic, Outputs.SNSTopicArn]

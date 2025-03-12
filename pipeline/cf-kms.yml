@@ -1,0 +1,76 @@
+Description: Create a kms-cmk key and policy.
+
+Parameters:
+  TeamName:
+    Type: String
+    Default: cloudops
+  ApplicationName:
+    Type: String
+    Default: pipeline 
+  PipelineAccount:
+    Type: String
+    Default: 851725581405
+  
+
+Resources:
+  KmsCmkKey:
+    Type: AWS::KMS::Key
+    Properties:
+      Description: An symmetric KMS key
+      EnableKeyRotation: false
+      KeyPolicy:
+        Version: 2012-10-17
+        Id: Allow management of the key
+        Statement:
+          - Sid: Enable IAM User Permissions
+            Effect: Allow
+            Principal:
+              AWS: !Sub arn:aws:iam::${PipelineAccount}:root
+            Action:
+              - "kms:Create*"
+              - "kms:Describe*"
+              - "kms:Enable*"
+              - "kms:List*"
+              - "kms:Put*"
+              - "kms:Update*"
+              - "kms:Revoke*"
+              - "kms:Disable*"
+              - "kms:Get*"
+              - "kms:Delete*"
+              - "kms:ScheduleKeyDeletion"
+              - "kms:CancelKeyDeletion"
+              - "Kms:GenerateDataKey"
+              - "Kms:TagResource"
+              - "Kms:UntagResource"
+            Resource: "*"
+          - Sid: Allow use og the key
+            Effect: Allow
+            Principal: "*"
+            Action:
+              - kms:DescribeKey
+              - kms:Encrypt
+              - kms:Decrypt
+              - kms:ReEncrypt*
+              - kms:GenerateDataKey*
+            Resource: "*"
+
+          - Sid: Allow attachment of persistent resources
+            Effect: Allow
+            Principal: "*"
+            Action:
+              - kms:CreateGrant
+              - kms:ListGrants
+              - kms:RevokeGrant
+            Resource: "*"
+
+  KeyCmkAlias:
+    Type: "AWS::KMS::Alias"
+    Properties:
+      AliasName: !Sub alias/${TeamName}/${ApplicationName}/cicd
+      TargetKeyId: !Ref KmsCmkKey
+
+Outputs:
+  KmsArn:
+    Value: !GetAtt KmsCmkKey.Arn
+  KmsAlies:
+    Value: !Ref KeyCmkAlias

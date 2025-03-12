@@ -1,0 +1,67 @@
+Description: Create S3 artifact bucket and policy.
+
+Parameters:
+  KmsCmkARN:
+    Type: String
+    Default: "arn:aws:kms:us-east-1:193815419068:key/a33e09f1-42de-4bc3-95aa-567077102123"
+  CodePipelineArtifactStoreBucketName:
+    Type: String
+    Default: "cloudops-pipeline-artifact-bucket"
+
+
+Resources:
+  CodePipelineArtifactStoreBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              KMSMasterKeyID: !Ref KmsCmkARN
+              SSEAlgorithm: aws:kms
+      VersioningConfiguration:
+        Status: Enabled
+      BucketName: !Ref CodePipelineArtifactStoreBucketName
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: True
+        BlockPublicPolicy: True
+        IgnorePublicAcls: True
+        RestrictPublicBuckets: True
+
+  CodePipelineArtifactStoreBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref CodePipelineArtifactStoreBucket
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Sid: AllowAccessToRoles
+            Effect: Allow
+            Principal: '*'
+            Action:
+              - s3:Get*
+              - s3:Put*
+              - s3:ListBucket
+            Resource:
+              - !Sub ${CodePipelineArtifactStoreBucket.Arn}
+              - !Sub ${CodePipelineArtifactStoreBucket.Arn}/*
+          - Sid: DenyUnEncryptedObjectUploads
+            Effect: Deny
+            Principal: "*"
+            Action: "s3:PutObject"
+            Resource: !Sub ${CodePipelineArtifactStoreBucket.Arn}/*
+            Condition:
+              StringNotEquals:
+                "s3:x-amz-server-side-encryption": "aws:kms"
+          - Sid: DenyInsecureConnections
+            Effect: Deny
+            Principal: "*"
+            Action: s3:*
+            Resource: !Sub ${CodePipelineArtifactStoreBucket.Arn}/*
+            Condition:
+              Bool:
+                "aws:SecureTransport": false
+
+Outputs:
+  Bucket:
+    Description: Name of bucket created
+    Value: !Ref CodePipelineArtifactStoreBucket

@@ -1,0 +1,17 @@
+[
+    {"ParameterKey": "TeamName","ParameterValue": "clnr"},
+    {"ParameterKey": "ApplicationName","ParameterValue": "apicode"},
+    {"ParameterKey": "RepoName","ParameterValue": "Innersource/tcr-cost-tool-api"},
+    {"ParameterKey": "RepoBranchName","ParameterValue": "development"},
+    {"ParameterKey": "PvRepoBranchName","ParameterValue": "pv"},
+    {"ParameterKey": "ProdRepoBranchName","ParameterValue": "main"},
+    {"ParameterKey": "CodeStarConnection","ParameterValue": "arn:aws:codestar-connections:us-east-1:098048619134:connection/ceca57d6-04fd-488d-a374-01c90edfcbf9"},
+    {"ParameterKey": "KmsCmkARN","ParameterValue": "arn:aws:kms:us-east-1:098048619134:key/08cb7697-733c-4dc6-94d3-f36b6222b954"},
+    {"ParameterKey": "NotificationEmail","ParameterValue": "; ravi.kothapalli@bbcbsa.com"},
+    {"ParameterKey": "TargetAccountPv","ParameterValue": "332602566502"},
+    {"ParameterKey": "TargetAccountDev","ParameterValue": "503400991282"},
+    {"ParameterKey": "TargetAccountPve","ParameterValue": "774569557969"},
+    {"ParameterKey": "TargetAccountProd","ParameterValue": "072147035205"},
+    {"ParameterKey": "SourceBucket","ParameterValue": "clnr-apicode-pipeline-artifact-bucket"},
+    {"ParameterKey": "SourceObjectKey","ParameterValue": "NOT_IN_USE_cd-pipeline/portal-templates.zip"}
+]
