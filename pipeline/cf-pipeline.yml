@@ -35,115 +35,6 @@ Parameters:
  
 Resources:
 
-  KmsCmkKey:
-    Type: AWS::KMS::Key
-    Properties:
-      Description: An symmetric KMS key
-      EnableKeyRotation: false
-      KeyPolicy:
-        Version: 2012-10-17
-        Id: Allow management of the key
-        Statement:
-          - Sid: Enable IAM User Permissions
-            Effect: Allow
-            Principal:
-              AWS: !Sub arn:aws:iam::${AWS::AccountId}:root
-            Action:
-              - "kms:Create*"
-              - "kms:Describe*"
-              - "kms:Enable*"
-              - "kms:List*"
-              - "kms:Put*"
-              - "kms:Update*"
-              - "kms:Revoke*"
-              - "kms:Disable*"
-              - "kms:Get*"
-              - "kms:Delete*"
-              - "kms:ScheduleKeyDeletion"
-              - "kms:CancelKeyDeletion"
-              - "Kms:GenerateDataKey"
-              - "Kms:TagResource"
-              - "Kms:UntagResource"
-            Resource: "*"
-          - Sid: Allow use og the key
-            Effect: Allow
-            Principal: "*"
-            Action:
-              - kms:DescribeKey
-              - kms:Encrypt
-              - kms:Decrypt
-              - kms:ReEncrypt*
-              - kms:GenerateDataKey*
-            Resource: "*"
-
-          - Sid: Allow attachment of persistent resources
-            Effect: Allow
-            Principal: "*"
-            Action:
-              - kms:CreateGrant
-              - kms:ListGrants
-              - kms:RevokeGrant
-            Resource: "*"
-
-  KeyCmkAlias:
-    Type: "AWS::KMS::Alias"
-    Properties:
-      AliasName: !Sub alias/${TeamName}/${ApplicationName}/cicd
-      TargetKeyId: !Ref KmsCmkKey
-
-  CodePipelineArtifactStoreBucket:
-    Type: AWS::S3::Bucket
-    DependsOn: 
-      - KmsCmkKey
-    Properties:
-      BucketEncryption:
-        ServerSideEncryptionConfiguration:
-          - ServerSideEncryptionByDefault:
-              KMSMasterKeyID: !Ref KmsCmkKey
-              SSEAlgorithm: aws:kms
-      VersioningConfiguration:
-        Status: Enabled
-      BucketName: !Ref CodePipelineArtifactStoreBucketName
-      PublicAccessBlockConfiguration:
-        BlockPublicAcls: True
-        BlockPublicPolicy: True
-        IgnorePublicAcls: True
-        RestrictPublicBuckets: True
-
-  CodePipelineArtifactStoreBucketPolicy:
-    Type: AWS::S3::BucketPolicy
-    Properties:
-      Bucket: !Ref CodePipelineArtifactStoreBucket
-      PolicyDocument:
-        Version: 2012-10-17
-        Statement:
-          - Sid: AllowAccessToRoles
-            Effect: Allow
-            Principal: '*'
-            Action:
-              - s3:Get*
-              - s3:Put*
-              - s3:ListBucket
-            Resource:
-              - !Sub ${CodePipelineArtifactStoreBucket.Arn}
-              - !Sub ${CodePipelineArtifactStoreBucket.Arn}/*
-          - Sid: DenyUnEncryptedObjectUploads
-            Effect: Deny
-            Principal: "*"
-            Action: "s3:PutObject"
-            Resource: !Sub ${CodePipelineArtifactStoreBucket.Arn}/*
-            Condition:
-              StringNotEquals:
-                "s3:x-amz-server-side-encryption": "aws:kms"
-          - Sid: DenyInsecureConnections
-            Effect: Deny
-            Principal: "*"
-            Action: s3:*
-            Resource: !Sub ${CodePipelineArtifactStoreBucket.Arn}/*
-            Condition:
-              Bool:
-                "aws:SecureTransport": false
-
   DBCodeDeployRole:
     Type: 'AWS::IAM::Role'
     Properties:
@@ -312,6 +203,118 @@ Resources:
                   - !Sub arn:aws:iam::${AWS::AccountId}:role/${DBCodeDeployRoleName}
                 Effect: "Allow"
 
+  KmsCmkKey:
+    Type: AWS::KMS::Key
+    Properties:
+      Description: An symmetric KMS key
+      EnableKeyRotation: false
+      KeyPolicy:
+        Version: 2012-10-17
+        Id: Allow management of the key
+        Statement:
+          - Sid: Enable IAM User Permissions
+            Effect: Allow
+            Principal:
+              AWS: !Sub arn:aws:iam::${AWS::AccountId}:root
+            Action:
+              - "kms:Create*"
+              - "kms:Describe*"
+              - "kms:Enable*"
+              - "kms:List*"
+              - "kms:Put*"
+              - "kms:Update*"
+              - "kms:Revoke*"
+              - "kms:Disable*"
+              - "kms:Get*"
+              - "kms:Delete*"
+              - "kms:ScheduleKeyDeletion"
+              - "kms:CancelKeyDeletion"
+              - "Kms:GenerateDataKey"
+              - "Kms:TagResource"
+              - "Kms:UntagResource"
+            Resource: "*"
+          - Sid: Allow use og the key
+            Effect: Allow
+            Principal: "*"
+            Action:
+              - kms:DescribeKey
+              - kms:Encrypt
+              - kms:Decrypt
+              - kms:ReEncrypt*
+              - kms:GenerateDataKey*
+            Resource: "*"
+
+          - Sid: Allow attachment of persistent resources
+            Effect: Allow
+            Principal: "*"
+            Action:
+              - kms:CreateGrant
+              - kms:ListGrants
+              - kms:RevokeGrant
+            Resource: "*"
+
+  KeyCmkAlias:
+    Type: "AWS::KMS::Alias"
+    Properties:
+      AliasName: !Sub alias/${TeamName}/${ApplicationName}/cicd
+      TargetKeyId: !Ref KmsCmkKey
+
+  CodePipelineArtifactStoreBucket:
+    Type: AWS::S3::Bucket
+    DependsOn: 
+      - KmsCmkKey
+    Properties:
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              KMSMasterKeyID: !Ref KmsCmkKey
+              SSEAlgorithm: aws:kms
+      VersioningConfiguration:
+        Status: Enabled
+      BucketName: !Ref CodePipelineArtifactStoreBucketName
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: True
+        BlockPublicPolicy: True
+        IgnorePublicAcls: True
+        RestrictPublicBuckets: True
+
+  CodePipelineArtifactStoreBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref CodePipelineArtifactStoreBucket
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Sid: AllowAccessToRoles
+            Effect: Allow
+            Principal: 
+              AWS: !Sub arn:aws:iam::${AWS::AccountId}:role/${DBCodeDeployRoleName}
+            Action:
+              - s3:Get*
+              - s3:Put*
+              - s3:ListBucket
+            Resource:
+              - !Sub ${CodePipelineArtifactStoreBucket.Arn}
+              - !Sub ${CodePipelineArtifactStoreBucket.Arn}/*
+          - Sid: DenyUnEncryptedObjectUploads
+            Effect: Deny
+            Principal: "*"
+            Action: "s3:PutObject"
+            Resource: !Sub ${CodePipelineArtifactStoreBucket.Arn}/*
+            Condition:
+              StringNotEquals:
+                "s3:x-amz-server-side-encryption": "aws:kms"
+          - Sid: DenyInsecureConnections
+            Effect: Deny
+            Principal: "*"
+            Action: s3:*
+            Resource: !Sub ${CodePipelineArtifactStoreBucket.Arn}/*
+            Condition:
+              Bool:
+                "aws:SecureTransport": false
+
+  
+
   DeployPipeline:
     Type: "AWS::CodePipeline::Pipeline"
     DependsOn: 
@@ -338,9 +341,9 @@ Resources:
                 PollForSourceChanges: true
               RunOrder: 1
 
-        - Name: Approve_DEV
+        - Name: Approve_ENV
           Actions:
-            - Name: Approve_DEV
+            - Name: Approve_ENV
               InputArtifacts: []
               OutputArtifacts: []
               ActionTypeId:
