@@ -30,7 +30,7 @@ Parameters:
     Default: pavanambekarn/devops
   GitHubOAuthToken: 
     Type: String
-    Default: pavanambekarn/devops
+    Default: "token"
   
  
 Resources:
@@ -318,9 +318,9 @@ Resources:
             - Name: Source-From-Github
               ActionTypeId:
                 Category: Source
-                Owner: AWS
+                Owner: ThirdParty
                 Version: 1
-                Provider: CodeStarSourceConnection
+                Provider: GitHub
               OutputArtifacts:
                 - Name: Source-Artifacts
               Configuration:
@@ -342,13 +342,12 @@ Resources:
                 Version: 1
                 Provider: Manual
               Configuration:
-                NotificationArn: !GetAtt [SNSTopic, Outputs.SNSTopicArn]
-                CustomData: !Sub "Please approve deployment of ${ApplicationName} to Dev"
+                CustomData: !Sub "Please approve deployment of ${ApplicationName}"
               RunOrder: 1
 
-        - Name: Deploy_To_DEV
+        - Name: Deploy_To_ENV
           Actions:
-            - Name: Deploy-DEV-API-Lambda
+            - Name: Deploy-S3
               InputArtifacts:
                 - Name: Source-Artifacts
               OutputArtifacts: []
@@ -360,16 +359,16 @@ Resources:
               Configuration:
                 ActionMode: CREATE_UPDATE
                 Capabilities: "CAPABILITY_IAM,CAPABILITY_NAMED_IAM,CAPABILITY_AUTO_EXPAND"
-                RoleArn:  arn:aws:iam::886994311950:role/cloudformation-excution-role
-                StackName: !Sub ${TeamName}-dev-api-lambda
-                TemplatePath: "Source-Artifacts::templates/ec2-test-userdata.yml"
-                #TemplateConfiguration: !Sub "Source-Artifacts::iac/Environments/dev/dev-api-lambda-vars.json"
-              RoleArn: arn:aws:iam::886994311950:role/Cross-account-pipeline-role
+                RoleArn:  !Ref DBCFTRole
+                StackName: !Sub ${TeamName}-s3
+                TemplatePath: "Source-Artifacts::iac/cft/s3.yaml"
+                TemplateConfiguration: !Sub "Source-Artifacts::iac/environment/s3.json"
+              RoleArn: !Ref DBCodeDeployRole
               RunOrder: 1
 
       ArtifactStore:
         Type: S3
-        Location: test-dev-pipeline-artifact-bucket
+        Location: !Ref CodePipelineArtifactStoreBucket
         EncryptionKey:
           Id: !Ref KmsCmkKey
           Type: KMS
@@ -382,3 +381,6 @@ Outputs:
     Value: !GetAtt KmsCmkKey.Arn
   KmsAlies:
     Value: !Ref KeyCmkAlias
+  Bucket:
+    Description: Name of bucket created
+    Value: !Ref CodePipelineArtifactStoreBucket
