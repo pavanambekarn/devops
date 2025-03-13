@@ -93,6 +93,8 @@ Resources:
 
   CodePipelineArtifactStoreBucket:
     Type: AWS::S3::Bucket
+    DependsOn: 
+      - KmsCmkKey
     Properties:
       BucketEncryption:
         ServerSideEncryptionConfiguration:
@@ -264,6 +266,9 @@ Resources:
   
   DBCodePipelineRole:
     Type: 'AWS::IAM::Role'
+    DependsOn: 
+      - DBCFTRole
+      - DBCodeDeployRole
     Properties:
       RoleName: !Ref DBCodePipelineRoleName
       AssumeRolePolicyDocument:
@@ -309,6 +314,8 @@ Resources:
 
   DeployPipeline:
     Type: "AWS::CodePipeline::Pipeline"
+    DependsOn: 
+      - DBCodePipelineRole
     Properties:
       Name: !Sub ${TeamName}-${ApplicationName}-pipeline
       RoleArn: !Sub arn:aws:iam::${AWS::AccountId}:role/${DBCodePipelineRoleName}
