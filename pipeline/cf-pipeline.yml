@@ -36,17 +36,23 @@ Parameters:
 
 Resources:
 
-  CodePipelineRole:
+
+
+  DBCodeDeployRole:
     Type: 'AWS::IAM::Role'
     Properties:
-      RoleName: !Ref CodePipelineRoleName
+      RoleName: !Ref DBCodeDeployRoleName
       AssumeRolePolicyDocument:
-        Version: '2012-10-17'
-        Statement:
-          - Effect: Allow
-            Principal:
-              Service: ['codepipeline.amazonaws.com']
-            Action: ['sts:AssumeRole']
+        Version: "2012-10-17"
+        Statement: 
+        - Effect: "Allow"
+          Principal: 
+            AWS: !Join ['', ['arn:aws:iam:', '::', !Ref 'AWS::AccountId', ':', 'root']]
+          Action: "sts:AssumeRole"
+        - Effect: "Allow"
+          Principal: 
+            Service: "codebuild.amazonaws.com"
+          Action: "sts:AssumeRole"
       Policies:
         - PolicyName: 'CodePipelinePolicy'
           PolicyDocument:
@@ -62,10 +68,10 @@ Resources:
                   - iam:*
                 Resource: "*" 
 
-  CFTRole:
+  DBCFTRole:
     Type: 'AWS::IAM::Role'
     Properties:
-      RoleName: !Ref CFTRoleName
+      RoleName: !Ref DBCFTRoleName
       AssumeRolePolicyDocument:
         Version: '2012-10-17'
         Statement:
@@ -151,6 +157,43 @@ Resources:
                   - waf-regional:*
                   - waf:*
                 Resource: "*" 
+  
+  DBCodePipelineRole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      RoleName: !Ref DBCodePipelineRoleName
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - 
+            Action: 
+              - "s3:Get*"
+              - "s3:Put*"
+              - "s3:ListBucket"
+            Resource: 
+              - "arn:aws:s3:::cloudops-dbrestore-pipeline-artifact-bucket"
+              - "arn:aws:s3:::cloudops-dbrestore-pipeline-artifact-bucket/*"
+            Effect: "Allow"
+          - 
+            Condition: 
+              ForAllValues:StringLike: 
+                kms:ResourceAliases: 
+                - "alias/cloudops/*"
+            Action: 
+              - "kms:Decrypt"
+              - "kms:DescribeKey"
+              - "kms:GenerateDataKey*"
+            Resource: "*"
+            Effect: "Allow"
+          - 
+            Action: 
+              - "iam:PassRole"
+              - "sts:AssumeRole"
+            Resource: 
+              - DBCFTRole
+              - DBCodePipelineRole
+            Effect: "Allow"
+       
 
   DeployPipeline:
     Type: "AWS::CodePipeline::Pipeline"
