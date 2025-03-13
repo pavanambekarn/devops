@@ -369,11 +369,11 @@ Resources:
               Configuration:
                 ActionMode: CREATE_UPDATE
                 Capabilities: "CAPABILITY_IAM,CAPABILITY_NAMED_IAM,CAPABILITY_AUTO_EXPAND"
-                RoleArn:  !Ref DBCFTRole
+                RoleArn:  !Sub arn:aws:iam::${AWS::AccountId}:role/${DBCFTRoleName}
                 StackName: !Sub ${TeamName}-s3
                 TemplatePath: "Source-Artifacts::iac/cft/s3.yaml"
                 TemplateConfiguration: !Sub "Source-Artifacts::iac/environment/s3.json"
-              RoleArn: !Ref DBCodeDeployRole
+              RoleArn: !Sub arn:aws:iam::${AWS::AccountId}:role/${DBCodeDeployRoleName}
               RunOrder: 1
 
       ArtifactStore:
