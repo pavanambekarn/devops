@@ -7,36 +7,137 @@ Parameters:
   ApplicationName:
     Type: String
     Default: dbrestore
+  CodePipelineArtifactStoreBucket: 
+    Type: String
+    Default: cloudops-dbrestore-artifact-store-bucket
+  DBCodeDeployRoleName:
+    Type: String
+    Default: cloudops-codedeploy-role
+  DBCFTRoleName: 
+    Type: String
+    Default: cloudops-cft-role
+  DBCodePipelineRoleName: 
+    Type: String
+    Default: cloudops-codepipeline-role
+  GitHubOwner:
+    Type: String
+    Default: pavanambekarn
+  RepoBranchName: 
+    Type: String
+    Default: pipeline
   RepoName:
     Type: String
-    Default: "994410/pipelinetest"
-  RepoBranchName:
-    Type: String
-    Default: master
-  CodeStarConnection:
-    Type: String
-    Default: "arn:aws:codestar-connections:us-east-1:509802998399:connection/9eabfd4c-8f77-43c6-8646-95d9c3103cec"
-  KmsCmkARN:
-    Type: String
-    Default: "arn:aws:kms:us-east-1:509802998399:key/739c533b-195e-450f-ad88-c465e28c3d9d"
-  NotificationEmail:
-    Type: String
-    Default: "chenthilsa@gmail.com"
-  SourceBucket:
-    Type: String
-    Default: "test-dev-pipeline-artifact-bucket"
-  SourceObjectKey:
-    Type: String
-    Default: "artifact/template.zip"
-  TargetAccountDev:
-    Type: String
-    Default: "886994311950" 
-  # TargetAccountPve:
-  # TargetAccountProd:
-
+    Default: pavanambekarn/devops
+  
+ 
 Resources:
 
+  KmsCmkKey:
+    Type: AWS::KMS::Key
+    Properties:
+      Description: An symmetric KMS key
+      EnableKeyRotation: false
+      KeyPolicy:
+        Version: 2012-10-17
+        Id: Allow management of the key
+        Statement:
+          - Sid: Enable IAM User Permissions
+            Effect: Allow
+            Principal:
+              AWS: !Join ['', ['arn:aws:iam:', '::', !Ref 'AWS::AccountId', ':', 'root']]
+            Action:
+              - "kms:Create*"
+              - "kms:Describe*"
+              - "kms:Enable*"
+              - "kms:List*"
+              - "kms:Put*"
+              - "kms:Update*"
+              - "kms:Revoke*"
+              - "kms:Disable*"
+              - "kms:Get*"
+              - "kms:Delete*"
+              - "kms:ScheduleKeyDeletion"
+              - "kms:CancelKeyDeletion"
+              - "Kms:GenerateDataKey"
+              - "Kms:TagResource"
+              - "Kms:UntagResource"
+            Resource: "*"
+          - Sid: Allow use og the key
+            Effect: Allow
+            Principal: "*"
+            Action:
+              - kms:DescribeKey
+              - kms:Encrypt
+              - kms:Decrypt
+              - kms:ReEncrypt*
+              - kms:GenerateDataKey*
+            Resource: "*"
 
+          - Sid: Allow attachment of persistent resources
+            Effect: Allow
+            Principal: "*"
+            Action:
+              - kms:CreateGrant
+              - kms:ListGrants
+              - kms:RevokeGrant
+            Resource: "*"
+
+  KeyCmkAlias:
+    Type: "AWS::KMS::Alias"
+    Properties:
+      AliasName: !Sub alias/${TeamName}/${ApplicationName}/cicd
+      TargetKeyId: !Ref KmsCmkKey
+
+  CodePipelineArtifactStoreBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              KMSMasterKeyID: !Ref KmsCmkKey
+              SSEAlgorithm: aws:kms
+      VersioningConfiguration:
+        Status: Enabled
+      BucketName: !Ref CodePipelineArtifactStoreBucketName
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: True
+        BlockPublicPolicy: True
+        IgnorePublicAcls: True
+        RestrictPublicBuckets: True
+
+  CodePipelineArtifactStoreBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref CodePipelineArtifactStoreBucket
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Sid: AllowAccessToRoles
+            Effect: Allow
+            Principal: '*'
+            Action:
+              - s3:Get*
+              - s3:Put*
+              - s3:ListBucket
+            Resource:
+              - !Sub ${CodePipelineArtifactStoreBucket.Arn}
+              - !Sub ${CodePipelineArtifactStoreBucket.Arn}/*
+          - Sid: DenyUnEncryptedObjectUploads
+            Effect: Deny
+            Principal: "*"
+            Action: "s3:PutObject"
+            Resource: !Sub ${CodePipelineArtifactStoreBucket.Arn}/*
+            Condition:
+              StringNotEquals:
+                "s3:x-amz-server-side-encryption": "aws:kms"
+          - Sid: DenyInsecureConnections
+            Effect: Deny
+            Principal: "*"
+            Action: s3:*
+            Resource: !Sub ${CodePipelineArtifactStoreBucket.Arn}/*
+            Condition:
+              Bool:
+                "aws:SecureTransport": false
 
   DBCodeDeployRole:
     Type: 'AWS::IAM::Role'
@@ -164,42 +265,50 @@ Resources:
       RoleName: !Ref DBCodePipelineRoleName
       AssumeRolePolicyDocument:
         Version: "2012-10-17"
-        Statement:
-          - 
-            Action: 
-              - "s3:Get*"
-              - "s3:Put*"
-              - "s3:ListBucket"
-            Resource: 
-              - "arn:aws:s3:::cloudops-dbrestore-pipeline-artifact-bucket"
-              - "arn:aws:s3:::cloudops-dbrestore-pipeline-artifact-bucket/*"
-            Effect: "Allow"
-          - 
-            Condition: 
-              ForAllValues:StringLike: 
-                kms:ResourceAliases: 
-                - "alias/cloudops/*"
-            Action: 
-              - "kms:Decrypt"
-              - "kms:DescribeKey"
-              - "kms:GenerateDataKey*"
-            Resource: "*"
-            Effect: "Allow"
-          - 
-            Action: 
-              - "iam:PassRole"
-              - "sts:AssumeRole"
-            Resource: 
-              - DBCFTRole
-              - DBCodePipelineRole
-            Effect: "Allow"
-       
+        Statement: 
+        - Effect: "Allow"
+          Principal: 
+            Service: "codepipeline.amazonaws.com"
+          Action: "sts:AssumeRole"
+      Policies:
+        - PolicyName: 'CodePipelinePolicy'
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - 
+                Action: 
+                  - "s3:Get*"
+                  - "s3:Put*"
+                  - "s3:ListBucket"
+                Resource: 
+                  - "arn:aws:s3:::${CodePipelineArtifactStoreBucketName}"
+                  - "arn:aws:s3:::${CodePipelineArtifactStoreBucketName}/*"
+                Effect: "Allow"
+              - 
+                Condition: 
+                  ForAllValues:StringLike: 
+                    kms:ResourceAliases: 
+                    - "alias/${TeamName}/*"
+                Action: 
+                  - "kms:Decrypt"
+                  - "kms:DescribeKey"
+                  - "kms:GenerateDataKey*"
+                Resource: "*"
+                Effect: "Allow"
+              - 
+                Action: 
+                  - "iam:PassRole"
+                  - "sts:AssumeRole"
+                Resource: 
+                  - DBCFTRole
+                  - DBCodePipelineRole
+                Effect: "Allow"
 
   DeployPipeline:
     Type: "AWS::CodePipeline::Pipeline"
     Properties:
       Name: !Sub ${TeamName}-${ApplicationName}-pipeline
-      RoleArn: arn:aws:iam::509802998399:role/pipeline-role
+      RoleArn: !Ref DBCodePipelineRole
       Stages:
         - Name: Source
           Actions:
@@ -212,11 +321,11 @@ Resources:
               OutputArtifacts:
                 - Name: Source-Artifacts
               Configuration:
-                BranchName: !Ref RepoBranchName
-                ConnectionArn: !Ref CodeStarConnection
-                FullRepositoryId: !Ref RepoName
-                OutputArtifactFormat: "CODE_ZIP"
-                DetectChanges: True
+                Owner: !Ref GitHubOwner
+                Repo: !Ref RepoName
+                Branch: !Ref RepoBranchName
+                OAuthToken: !Ref GitHubOAuthToken
+                PollForSourceChanges: true
               RunOrder: 1
 
         - Name: Approve_DEV
@@ -255,53 +364,18 @@ Resources:
               RoleArn: arn:aws:iam::886994311950:role/Cross-account-pipeline-role
               RunOrder: 1
 
-        - Name: Approve_PROD
-          Actions:
-            - Name: Approve_DEV
-              InputArtifacts: []
-              OutputArtifacts: []
-              ActionTypeId:
-                Category: Approval
-                Owner: AWS
-                Version: 1
-                Provider: Manual
-              Configuration:
-                NotificationArn: !GetAtt [SNSTopic, Outputs.SNSTopicArn]
-                CustomData: !Sub "Please approve deployment of ${ApplicationName} to Dev"
-              RunOrder: 1
-
-        - Name: Deploy_To_PROD
-          Actions:
-            - Name: Deploy-DEV-API-Lambda
-              InputArtifacts:
-                - Name: Source-Artifacts
-              OutputArtifacts: []
-              ActionTypeId:
-                Category: Deploy
-                Owner: AWS
-                Version: 1
-                Provider: CloudFormation
-              Configuration:
-                ActionMode: CREATE_UPDATE
-                Capabilities: "CAPABILITY_IAM,CAPABILITY_NAMED_IAM,CAPABILITY_AUTO_EXPAND"
-                RoleArn:  arn:aws:iam::523397174287:role/pipeline-role
-                StackName: !Sub ${TeamName}-dev-api-lambda
-                TemplatePath: "Source-Artifacts::templates/ec2-test-userdata.yml"
-                #TemplateConfiguration: !Sub "Source-Artifacts::iac/Environments/dev/dev-api-lambda-vars.json"
-              RoleArn: arn:aws:iam::523397174287:role/test-prod
-              RunOrder: 1
-
       ArtifactStore:
         Type: S3
         Location: test-dev-pipeline-artifact-bucket
         EncryptionKey:
-          Id: !Ref KmsCmkARN
+          Id: !Ref KmsCmkKey
           Type: KMS
 
 Outputs:
   PipelineArn:
     Description: ARN of the pipeline created.
     Value: !Sub arn:aws:codepipeline:${AWS::Region}:${AWS::AccountId}:${DeployPipeline}
-  SnsTopic:
-    Description: ARN of the sns topic created.
-    Value: !GetAtt [SNSTopic, Outputs.SNSTopicArn]
+  KmsArn:
+    Value: !GetAtt KmsCmkKey.Arn
+  KmsAlies:
+    Value: !Ref KeyCmkAlias
