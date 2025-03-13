@@ -311,7 +311,7 @@ Resources:
     Type: "AWS::CodePipeline::Pipeline"
     Properties:
       Name: !Sub ${TeamName}-${ApplicationName}-pipeline
-      RoleArn: !Ref DBCodePipelineRole
+      RoleArn: !Sub arn:aws:iam::${AWS::AccountId}:role/${DBCodePipelineRoleName}
       Stages:
         - Name: Source
           Actions:
