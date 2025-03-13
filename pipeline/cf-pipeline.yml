@@ -158,7 +158,7 @@ Resources:
             Service: "codebuild.amazonaws.com"
           Action: "sts:AssumeRole"
       Policies:
-        - PolicyName: 'CodePipelinePolicy'
+        - PolicyName: 'CodedeployPolicy'
           PolicyDocument:
             Version: '2012-10-17'
             Statement:
@@ -303,8 +303,8 @@ Resources:
                   - "iam:PassRole"
                   - "sts:AssumeRole"
                 Resource: 
-                  - !Ref DBCFTRole
-                  - !Ref DBCodedeployRole
+                  - !Sub arn:aws:iam::${AWS::AccountId}:role/${DBCFTRoleName}
+                  - !Sub arn:aws:iam::${AWS::AccountId}:role/${DBCodeDeployRoleName}
                 Effect: "Allow"
 
   DeployPipeline:
