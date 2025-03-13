@@ -28,6 +28,9 @@ Parameters:
   RepoName:
     Type: String
     Default: pavanambekarn/devops
+  GitHubOAuthToken: 
+    Type: String
+    Default: pavanambekarn/devops
   
  
 Resources:
