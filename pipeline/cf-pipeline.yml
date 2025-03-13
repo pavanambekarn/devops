@@ -47,7 +47,7 @@ Resources:
           - Sid: Enable IAM User Permissions
             Effect: Allow
             Principal:
-              AWS: !Join ['', ['arn:aws:iam:', '::', !Ref 'AWS::AccountId', ':', 'root']]
+              AWS: !Sub arn:aws:iam::${AWS::AccountId}:root
             Action:
               - "kms:Create*"
               - "kms:Describe*"
@@ -151,7 +151,7 @@ Resources:
         Statement: 
         - Effect: "Allow"
           Principal: 
-            AWS: !Join ['', ['arn:aws:iam:', '::', !Ref 'AWS::AccountId', ':', 'root']]
+            AWS: !Sub arn:aws:iam::${AWS::AccountId}:root
           Action: "sts:AssumeRole"
         - Effect: "Allow"
           Principal: 
@@ -303,8 +303,8 @@ Resources:
                   - "iam:PassRole"
                   - "sts:AssumeRole"
                 Resource: 
-                  - DBCFTRole
-                  - DBCodePipelineRole
+                  - !Ref DBCFTRole
+                  - !Ref DBCodedeployRole
                 Effect: "Allow"
 
   DeployPipeline:
