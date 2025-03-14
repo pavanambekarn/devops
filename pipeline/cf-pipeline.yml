@@ -288,7 +288,7 @@ Resources:
           - Sid: AllowAccessToRoles
             Effect: Allow
             Principal: 
-              AWS: !Sub arn:aws:iam::${AWS::AccountId}:role/${DBCodeDeployRoleName}
+              AWS: !Sub arn:aws:iam::${AWS::AccountId}:role/${DBCodePipelineRoleName}
             Action:
               - s3:GetObject
               - s3:PutObject
