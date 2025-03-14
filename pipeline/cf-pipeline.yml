@@ -27,7 +27,7 @@ Parameters:
     Default: pipeline
   RepoName:
     Type: String
-    Default: pavanambekarn/devops
+    Default: devops
   GitHubOAuthToken: 
     Type: String
     Default: "token"
@@ -176,8 +176,8 @@ Resources:
             Statement:
               - 
                 Action: 
-                  - "s3:Get*"
-                  - "s3:Put*"
+                  - "s3:GetObject"
+                  - "s3:PutObject"
                   - "s3:ListBucket"
                 Resource: 
                   - "arn:aws:s3:::${CodePipelineArtifactStoreBucketName}"
@@ -290,8 +290,8 @@ Resources:
             Principal: 
               AWS: !Sub arn:aws:iam::${AWS::AccountId}:role/${DBCodeDeployRoleName}
             Action:
-              - s3:Get*
-              - s3:Put*
+              - s3:GetObject
+              - s3:PutObject
               - s3:ListBucket
             Resource:
               - !Sub ${CodePipelineArtifactStoreBucket.Arn}
