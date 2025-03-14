@@ -7,14 +7,14 @@ Resources:
     Type: 'AWS::S3::Bucket'
     Properties:
       BucketName: !Ref S3BucketName
-      NotificationConfiguration:
-        QueueConfigurations:
-          - Event: 's3:ObjectCreated:*'
-            Filter:
-              S3Key:
-                Rules:
-                  - Name: prefix
-                    Value: rma-req-status/
-                  - Name: suffix
-                    Value: .txt                            
-            Queue: arn:aws:sqs:us-east-1:509802998399:rma-queue
+      # NotificationConfiguration:
+      #   QueueConfigurations:
+      #     - Event: 's3:ObjectCreated:*'
+      #       Filter:
+      #         S3Key:
+      #           Rules:
+      #             - Name: prefix
+      #               Value: rma-req-status/
+      #             - Name: suffix
+      #               Value: .txt                            
+      #       Queue: arn:aws:sqs:us-east-1:509802998399:rma-queue
