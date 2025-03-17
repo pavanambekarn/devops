@@ -91,6 +91,7 @@ Resources:
                 Action:
                   - s3:PutObject
                   - s3:GetObject
+                  - s3:HeadObject
                 Resource:
                   - !Sub "arn:aws:s3:::${AWS::AccountId}:${AWS::Region}:${DynamoDBBucketName}/*"
                   - !Sub "arn:aws:s3:::${AWS::AccountId}:${AWS::Region}:${DynamoDBBucketName}"
