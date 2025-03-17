@@ -121,7 +121,7 @@ Resources:
 
           def lambda_handler(event, context):
               try:
-                  table_name = os.getenv('TABLE_NAME')  
+                  table_name = event['TABLE_NAME']  
 
                   # Get list of backups for the given table
                   response = dynamodb.list_backups(TableName=table_name)
@@ -149,10 +149,6 @@ Resources:
 
       Runtime: "python3.12"
       Timeout: 900
-      Environment:
-        Variables:
-          TABLE_NAME: !Ref DynamoDBTableName  
-          BACKUP_BUCKET: !Ref DynamoDBBucketName  
 
   # Lambda function to restore a backup
   RestoreBackupFunction:
@@ -172,7 +168,7 @@ Resources:
           def lambda_handler(event, context):
               try:
                   backup_arn = event['latest_backup_arn']
-                  original_table_name = os.getenv('TABLE_NAME')
+                  original_table_name = event['TABLE_NAME']
                   new_table_name = f"{original_table_name}_temp"
 
                   response = dynamodb.restore_table_from_backup(
@@ -195,10 +191,6 @@ Resources:
 
       Runtime: "python3.12"
       Timeout: 900
-      Environment:
-        Variables:
-          TABLE_NAME: !Ref DynamoDBTableName  
-          BACKUP_BUCKET: !Ref DynamoDBBucketName  
 
   # Lambda function to check the table status
   CheckRestoreStatusFunction:
@@ -266,7 +258,7 @@ Resources:
 
           def lambda_handler(event, context):
               try:
-                  table_name = os.getenv('TABLE_NAME')
+                  table_name = event['TABLE_NAME']
                   bucket_name = os.getenv('BACKUP_BUCKET')
 
                   table = dynamodb.Table(table_name)
@@ -298,7 +290,6 @@ Resources:
       Timeout: 900
       Environment:
         Variables:
-          TABLE_NAME: !Ref DynamoDBTableName  
           BACKUP_BUCKET: !Ref DynamoDBBucketName  
 
   # Lambda function to delete dynamodb data 
@@ -345,7 +336,7 @@ Resources:
           def lambda_handler(event, context):
               """Lambda execution starts here."""
               # Fetch table name dynamically from event input
-              table_name = os.getenv('TABLE_NAME')
+              table_name = event['TABLE_NAME']
 
               if not table_name:
                   return {
@@ -387,10 +378,7 @@ Resources:
 
       Runtime: "python3.12"
       Timeout: 900
-      Environment:
-        Variables:
-          TABLE_NAME: !Ref DynamoDBTableName  
-          BACKUP_BUCKET: !Ref DynamoDBBucketName 
+      
 
   # Lambda function to import data from S3 to DynamoDB
   ImportS3ToDynamoDBFunction:
@@ -410,7 +398,7 @@ Resources:
 
           def lambda_handler(event, context):
               try:
-                  table_name = os.getenv('TABLE_NAME')
+                  table_name = event['TABLE_NAME']
                   bucket_name = os.getenv('BACKUP_BUCKET')
                   file_name = event['file_name']
 
@@ -442,7 +430,6 @@ Resources:
       Timeout: 900
       Environment:
         Variables:
-          TABLE_NAME: !Ref DynamoDBTableName  
           BACKUP_BUCKET: !Ref DynamoDBBucketName  
 
   # Lambda function to delete DynamoDB table items
@@ -499,11 +486,7 @@ Resources:
 
       Runtime: "python3.12"
       Timeout: 900
-      Environment:
-        Variables:
-          TABLE_NAME: !Ref DynamoDBTableName  
-          BACKUP_BUCKET: !Ref DynamoDBBucketName  
-
+      
 Outputs:
   FindLatestBackupFunctionName:
     Description: "Find Latest Backup Lambda Function Name"
