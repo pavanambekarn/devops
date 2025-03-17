@@ -425,7 +425,7 @@ Resources:
                       for item in items:
                           batch.put_item(Item=item)
 
-                  return {"status": f"Restored {len(items)} items to {TABLE_NAME}"}
+                  return {"status": f"Restored {len(items)} items to {table_name}"}
                       
               except Exception as e:
                   return {
