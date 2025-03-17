@@ -370,11 +370,32 @@ Resources:
                 ActionMode: CREATE_UPDATE
                 Capabilities: "CAPABILITY_IAM,CAPABILITY_NAMED_IAM,CAPABILITY_AUTO_EXPAND"
                 RoleArn:  !Sub arn:aws:iam::${AWS::AccountId}:role/${DBCFTRoleName}
-                StackName: !Sub ${TeamName}-s3
-                TemplatePath: "Source-Artifacts::iac/cft/s3.yaml"
-                TemplateConfiguration: !Sub "Source-Artifacts::iac/environment/s3.json"
+                StackName: !Sub ${TeamName}-lambda
+                TemplatePath: "Source-Artifacts::iac/cft/lambda.yaml"
+                TemplateConfiguration: !Sub "Source-Artifacts::iac/environment/lambda.json"
               RoleArn: !Sub arn:aws:iam::${AWS::AccountId}:role/${DBCodeDeployRoleName}
               RunOrder: 1
+
+        - Name: Deploy-StepFunction
+          Actions:
+            - Name: Deploy-StepFunction
+              InputArtifacts:
+                - Name: Source-Artifacts
+              OutputArtifacts: []
+              ActionTypeId:
+                Category: Deploy
+                Owner: AWS
+                Version: 1
+                Provider: CloudFormation
+              Configuration:
+                ActionMode: CREATE_UPDATE
+                Capabilities: "CAPABILITY_IAM,CAPABILITY_NAMED_IAM,CAPABILITY_AUTO_EXPAND"
+                RoleArn:  !Sub arn:aws:iam::${AWS::AccountId}:role/${DBCFTRoleName}
+                StackName: !Sub ${TeamName}-stepfunction
+                TemplatePath: "Source-Artifacts::iac/cft/stepfunction.yaml"
+                TemplateConfiguration: !Sub "Source-Artifacts::iac/environment/stepfunction.json"
+              RoleArn: !Sub arn:aws:iam::${AWS::AccountId}:role/${DBCodeDeployRoleName}
+              RunOrder: 2
 
       ArtifactStore:
         Type: S3
