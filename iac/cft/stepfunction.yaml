@@ -174,7 +174,7 @@ Resources:
               "Type": "Task",
               "Resource": "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${DeleteDynamoDBDataFunctionName}",
               "Parameters": {
-                "TABLE_NAME.$": "${DynamoDBTableName}",
+                "TABLE_NAME.$": "${DynamoDBTableName}"
               },
               "ResultPath": "$.deleteStatus",
               "Next": "WaitForDeleteCompletion"
