@@ -1,0 +1,264 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: >
+  - This solution automates the management of a DynamoDB table's backup and restoration 
+    process using an AWS Step Function workflow. It utilizes multiple Lambda functions 
+    to perform key tasks, such as retrieving the latest backup, restoring it, 
+    exporting data to S3, and importing data back into DynamoDB
+
+Parameters:
+  FindLatestBackupFunctionName:
+    Type: String
+    Description: "The name of the Lambda function to find the latest DynamoDB backup. For example: ops-find-latest-backup"
+    Default: "ops-find-latest-backup"
+
+  RestoreBackupFunctionName:
+    Type: String
+    Description: "The name of the Lambda function to restore the DynamoDB backup. For example: ops-restore-backup"
+    Default: "ops-restore-backup"
+
+  CheckRestoreStatusFunctionName:
+    Type: String
+    Description: "The name of the Lambda function to check the restore status of the DynamoDB table. For example: ops-check-restore-status"
+    Default: "ops-check-restore-status"
+    
+  ExportToS3FunctionName:
+    Type: String
+    Description: "The name of the Lambda function to export data to S3. For example: ops-export-to-s3"
+    Default: "ops-export-to-s3"
+
+  DeleteDynamoDBDataFunctionName:
+    Type: String
+    Description: "The name of the Lambda function to delete the DynamoDB table. For example: ops-delete-dynamodb-data"
+    Default: "ops-delete-dynamodb-data"
+
+  ImportS3ToDynamoDBFunctionName:
+    Type: String
+    Description: "The name of the Lambda function to import data from S3 to DynamoDB. For example: ops-imports3-to-dynamodb "
+    Default: "ops-imports3-to-dynamodb"
+
+  DeleteDynamoDBTableFunctionName:
+    Type: String
+    Description: "The name of the Lambda function to delete the DynamoDB table. For example: ops-delete-dynamodb-table"
+    Default: "ops-delete-dynamodb-table"
+
+  DynamoDBTableName:
+    Type: String
+    Description: The DynamoDB table name to be used by Lambda functions.
+    Default: "xpto"
+
+  DynamoDBBucketName:
+    Type: String
+    Description: "The name of the S3 bucket to use for exporting DynamoDB data. For example: dynamodbexportdata"
+    Default: "dynamodbexportglue"
+
+  StepFunctionRoleName:
+    Type: String
+    Default: "ops-step-function-role"  
+
+Resources:
+  # IAM Role for Step Function 
+  StepFunctionRole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      RoleName: !Ref StepFunctionRoleName
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: "Allow"
+            Action: "sts:AssumeRole"
+            Principal:
+              Service: "states.amazonaws.com"
+      Policies:
+        - PolicyName: "StepFunctionPolicy"
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: "Allow"
+                Action: "lambda:InvokeFunction"
+                Resource:
+                  - !Sub arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${FindLatestBackupFunctionName}
+                  - !Sub arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${RestoreBackupFunctionName}
+                  - !Sub arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${CheckRestoreStatusFunctionName}
+                  - !Sub arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${ExportToS3FunctionName}
+                  - !Sub arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${DeleteDynamoDBDataFunctionName}
+                  - !Sub arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${ImportS3ToDynamoDBFunctionName}
+                  - !Sub arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${DeleteDynamoDBTableFunctionName}
+                  
+  # Step Function State Machine
+  StepFunction:
+    Type: AWS::StepFunctions::StateMachine
+    Properties:
+      StateMachineName: "DynamoDBBackupRestoration"
+      RoleArn: !GetAtt StepFunctionRole.Arn
+      DefinitionString: !Sub |
+        {
+          "Comment": "DynamoDB Backup Restoration Process",
+          "StartAt": "FindLatestBackup",
+          "States": {
+            "FindLatestBackup": {
+              "Type": "Task",
+              "Resource": "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${FindLatestBackupFunctionName}",
+              "Parameters": {
+                "TABLE_NAME": "${DynamoDBTableName}"
+              },
+              "ResultPath": "$.backup",
+              "Next": "RestoreBackup"
+            },
+            "RestoreBackup": {
+              "Type": "Task",
+              "Resource": "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${RestoreBackupFunctionName}",
+              "Parameters": {
+                "TABLE_NAME": "${DynamoDBTableName}",
+                "latest_backup_arn.$": "$.backup.latest_backup_arn"
+              },
+              "ResultPath": "$.restore",
+              "Next": "CheckRestoreStatus"
+            },
+            "CheckRestoreStatus": {
+              "Type": "Task",
+              "Resource": "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${CheckRestoreStatusFunctionName}",
+              "Parameters": {
+                "restored_table_name.$": "$.restore.restore_table_name"
+              },
+              "ResultPath": "$.restoreStatus",
+              "Next": "IsTableActive"
+            },
+            "IsTableActive": {
+              "Type": "Choice",
+              "Choices": [
+                {
+                  "Variable": "$.restoreStatus.status",
+                  "StringEquals": "ACTIVE",
+                  "Next": "ExportToS3"
+                }
+              ],
+              "Default": "WaitBeforeRetry"
+            },
+            "WaitBeforeRetry": {
+              "Type": "Wait",
+              "Seconds": 60,
+              "Next": "CheckRestoreStatus"
+            },
+            "ExportToS3": {
+              "Type": "Task",
+              "Resource": "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${ExportToS3FunctionName}",
+              "Parameters": {
+                "TABLE_NAME.$": "$.restore.restore_table_name",
+                "BACKUP_BUCKET": "${DynamoDBBucketName}"
+              },
+              "ResultPath": "$.export",
+              "Next": "WaitForExportCompletion"
+            },
+            "WaitForExportCompletion": {
+              "Type": "Wait",
+              "Seconds": 30,
+              "Next": "CheckExportStatus"
+            },
+            "CheckExportStatus": {
+              "Type": "Choice",
+              "Choices": [
+                {
+                  "Variable": "$.export.export_status",
+                  "StringEquals": "SUCCEEDED",
+                  "Next": "DeleteDynamoDBData"
+                },
+                {
+                  "Variable": "$.export.export_status",
+                  "StringEquals": "FAILED",
+                  "Next": "FailState"
+                }
+              ],
+              "Default": "WaitForExportCompletion"
+            },
+            "DeleteDynamoDBData": {
+              "Type": "Task",
+              "Resource": "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${DeleteDynamoDBDataFunctionName}",
+              "Parameters": {
+                "TABLE_NAME": "${DynamoDBTableName}"
+              },
+              "ResultPath": "$.deleteStatus",
+              "Next": "WaitForDeleteCompletion"
+            },
+            "WaitForDeleteCompletion": {
+              "Type": "Wait",
+              "Seconds": 30,
+              "Next": "CheckDeleteStatus"
+            },
+            "CheckDeleteStatus": {
+              "Type": "Choice",
+              "Choices": [
+                {
+                  "Variable": "$.deleteStatus.delete_status",
+                  "StringEquals": "SUCCEEDED",
+                  "Next": "ImportS3ToDynamoDB"
+                },
+                {
+                  "Variable": "$.deleteStatus.delete_status",
+                  "StringEquals": "FAILED",
+                  "Next": "FailState"
+                }
+              ],
+              "Default": "WaitForDeleteCompletion"
+            },
+            "ImportS3ToDynamoDB": {
+              "Type": "Task",
+              "Resource": "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${ImportS3ToDynamoDBFunctionName}",
+              "Parameters": {
+                "TABLE_NAME": "${DynamoDBTableName}",
+                "BACKUP_BUCKET": "${DynamoDBBucketName}",
+                "file_name.$": "$.export.S3File"
+              },
+              "ResultPath": "$.importStatus",
+              "Next": "WaitForImportCompletion"
+            },
+            "WaitForImportCompletion": {
+              "Type": "Wait",
+              "Seconds": 60,
+              "Next": "CheckImportStatus"
+            },
+            "CheckImportStatus": {
+              "Type": "Choice",
+              "Choices": [
+                {
+                  "Variable": "$.importStatus.import_status",
+                  "StringEquals": "SUCCEEDED",
+                  "Next": "DeleteDynamoDBTable"
+                },
+                {
+                  "Variable": "$.importStatus.import_status",
+                  "StringEquals": "FAILED",
+                  "Next": "FailState"
+                }
+              ],
+              "Default": "WaitForImportCompletion"
+            },
+            "DeleteDynamoDBTable": {
+              "Type": "Task",
+              "Resource": "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${DeleteDynamoDBTableFunctionName}",
+              "Parameters": {
+                "TABLE_NAME.$": "$.restore.restore_table_name"
+              },
+              "Next": "SucceedState"
+            },
+            "FailState": {
+              "Type": "Fail",
+              "Error": "ProcessFailed",
+              "Cause": "An error occurred during the process."
+            },
+            "SucceedState": {
+              "Type": "Succeed"
+            }
+          }
+        }
+
+
+Outputs:
+  StepFunctionRoleArn:
+    Description: "The ARN of the IAM role for Step Function"
+    Value: !GetAtt StepFunctionRole.Arn
+
+  StepFunctionArn:
+    Description: "The ARN of the Step Function State Machine"
+    Value: !Ref StepFunction
+
+
