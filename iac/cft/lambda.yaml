@@ -415,37 +415,17 @@ Resources:
                   file_name = event['file_name']
 
                   table = dynamodb.Table(table_name)
+                  
+                  # Fetch data from S3
+                  obj = s3.get_object(Bucket=bucket_name, Key=file_name)
+                  items = json.loads(obj['Body'].read())
 
-                  try:
-                      # Fetch data from S3
-                      obj = s3.get_object(Bucket=bucket_name, Key=file_name)
-                      items = json.loads(obj['Body'].read())
-                  except Exception as e:
-                      return {
-                          "statusCode": 500,
-                          "message": f"Error fetching data from S3: {str(e)}",
-                          "import_status": "FAILED"
-                      }
+                  # Restore data to DynamoDB
+                  with table.batch_writer() as batch:
+                      for item in items:
+                          batch.put_item(Item=item)
 
-                  try:
-                      # Restore data to DynamoDB
-                      with table.batch_writer() as batch:
-                          for item in items:
-                              batch.put_item(Item=item)
-
-                      # Return success status
-                      return {
-                          "statusCode": 200,
-                          "message": f"Successfully restored {len(items)} items to {table_name}",
-                          "import_status": "SUCCEEDED"
-                      }
-                  except Exception as e:
-                      # Return failure status in case of any exception
-                      return {
-                          "statusCode": 500,
-                          "message": f"Error restoring data to DynamoDB: {str(e)}",
-                          "import_status": "FAILED"
-                      }
+                  return {"status": f"Restored {len(items)} items to {TABLE_NAME}"}
                       
               except Exception as e:
                   return {
