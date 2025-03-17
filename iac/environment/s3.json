@@ -1,7 +1,0 @@
-
-{
-  "Parameters" : {
-      "S3BucketName": "cloudops-test-s3-bucket"
-  }
-}
-
