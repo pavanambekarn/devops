@@ -425,7 +425,11 @@ Resources:
                       for item in items:
                           batch.put_item(Item=item)
 
-                  return {"status": f"Restored {len(items)} items to {table_name}"}
+                  return {
+                        "statusCode": 200,
+                        "message": f"Successfully restored {len(items)} items to {table_name}",
+                        "import_status": "SUCCEEDED"
+                    }
                       
               except Exception as e:
                   return {
