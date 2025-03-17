@@ -91,7 +91,6 @@ Resources:
                 Action:
                   - s3:PutObject
                   - s3:GetObject
-                  - s3:HeadObject
                 Resource:
                   - !Sub "arn:aws:s3:::${AWS::AccountId}:${AWS::Region}:${DynamoDBBucketName}/*"
                   - !Sub "arn:aws:s3:::${AWS::AccountId}:${AWS::Region}:${DynamoDBBucketName}"
@@ -279,23 +278,14 @@ Resources:
                   # Upload the file to S3
                   s3.put_object(Bucket=bucket_name, Key=file_name, Body=json.dumps(items))
                   
-                  # Check if the object is successfully uploaded
-                  s3_object = s3.head_object(Bucket=bucket_name, Key=file_name)
-
-                  if s3_object['ResponseMetadata']['HTTPStatusCode'] == 200:
-                      return {
-                          "statusCode": 200,
-                          "message": "Backup completed successfully",
-                          "S3File": file_name,
-                          "S3Path": f"s3://{bucket_name}/{file_name}",
-                          "export_status": "SUCCEEDED"
-                      }
-                  else:
-                      return {
-                          "statusCode": 500,
-                          "message": "Backup failed",
-                          "export_status": "FAILED"
-                      }
+                  return {
+                      "statusCode": 200,
+                      "message": "Backup completed successfully",
+                      "S3File": file_name,
+                      "S3Path": f"s3://{bucket_name}/{file_name}",
+                      "export_status": "SUCCEEDED"
+                  }
+                  
 
               except Exception as e:
                   return {
