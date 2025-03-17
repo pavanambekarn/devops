@@ -259,7 +259,7 @@ Resources:
           def lambda_handler(event, context):
               try:
                   table_name = event['TABLE_NAME']
-                  bucket_name = os.getenv('BACKUP_BUCKET')
+                  bucket_name = event['BACKUP_BUCKET']
 
                   table = dynamodb.Table(table_name)
                   items = table.scan()['Items']  
@@ -288,9 +288,6 @@ Resources:
 
       Runtime: "python3.12"
       Timeout: 900
-      Environment:
-        Variables:
-          BACKUP_BUCKET: !Ref DynamoDBBucketName  
 
   # Lambda function to delete dynamodb data 
   DeleteDynamoDBDataFunction:
@@ -399,7 +396,7 @@ Resources:
           def lambda_handler(event, context):
               try:
                   table_name = event['TABLE_NAME']
-                  bucket_name = os.getenv('BACKUP_BUCKET')
+                  bucket_name = event['BACKUP_BUCKET']
                   file_name = event['file_name']
 
                   table = dynamodb.Table(table_name)
@@ -428,9 +425,6 @@ Resources:
 
       Runtime: "python3.12"
       Timeout: 900
-      Environment:
-        Variables:
-          BACKUP_BUCKET: !Ref DynamoDBBucketName  
 
   # Lambda function to delete DynamoDB table items
   DeleteDynamoDBTableFunction:
