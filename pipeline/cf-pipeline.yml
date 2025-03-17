@@ -377,7 +377,7 @@ Resources:
               RoleArn: !Sub arn:aws:iam::${AWS::AccountId}:role/${DBCodeDeployRoleName}
               RunOrder: 1
 
-        - Name: Deploy-StepFunction
+        - Name: Deploy_StepFunction
           Actions:
             - Name: Deploy-StepFunction
               InputArtifacts:
