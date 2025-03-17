@@ -63,6 +63,7 @@ Resources:
                   - lambda:*
                   - codebuild:*
                   - iam:*
+                  - states:*
                 Resource: "*" 
 
   DBCFTRole:
@@ -93,7 +94,7 @@ Resources:
                   - iam:* 
                   - route53:* 
                   - servicecatalog:* 
-                  - "acm-pca:*"
+                  - acm-pca:*
                   - apigateway:*
                   - application-autoscaling:*
                   - applicationinsights:*
@@ -355,9 +356,9 @@ Resources:
                 CustomData: !Sub "Please approve deployment of ${ApplicationName}"
               RunOrder: 1
 
-        - Name: Deploy_To_ENV
+        - Name: Deploy_Lambda
           Actions:
-            - Name: Deploy-S3
+            - Name: Deploy-Lambda
               InputArtifacts:
                 - Name: Source-Artifacts
               OutputArtifacts: []
