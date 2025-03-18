@@ -398,6 +398,28 @@ Resources:
               RoleArn: !Sub arn:aws:iam::${AWS::AccountId}:role/${DBCodeDeployRoleName}
               RunOrder: 2
 
+        - Name: Deploy_Shedular
+          Actions:
+            - Name: Deploy-Shedular
+              InputArtifacts:
+                - Name: Source-Artifacts
+              OutputArtifacts: []
+              ActionTypeId:
+                Category: Deploy
+                Owner: AWS
+                Version: 1
+                Provider: CloudFormation
+              Configuration:
+                ActionMode: CREATE_UPDATE
+                Capabilities: "CAPABILITY_IAM,CAPABILITY_NAMED_IAM,CAPABILITY_AUTO_EXPAND"
+                RoleArn:  !Sub arn:aws:iam::${AWS::AccountId}:role/${DBCFTRoleName}
+                StackName: !Sub ${TeamName}-Shedular
+                TemplatePath: "Source-Artifacts::iac/cft/shedular.yaml"
+                TemplateConfiguration: !Sub "Source-Artifacts::iac/environment/shedular.json"
+              RoleArn: !Sub arn:aws:iam::${AWS::AccountId}:role/${DBCodeDeployRoleName}
+              RunOrder: 3
+
+
       ArtifactStore:
         Type: S3
         Location: !Ref CodePipelineArtifactStoreBucket
