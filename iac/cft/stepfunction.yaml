@@ -94,7 +94,7 @@ Resources:
               "Type": "Task",
               "Resource": "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${FindLatestBackupFunctionName}",
               "Parameters": {
-                "TABLE_NAME": "$.DynamoDBTableName"
+                "TABLE_NAME.$": "$.DynamoDBTableName"
               },
               "ResultPath": "$.backup",
               "Next": "RestoreBackup"
@@ -103,7 +103,7 @@ Resources:
               "Type": "Task",
               "Resource": "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${RestoreBackupFunctionName}",
               "Parameters": {
-                "TABLE_NAME": "$.DynamoDBTableName",
+                "TABLE_NAME.$": "$.DynamoDBTableName",
                 "latest_backup_arn.$": "$.backup.latest_backup_arn"
               },
               "ResultPath": "$.restore",
@@ -169,7 +169,7 @@ Resources:
               "Type": "Task",
               "Resource": "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${DeleteDynamoDBDataFunctionName}",
               "Parameters": {
-                "TABLE_NAME": "$.DynamoDBTableName"
+                "TABLE_NAME.$": "$.DynamoDBTableName"
               },
               "ResultPath": "$.deleteStatus",
               "Next": "WaitForDeleteCompletion"
@@ -199,7 +199,7 @@ Resources:
               "Type": "Task",
               "Resource": "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${ImportS3ToDynamoDBFunctionName}",
               "Parameters": {
-                "TABLE_NAME": "$.DynamoDBTableName",
+                "TABLE_NAME.$": "$.DynamoDBTableName",
                 "BACKUP_BUCKET": "${DynamoDBBucketName}",
                 "file_name.$": "$.export.S3File"
               },
