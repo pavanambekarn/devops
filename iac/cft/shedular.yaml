@@ -12,7 +12,7 @@ Parameters:
 
   ExecutionDateTime:
     Type: String
-    Description: "Execution Time in UTC (YYYY-MM-DDTHH:MM:SS)"
+    Description: "Execution Time in UTC (2025-03-18T18:20:00Z)"
 
 Resources:
   # IAM Role for EventBridge Scheduler
