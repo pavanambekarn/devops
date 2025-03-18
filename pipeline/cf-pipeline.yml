@@ -419,7 +419,6 @@ Resources:
               RoleArn: !Sub arn:aws:iam::${AWS::AccountId}:role/${DBCodeDeployRoleName}
               RunOrder: 3
 
-
       ArtifactStore:
         Type: S3
         Location: !Ref CodePipelineArtifactStoreBucket
