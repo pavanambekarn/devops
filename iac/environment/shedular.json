@@ -2,6 +2,6 @@
   "Parameters": {
     "StepFunctionArn": "arn:aws:states:us-east-1:851725581405:stateMachine:DynamoDBBackupRestoration",
     "TableName": "xpto",
-    "ExecutionDateTime": "2025-03-18T18:30:00Z"
+    "ExecutionDateTime": "2025-03-18T13:26:00"
   }
 }

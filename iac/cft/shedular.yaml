@@ -47,7 +47,7 @@ Resources:
       # ActionAfterCompletion: NONE
       FlexibleTimeWindow:
         Mode: "OFF"
-      ScheduleExpression: at(2025-03-18T18:40:00)
+      ScheduleExpression: !Sub at(${ExecutionDateTime})
       Target:
         Arn: !Ref StepFunctionArn
         RoleArn: !GetAtt EventBridgeSchedulerRole.Arn
