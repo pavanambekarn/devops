@@ -5,17 +5,14 @@ Parameters:
   StepFunctionArn:
     Type: String
     Description: "ARN of the Step Function to trigger"
-    Default: "ops-find-latest-backup"
 
   TableName:
     Type: String
     Description: "DynamoDB Table Name"
-    Default: "ops-find-latest-backup"
 
   ExecutionDateTime:
     Type: String
     Description: "Execution Time in UTC (YYYY-MM-DDTHH:MM:SS)"
-    Default: "2025-03-1815:02:00"
 
 Resources:
   # IAM Role for EventBridge Scheduler
@@ -45,8 +42,9 @@ Resources:
   EventBridgeScheduler:
     Type: AWS::Scheduler::Schedule
     Properties:
-      Name: !Sub "Scheduler-${TableName}"
+      Name: "ops-stepfunction-shedular"
       Description: "Triggers Step Function at the specified time"
+      ActionAfterCompletion: NONE
       FlexibleTimeWindow:
         Mode: "OFF"
       ScheduleExpression: !Sub "at(${ExecutionDateTime})"
