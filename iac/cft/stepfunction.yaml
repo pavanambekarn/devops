@@ -41,11 +41,6 @@ Parameters:
     Description: "The name of the Lambda function to delete the DynamoDB table. For example: ops-delete-dynamodb-table"
     Default: "ops-delete-dynamodb-table"
 
-  DynamoDBTableName:
-    Type: String
-    Description: The DynamoDB table name to be used by Lambda functions.
-    Default: "xpto"
-
   DynamoDBBucketName:
     Type: String
     Description: "The name of the S3 bucket to use for exporting DynamoDB data. For example: dynamodbexportdata"
@@ -99,7 +94,7 @@ Resources:
               "Type": "Task",
               "Resource": "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${FindLatestBackupFunctionName}",
               "Parameters": {
-                "TABLE_NAME": "${DynamoDBTableName}"
+                "TABLE_NAME": "$.DynamoDBTableName"
               },
               "ResultPath": "$.backup",
               "Next": "RestoreBackup"
@@ -108,7 +103,7 @@ Resources:
               "Type": "Task",
               "Resource": "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${RestoreBackupFunctionName}",
               "Parameters": {
-                "TABLE_NAME": "${DynamoDBTableName}",
+                "TABLE_NAME": "$.DynamoDBTableName",
                 "latest_backup_arn.$": "$.backup.latest_backup_arn"
               },
               "ResultPath": "$.restore",
@@ -174,7 +169,7 @@ Resources:
               "Type": "Task",
               "Resource": "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${DeleteDynamoDBDataFunctionName}",
               "Parameters": {
-                "TABLE_NAME": "${DynamoDBTableName}"
+                "TABLE_NAME": "$.DynamoDBTableName"
               },
               "ResultPath": "$.deleteStatus",
               "Next": "WaitForDeleteCompletion"
@@ -204,7 +199,7 @@ Resources:
               "Type": "Task",
               "Resource": "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${ImportS3ToDynamoDBFunctionName}",
               "Parameters": {
-                "TABLE_NAME": "${DynamoDBTableName}",
+                "TABLE_NAME": "$.DynamoDBTableName",
                 "BACKUP_BUCKET": "${DynamoDBBucketName}",
                 "file_name.$": "$.export.S3File"
               },
@@ -250,7 +245,6 @@ Resources:
             }
           }
         }
-
 
 Outputs:
   StepFunctionRoleArn:

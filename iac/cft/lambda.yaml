@@ -5,11 +5,6 @@ Description: >
     and data imports from S3. 
 
 Parameters:
-  DynamoDBTableName:
-    Type: String
-    Description: The DynamoDB table name to be used by Lambda functions.
-    Default: "xpto"
-
   DynamoDBBucketName:
     Type: String
     Description: "The name of the S3 bucket to use for exporting DynamoDB data. For example: dynamodbexportdata"

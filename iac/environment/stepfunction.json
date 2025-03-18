@@ -1,6 +1,5 @@
 {
   "Parameters": {
-    "DynamoDBTableName": "xpto",
     "DynamoDBBucketName": "dynamodb-backups-bucket-1",
     "FindLatestBackupFunctionName": "ops-find-latest-backup",
     "RestoreBackupFunctionName": "ops-restore-backup",

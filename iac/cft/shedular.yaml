@@ -1,0 +1,64 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: EventBridge Scheduler to Trigger Step Function with Dynamic Table and Time
+
+Parameters:
+  StepFunctionArn:
+    Type: String
+    Description: "ARN of the Step Function to trigger"
+    Default: "ops-find-latest-backup"
+
+  TableName:
+    Type: String
+    Description: "DynamoDB Table Name"
+    Default: "ops-find-latest-backup"
+
+  ExecutionDateTime:
+    Type: String
+    Description: "Execution Time in UTC (YYYY-MM-DDTHH:MM:SS)"
+    Default: "2025-03-1815:02:00"
+
+Resources:
+  # IAM Role for EventBridge Scheduler
+  EventBridgeSchedulerRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: "EventBridgeSchedulerRole"
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: 
+                - scheduler.amazonaws.com
+            Action: "sts:AssumeRole"
+      Policies:
+        - PolicyName: "InvokeStepFunctionPolicy"
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - "states:StartExecution"
+                Resource: !Ref StepFunctionArn
+
+  # EventBridge Scheduler
+  EventBridgeScheduler:
+    Type: AWS::Scheduler::Schedule
+    Properties:
+      Name: !Sub "Scheduler-${TableName}"
+      Description: "Triggers Step Function at the specified time"
+      FlexibleTimeWindow:
+        Mode: "OFF"
+      ScheduleExpression: !Sub "at(${ExecutionDateTime})"
+      Target:
+        Arn: !Ref StepFunctionArn
+        RoleArn: !GetAtt EventBridgeSchedulerRole.Arn
+        Input: !Sub |
+          {
+            "DynamoDBTableName": "${TableName}"
+          }
+
+Outputs:
+  SchedulerName:
+    Description: "Name of the EventBridge Scheduler"
+    Value: !Ref EventBridgeScheduler
