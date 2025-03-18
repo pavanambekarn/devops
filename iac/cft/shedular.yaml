@@ -44,7 +44,7 @@ Resources:
     Properties:
       Name: "ops-stepfunction-shedular"
       Description: "Triggers Step Function at the specified time"
-      ActionAfterCompletion: NONE
+      # ActionAfterCompletion: NONE
       FlexibleTimeWindow:
         Mode: "OFF"
       ScheduleExpression: !Sub "at(${ExecutionDateTime})"
