@@ -356,7 +356,7 @@ Resources:
                 CustomData: !Sub "Please approve deployment of ${ApplicationName}"
               RunOrder: 1
 
-        - Name: Deploy_Lambda
+        - Name: Deploy_SDLC
           Actions:
             - Name: Deploy-Lambda
               InputArtifacts:
@@ -376,9 +376,7 @@ Resources:
                 TemplateConfiguration: !Sub "Source-Artifacts::iac/environment/lambda.json"
               RoleArn: !Sub arn:aws:iam::${AWS::AccountId}:role/${DBCodeDeployRoleName}
               RunOrder: 1
-
-        - Name: Deploy_StepFunction
-          Actions:
+        
             - Name: Deploy-StepFunction
               InputArtifacts:
                 - Name: Source-Artifacts
@@ -397,9 +395,7 @@ Resources:
                 TemplateConfiguration: !Sub "Source-Artifacts::iac/environment/stepfunction.json"
               RoleArn: !Sub arn:aws:iam::${AWS::AccountId}:role/${DBCodeDeployRoleName}
               RunOrder: 2
-
-        - Name: Deploy_Shedular
-          Actions:
+        
             - Name: Deploy-Shedular
               InputArtifacts:
                 - Name: Source-Artifacts
