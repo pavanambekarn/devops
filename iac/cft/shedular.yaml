@@ -14,12 +14,19 @@ Parameters:
     Type: String
     Description: "Execution Time in UTC (2025-03-18T18:20:00)"
 
+  StepFunctionShedularName: 
+    Type: String
+
+  EventBridgeSchedulerRoleName: 
+    Type: String
+
+
 Resources:
   # IAM Role for EventBridge Scheduler
   EventBridgeSchedulerRole:
     Type: AWS::IAM::Role
     Properties:
-      RoleName: "EventBridgeSchedulerRole"
+      RoleName: !Ref EventBridgeSchedulerRoleName
       AssumeRolePolicyDocument:
         Version: "2012-10-17"
         Statement:
@@ -42,7 +49,7 @@ Resources:
   EventBridgeScheduler:
     Type: AWS::Scheduler::Schedule
     Properties:
-      Name: "ops-stepfunction-shedular"
+      Name: !Ref StepFunctionShedularName
       Description: "Triggers Step Function at the specified time"
       # ActionAfterCompletion: NONE
       FlexibleTimeWindow:
