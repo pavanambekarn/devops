@@ -9,7 +9,7 @@ Parameters:
     Default: dbrestore
   CodePipelineArtifactStoreBucketName: 
     Type: String
-    Default: cloudops-dbrestore-artifact-store-bucket-test2
+    Default: cloudops-dbrestore-artifact-store-bucket-420
   DBCodeDeployRoleName:
     Type: String
     Default: cloudops-codedeploy-role
@@ -21,13 +21,13 @@ Parameters:
     Default: cloudops-codepipeline-role
   GitHubOwner:
     Type: String
-    Default: jayasriruben
+    Default: pavanambekarn
   RepoBranchName: 
     Type: String
-    Default: main
+    Default: DBRestore
   RepoName:
     Type: String
-    Default: dynamodb-pipeline
+    Default: devops
   GitHubOAuthToken: 
     Type: String
     Default: token

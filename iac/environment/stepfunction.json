@@ -1,6 +1,6 @@
 {
     "Parameters": {
-      "DynamoDBBucketName": "dynamodbexport25",
+      "DynamoDBBucketName": "dynamodbexport420",
       "StateMachineName" : "ops-dynamodb-backup-restoration",
       "StepFunctionRoleName": "ops-step-function-role",
       "FindLatestBackupFunctionName": "ops-find-latest-backup",
