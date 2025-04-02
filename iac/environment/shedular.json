@@ -1,9 +1,0 @@
-{
-  "Parameters": {
-    "StepFunctionArn": "arn:aws:states:us-east-1:851725581405:stateMachine:DynamoDBBackupRestoration",
-    "TableName": "xpto",
-    "ExecutionDateTime": "2025-03-18T15:00:00",
-    "StepFunctionShedularName": "ops-stepfunction-shedular",
-    "EventBridgeSchedulerRoleName": "EventBridgeSchedulerRole"
-  }
-}

@@ -8,7 +8,7 @@ Parameters:
   DynamoDBBucketName:
     Type: String
     Description: "The name of the S3 bucket to use for exporting DynamoDB data. For example: dynamodbexportdata"
-    Default: "dynamodbexportglue"
+    Default: "dynamodbexportglue25"
 
   LambdaExecutionRoleName:
     Type: String
@@ -89,8 +89,6 @@ Resources:
                 Resource:
                   - !Sub "arn:aws:s3:::${AWS::AccountId}:${AWS::Region}:${DynamoDBBucketName}/*"
                   - !Sub "arn:aws:s3:::${AWS::AccountId}:${AWS::Region}:${DynamoDBBucketName}"
-                  # - arn:aws:s3:::dynamodbexportglue/* 
-                  # - arn:aws:s3:::dynamodbexportglue
 
               - Effect: Allow
                 Action:
@@ -157,6 +155,8 @@ Resources:
           
           import boto3
           import os
+          from datetime import datetime
+
 
           dynamodb = boto3.client('dynamodb')
 
@@ -171,12 +171,17 @@ Resources:
                       BackupArn=backup_arn
                   )
 
+                  # Generate a unique filename using the current timestamp
+                  timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+                  file_name = f"{new_table_name}_backup_{timestamp}.json"
+
                   return {
                       "statusCode": 200,
                       "body": f"Backup restored successfully to {new_table_name}",
                       "restore_table_arn": response['TableDescription']['TableArn'],
-                      "restore_table_name": new_table_name
-                  }
+                      "restore_table_name": new_table_name,
+                      "file_name": file_name  
+                      }
 
               except Exception as e:
                   return {
@@ -254,7 +259,7 @@ Resources:
           def lambda_handler(event, context):
               try:
                   table_name = event['TABLE_NAME']
-                  bucket_name = event['BACKUP_BUCKET']
+                  bucket_name = event['S3_BUCKET']
 
                   table = dynamodb.Table(table_name)
                   items = table.scan()['Items']  
@@ -273,7 +278,6 @@ Resources:
                       "export_status": "SUCCEEDED"
                   }
                   
-
               except Exception as e:
                   return {
                       "statusCode": 500,
@@ -371,7 +375,6 @@ Resources:
       Runtime: "python3.12"
       Timeout: 900
       
-
   # Lambda function to import data from S3 to DynamoDB
   ImportS3ToDynamoDBFunction:
     Type: AWS::Lambda::Function
@@ -391,7 +394,7 @@ Resources:
           def lambda_handler(event, context):
               try:
                   table_name = event['TABLE_NAME']
-                  bucket_name = event['BACKUP_BUCKET']
+                  bucket_name = event['S3_BUCKET']
                   file_name = event['file_name']
 
                   table = dynamodb.Table(table_name)
