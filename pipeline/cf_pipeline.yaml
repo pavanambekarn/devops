@@ -21,13 +21,13 @@ Parameters:
     Default: cloudops-codepipeline-role
   GitHubOwner:
     Type: String
-    Default: Kiranvasistaa
+    Default: pavanambekarn
   RepoBranchName: 
     Type: String
-    Default: dbrestore
+    Default: DBGlue
   RepoName:
     Type: String
-    Default: Testcodepipeline
+    Default: devops
   GitHubOAuthToken: 
     Type: String
     Default: token
