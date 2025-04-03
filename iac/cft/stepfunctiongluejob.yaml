@@ -316,7 +316,8 @@ Resources:
                     "Type": "Succeed"
                   }
                 }
-              }
+              },
+            }
           }
         }
 
