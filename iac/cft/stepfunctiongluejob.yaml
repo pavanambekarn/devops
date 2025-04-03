@@ -107,7 +107,7 @@ Resources:
               "MaxConcurrency": 2,
               "ResultPath": "$.backup",
               "ItemSelector": {
-                "TABLE_NAME.$": "$$.Map.Item.Value"
+                "tablename.$": "$$.Map.Item.Value"
               },
               "Iterator": {
                 "StartAt": "FindLatestBackup",
