@@ -99,7 +99,7 @@ Resources:
       DefinitionString: !Sub |
         {
           "Comment": "DynamoDB Backup Restoration Process",
-          "StartAt": "FindLatestBackup",
+          "StartAt": "ProcessMultipleTables",
           "States": {
             "ProcessMultipleTables": {
               "Type": "Map",
