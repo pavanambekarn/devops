@@ -12,7 +12,7 @@
       "LambdaExecutionRoleName": "ops-db-lambda-execution-role",
       "GlueExportpythonver": "3",
       "GlueExportnumberofworkers":"2",
-      "GlueExportmaxconcuruns":"1",
+      "GlueExportmaxconcuruns":"2",
       "GlueExportworkertype":"G.1X",
       "GlueExportTimeout":"60",
       "GlueExportversion":"3.0"
