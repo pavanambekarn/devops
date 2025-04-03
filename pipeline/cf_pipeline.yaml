@@ -9,7 +9,7 @@ Parameters:
     Default: dbrestore
   CodePipelineArtifactStoreBucketName: 
     Type: String
-    Default: cloudops-dbrestore-artifact-store-bucket-420
+    Default: cloudops-dbrestore-artifact-store-bucket
   DBCodeDeployRoleName:
     Type: String
     Default: cloudops-codedeploy-role
@@ -21,13 +21,13 @@ Parameters:
     Default: cloudops-codepipeline-role
   GitHubOwner:
     Type: String
-    Default: pavanambekarn
+    Default: Kiranvasistaa
   RepoBranchName: 
     Type: String
-    Default: DBRestore
+    Default: dbrestore
   RepoName:
     Type: String
-    Default: devops
+    Default: Testcodepipeline
   GitHubOAuthToken: 
     Type: String
     Default: token
@@ -64,6 +64,7 @@ Resources:
                   - codebuild:*
                   - iam:*
                   - states:*
+                  - glue:*
                 Resource: "*" 
 
   DBCFTRole:
@@ -356,7 +357,7 @@ Resources:
 
         - Name: Deploy_SDLC
           Actions:
-            - Name: Deploy-Lambda
+            - Name: Deploy-Glue
               InputArtifacts:
                 - Name: Source-Artifacts
               OutputArtifacts: []
@@ -369,8 +370,8 @@ Resources:
                 ActionMode: CREATE_UPDATE
                 Capabilities: "CAPABILITY_IAM,CAPABILITY_NAMED_IAM,CAPABILITY_AUTO_EXPAND"
                 RoleArn:  !Sub arn:aws:iam::${AWS::AccountId}:role/${DBCFTRoleName}
-                StackName: !Sub ${TeamName}-lambda
-                TemplatePath: "Source-Artifacts::iac/cft/lambda.yaml"
+                StackName: !Sub ${TeamName}-glue
+                TemplatePath: "Source-Artifacts::iac/cft/lambdagluejob.yaml"
                 TemplateConfiguration: !Sub "Source-Artifacts::iac/environment/lambda.json"
               RoleArn: !Sub arn:aws:iam::${AWS::AccountId}:role/${DBCodeDeployRoleName}
               RunOrder: 1
@@ -389,9 +390,10 @@ Resources:
                 Capabilities: "CAPABILITY_IAM,CAPABILITY_NAMED_IAM,CAPABILITY_AUTO_EXPAND"
                 RoleArn:  !Sub arn:aws:iam::${AWS::AccountId}:role/${DBCFTRoleName}
                 StackName: !Sub ${TeamName}-stepfunction
-                TemplatePath: "Source-Artifacts::iac/cft/stepfunction.yaml"
+                TemplatePath: "Source-Artifacts::iac/cft/stepfunctiongluejob.yaml"
                 TemplateConfiguration: !Sub "Source-Artifacts::iac/environment/stepfunction.json"
               RoleArn: !Sub arn:aws:iam::${AWS::AccountId}:role/${DBCodeDeployRoleName}
+              # Namespace: "stepfunction"
               RunOrder: 2
 
             - Name: Deploy-Custom-Resource
@@ -407,7 +409,7 @@ Resources:
                 ActionMode: CREATE_UPDATE
                 Capabilities: "CAPABILITY_IAM,CAPABILITY_NAMED_IAM,CAPABILITY_AUTO_EXPAND"
                 RoleArn:  !Sub arn:aws:iam::${AWS::AccountId}:role/${DBCFTRoleName}
-                StackName: !Sub ${TeamName}custom-resource-lambda
+                StackName: !Sub ${TeamName}custom-resource
                 TemplatePath: "Source-Artifacts::iac/cft/custom_resource_lambda.yaml"
                 TemplateConfiguration: !Sub "Source-Artifacts::iac/environment/custom_resource_lambda.json"
               RoleArn: !Sub arn:aws:iam::${AWS::AccountId}:role/${DBCodeDeployRoleName}

@@ -6,8 +6,8 @@ Description: >
   - A custom resource to invoke the Lambda function with necessary parameters
 
 Parameters:
-  DynamoDBTableNames:
-    Type: CommaDelimitedList
+  tablename:
+    Type: String
     Description: "The name of the DynamoDB table that the Lambda function will interact with"
     
   Timestamp:
@@ -25,12 +25,6 @@ Parameters:
   LambdaExecutionRoleName:
     Type: String
     Description: "The name of the IAM role that the Lambda function will assume"
-
-  DynamoDBBucketName:
-    Type: String
-    Description: "name of the s3 bucket"
-
-
 
     
 Resources:
@@ -97,7 +91,7 @@ Resources:
 
               try:
                   props = event.get('ResourceProperties', {})
-                  table_names = props.get('DynamoDBTableNames', [])  
+                  table_name = props.get('TableName', '')  
                   timestamp = props.get('Timestamp', '')
                   step_function_arn = props.get('StepFunctionArn', '')
 
@@ -106,13 +100,13 @@ Resources:
 
                   # Check for Create, Update, or Delete request
                   if event["RequestType"] == "Create" or event["RequestType"] == "Update":
-                      if table_names:
+                      if table_name:
                           # Create Step Functions client
                           sfn_client = boto3.client('stepfunctions')
                           response = sfn_client.start_execution(
                               stateMachineArn=step_function_arn,
                               input=json.dumps({
-                                  'DynamoDBTableNames': table_names,
+                                  'tablename': table_name,
                                   'timestamp': timestamp
                               })
                           )
@@ -155,7 +149,7 @@ Resources:
         - !Ref 'AWS::AccountId'
         - ':function:'
         - !Ref CustomResourceLambdaFunctionName
-      DynamoDBTableNames: !Ref DynamoDBTableNames
+      TableName: !Ref tablename
       Timestamp: !Ref Timestamp
       StepFunctionArn: !Ref StepFunctionArn
 

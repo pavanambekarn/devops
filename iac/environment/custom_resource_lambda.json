@@ -1,14 +1,13 @@
 
 {
     "Parameters": {
-      "CustomResourceLambdaFunctionName": "ops-custom-resource-lambda",
-      "LambdaExecutionRoleName": "ops-custom-lambda-execution-role",
-      "DynamoDBBucketName": "dynamodbexport420",
-      "DynamoDBTableNames": "xpto,xpto3",
-      "Timestamp": "2025-04-1T21:00:00",
-      "StepFunctionArn": "arn:aws:states:us-east-1:851725581405:stateMachine:ops-dynamodb-backup-restoration"
+      "CustomResourceLambdaFunctionName": "ops-db-custom-resource-lambda",
+      "LambdaExecutionRoleName": "ops-db-custom-lambda-execution-role",
+      "tablename": "xpto",
+      "Timestamp": "2025-03-27T00:00:00",
+      "StepFunctionArn": "arn:aws:states:us-east-1:242201284242:stateMachine:OPSDynamoDBBackupRestoration"
+      
   }
 }
-
 
 

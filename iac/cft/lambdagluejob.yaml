@@ -1,0 +1,420 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: >
+  - This CloudFormation template provisions Lambda functions, IAM roles, and necessary policies 
+    to manage operations on DynamoDB tables, such as backups, restores, data exports to S3, 
+    and data imports from S3. 
+
+Parameters:
+  DynamoDBBucketName:
+    Type: String
+    Description: "The name of the S3 bucket to use for exporting DynamoDB data. For example: dynamodbexportdata"
+    Default: "dynamodbexportglue123"
+
+  LambdaExecutionRoleName:
+    Type: String
+    Description: "The name of the IAM role that the Lambda function will assume to access DynamoDB and S3 resources. For example: ops-lambda-dynamodb-role"
+    Default: "ops-lambda-execution-role"
+
+  GlueJobExecutionRoleName:
+    Type: String
+    Description: "The name of the IAM role that the Glue Job will assume to access DynamoDB and S3 resources. For example: ops-gluejob-execution-role"
+    Default: "ops-gluejob-execution-role"
+
+  FindLatestBackupFunctionName:
+    Type: String
+    Description: "The name of the Lambda function responsible for finding the latest backup in DynamoDB. For example: ops-find-latest-backup"
+    Default: "ops-find-latest-backup"
+
+  RestoreBackupFunctionName:
+    Type: String
+    Description: "The name of the Lambda function responsible for restoring a DynamoDB table from a backup. For example: ops-restore-backup"
+    Default: "ops-restore-backup"
+
+  CheckRestoreStatusFunctionName:
+    Type: String
+    Description: "The name of the Lambda function responsible for checking the restore status of a DynamoDB table. For example: ops-check-restore-status" 
+    Default: "ops-check-restore-status"
+
+  DeleteDynamoDBTableFunctionName:
+    Type: String
+    Description: "The name of the Lambda function responsible for permanently deleting the DynamoDB table (after all items are deleted). For example: ops-delete-dynamodb-table"
+    Default: "ops-delete-dynamodb-table"
+
+  ExportDynamoDBToS3GlueName:
+    Type: String
+    Description: Name of the Glue job for exporting DynamoDB to S3
+    Default: "ops-export-dynamodb-to-s3-gluejob"
+
+  DeleteDynamoDBGlueName:
+    Type: String
+    Description: Name of the Glue job for Deleting DynamoDB data
+    Default: "ops-delete-dynamodb-gluejob"
+
+  ImportS3ToDynamoDBGlueName:
+    Type: String
+    Description: Name of the Glue job for importing S3 data DynamoDB
+    Default: "ops-import-s3-to-dynamodb-gluejob"
+
+  GlueExportpythonver:
+    Type: String
+    Default: "3"
+    Description: Python version for Glue job
+
+  GlueExportnumberofworkers:
+    Type: Number
+    Default: 2
+    Description: Number of workers for Glue job
+
+  GlueExportmaxconcuruns:
+    Type: Number
+    Default: 1
+    Description: Maximum concurrent runs for Glue job
+
+  GlueExportworkertype:
+    Type: String
+    Default: "G.1X"
+    Description: Glue worker type (e.g., G.1X, G.2X)
+
+  GlueExportTimeout:
+    Type: Number
+    Default: 60
+    Description: Timeout in minutes for Glue job
+
+  GlueExportversion:
+    Type: String
+    Default: "3.0"
+    Description: Glue version
+
+   
+Resources:
+  # IAM Role for Lambda Function Execution
+  LambdaExecutionRole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      RoleName: !Ref LambdaExecutionRoleName  
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: "Allow"
+            Action: "sts:AssumeRole"
+            Principal:
+              Service: "lambda.amazonaws.com"
+      Policies:       
+        - PolicyName: "LambdaExecutionPolicy"
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - dynamodb:ListBackups
+                  - dynamodb:DescribeTable
+                  - dynamodb:RestoreTableFromBackup
+                  - dynamodb:Scan
+                  - dynamodb:DeleteItem
+                  - dynamodb:GetItem
+                  - dynamodb:PutItem
+                  - dynamodb:DeleteTable
+                  - dynamodb:UpdateItem
+                  - dynamodb:BatchWriteItem
+                  - dynamodb:Query
+                Resource: '*'
+              - Effect: Allow
+                Action:
+                  - s3:PutObject
+                  - s3:GetObject
+                Resource: 
+                  - !Sub "arn:aws:s3:::${AWS::AccountId}:${AWS::Region}:${DynamoDBBucketName}/*"
+                  - !Sub "arn:aws:s3:::${AWS::AccountId}:${AWS::Region}:${DynamoDBBucketName}"
+  
+  # IAM Role for Glue Job Execution
+  GlueExecutionRole:
+    Type: "AWS::IAM::Role"
+    Properties:
+      RoleName: !Ref GlueJobExecutionRoleName
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: "Allow"
+            Principal:
+              Service: "glue.amazonaws.com"
+            Action: "sts:AssumeRole"
+      Policies:
+        - PolicyName: "GlueJobPolicy"
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: "Allow"
+                Action:
+                  - "s3:PutObject"
+                  - "s3:GetObject"
+                  - "s3:ListBucket"
+                Resource:
+                  - !Sub "arn:aws:s3:::${AWS::AccountId}:${AWS::Region}:${DynamoDBBucketName}/*"
+                  - !Sub "arn:aws:s3:::${AWS::AccountId}:${AWS::Region}:${DynamoDBBucketName}"
+              - Effect: "Allow"
+                Action:
+                  - "dynamodb:Scan"
+                  - "dynamodb:Query"
+                  - "dynamodb:BatchWriteItem"
+                  - "dynamodb:BatchGetItem"
+                  - "dynamodb:PutItem"
+                  - "dynamodb:DeleteItem"
+                  - "dynamodb:DescribeTable"
+                Resource: '*'
+              - Effect: "Allow"
+                Action:
+                  - "glue:StartJobRun"
+                  - "glue:GetJobRun"
+                Resource: '*'
+                  
+  # Lambda function to find the latest backup
+  FindLatestBackupFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      Handler: "index.lambda_handler"
+      FunctionName: !Ref FindLatestBackupFunctionName
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Code:
+        ZipFile: |
+          import boto3
+          dynamodb = boto3.client('dynamodb')
+
+          def lambda_handler(event, context):
+              try:
+                  table_name = event.get('table_name')  # Get table name from input event
+
+                  # Get list of backups for the given table
+                  response = dynamodb.list_backups(TableName=table_name)
+
+                  # Check if there are backups available
+                  if 'BackupSummaries' not in response or not response['BackupSummaries']:
+                      return {
+                          "statusCode": 404,
+                          "body": f"No backups found for table {table_name}"
+                      }
+
+                  # Find the latest backup by sorting based on the backup creation timestamp
+                  latest_backup = max(response['BackupSummaries'], key=lambda x: x['BackupCreationDateTime'])
+
+                  return {
+                      "statusCode": 200,
+                      "latest_backup_arn": latest_backup['BackupArn'],
+                      "backup_creation_time": str(latest_backup['BackupCreationDateTime'])
+                  }
+
+              except Exception as e:
+                  return {
+                      "statusCode": 500,
+                      "body": f"Error fetching backup: {str(e)}"
+                  }
+
+      Runtime: "python3.12"
+      Timeout: 900
+
+  # Lambda function to restore a backup
+  RestoreBackupFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      Handler: "index.lambda_handler"
+      FunctionName: !Ref RestoreBackupFunctionName
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Code:
+        ZipFile: |
+          import boto3
+          from datetime import datetime
+
+          dynamodb = boto3.client('dynamodb')
+
+          def lambda_handler(event, context):
+              try:
+                  backup_arn = event.get('backup_arn')  # Get Backup ARN from input event
+                  original_table_name = event.get('table_name')  # Get original table name from input
+                  new_table_name = f"{original_table_name}_temp"  # Add suffix "_Temp"
+
+                  # Restore the table from backup
+                  response = dynamodb.restore_table_from_backup(
+                      TargetTableName=new_table_name,
+                      BackupArn=backup_arn
+                  )
+              
+              # Generate a unique filename
+                  timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+                  file_name = f"{new_table_name}_backup_{timestamp}.json"
+
+                  return {
+                      "statusCode": 200,
+                      "body": f"Backup restored successfully to {new_table_name}",
+                      "restore_table_arn": response['TableDescription']['TableArn'],
+                "restore_table_name": new_table_name,
+                "file_name": file_name
+                  }
+
+              except Exception as e:
+                  return {
+                      "statusCode": 500,
+                      "body": f"Error restoring backup: {str(e)}"
+                  }
+
+      Runtime: "python3.12"
+      Timeout: 900
+
+  # Lambda function to check the table status
+  CheckRestoreStatusFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      Handler: "index.lambda_handler"
+      FunctionName: !Ref CheckRestoreStatusFunctionName
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Code:
+        ZipFile: |
+          import boto3
+          dynamodb = boto3.client('dynamodb')
+
+          def lambda_handler(event, context):
+              table_name = event.get("restored_table_name")
+
+              if not table_name:
+                  return {
+                      "status": "ERROR",
+                      "message": "Missing required input: restored_table_name."
+                  }
+
+              try:
+                  response = dynamodb.describe_table(TableName=table_name)
+                  table_status = response['Table']['TableStatus']
+
+                  if table_status == "ACTIVE":
+                      return {
+                          "status": "ACTIVE",
+                          "restored_table_name": table_name
+                      }
+                  else:
+                      return {
+                          "status": "CREATING",
+                          "restored_table_name": table_name
+                      }
+
+              except Exception as e:
+                  return {
+                      "status": "ERROR",
+                      "message": str(e),
+                      "restored_table_name": table_name
+                  }
+          
+      Runtime: "python3.12"
+      Timeout: 900
+
+  #Glue Job to Export DynamoDB data to S3
+  ExportDynamoDBToS3:
+    Type: "AWS::Glue::Job"
+    Properties:                             
+      Role: !GetAtt GlueExecutionRole.Arn
+      Name: !Ref ExportDynamoDBToS3GlueName
+      GlueVersion: !Ref GlueExportversion
+      WorkerType: !Ref GlueExportworkertype
+      Timeout: !Ref GlueExportTimeout
+      NumberOfWorkers: !Ref GlueExportnumberofworkers
+      ExecutionProperty:
+        MaxConcurrentRuns: !Ref GlueExportmaxconcuruns
+      Command: {
+        "Name" : "glueetl",
+        "PythonVersion" : !Ref GlueExportpythonver,
+        "ScriptLocation": !Sub "s3://${DynamoDBBucketName}/python-scripts/export_dynamodb_to_s3.py"
+      }
+      MaxRetries: 0
+      Description: "BPD Split protegrity Glue Job."
+       
+  #Glue Job to Delete DynamoDB data
+  DeleteDynamoDBData:
+    Type: "AWS::Glue::Job"
+    Properties:                             
+      Role: !GetAtt GlueExecutionRole.Arn
+      Name: !Ref DeleteDynamoDBGlueName
+      GlueVersion: !Ref GlueExportversion
+      WorkerType: !Ref GlueExportworkertype
+      Timeout: !Ref GlueExportTimeout
+      NumberOfWorkers: !Ref GlueExportnumberofworkers
+      ExecutionProperty:
+        MaxConcurrentRuns: !Ref GlueExportmaxconcuruns
+      Command: {
+        "Name" : "glueetl",
+        "PythonVersion" : !Ref GlueExportpythonver,
+        "ScriptLocation": !Sub "s3://${DynamoDBBucketName}/python-scripts/Delete_DynamoDB_Data.py"
+      }
+      MaxRetries: 0
+      Description: "Delete DynamoDB Data Glue Job."
+ 
+  #Glue Job to Import S3 data to DynamoDB 
+  ImportS3ToDynamoDB:
+    Type: "AWS::Glue::Job"
+    DependsOn: DeleteDynamoDBData
+    Properties:                             
+      Role: !GetAtt GlueExecutionRole.Arn
+      Name: !Ref ImportS3ToDynamoDBGlueName
+      GlueVersion: !Ref GlueExportversion
+      WorkerType: !Ref GlueExportworkertype
+      Timeout: !Ref GlueExportTimeout
+      NumberOfWorkers: !Ref GlueExportnumberofworkers
+      ExecutionProperty:
+        MaxConcurrentRuns: !Ref GlueExportmaxconcuruns
+      Command: {
+        "Name" : "glueetl",
+        "PythonVersion" : !Ref GlueExportpythonver,
+        "ScriptLocation": !Sub "s3://${DynamoDBBucketName}/python-scripts/import_s3_to_dynamodb.py"
+      }
+      MaxRetries: 0
+      Description: "Import DynamoDB Data Glue Job."
+
+  # Lambda function to delete DynamoDB table items
+  DeleteDynamoDBTableFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      Handler: "index.lambda_handler"
+      FunctionName: !Ref DeleteDynamoDBTableFunctionName
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Code:
+        ZipFile: |
+          import boto3
+          dynamodb = boto3.client('dynamodb')
+
+          def lambda_handler(event, context):
+              try:
+                  # Fetch table name from event input
+                  table_name = event.get('table_name')
+
+                  # Delete the DynamoDB table
+                  response = dynamodb.delete_table(TableName=table_name)
+                  
+                  return {
+                      "statusCode": 200,
+                      "body": f"Table {table_name} deleted successfully!"
+                  }
+              except Exception as e:
+                  return {
+                      "statusCode": 500,
+                      "body": f"Error deleting table: {str(e)}"
+                  }
+
+      Runtime: "python3.12"
+      Timeout: 900
+      
+Outputs:
+  FindLatestBackupFunctionName:
+    Description: "Find Latest Backup Lambda Function Name"
+    Value: !Ref FindLatestBackupFunction
+
+  RestoreBackupFunctionName:
+    Description: "Restore Backup Lambda Function Name"
+    Value: !Ref RestoreBackupFunction
+
+  DeleteDynamoDBTableFunctionName:
+    Description: "Delete DynamoDB Table Lambda Function Name"
+    Value: !Ref DeleteDynamoDBTableFunction
+
+  LambdaExecutionRoleArn:
+    Description: "The ARN of the Lambda execution role"
+    Value: !GetAtt LambdaExecutionRole.Arn
+
+  GlueExecutionRoleArn:
+    Description: "The ARN of the Glue JOb execution role"
+    Value: !GetAtt GlueExecutionRole.Arn
