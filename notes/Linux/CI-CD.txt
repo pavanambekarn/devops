@@ -1,0 +1,24 @@
+
+
+CI/CD in My Project
+
+CI – Continuous Integration
+
+Application/DevOps team makes changes to the CloudFormation template.
+CFT is stored in Git.
+Any Git change automatically triggers CodePipeline.
+Pipeline performs validation/build activities.
+
+CD – Continuous Delivery
+
+After validation, CodePipeline deploys the CFT to Non-Prod environments.
+Application team verifies the deployment.
+If changes are required → DevOps updates CFT → pushes to Git → pipeline runs again.
+Once application team confirms everything is good → manual approval is taken.
+Then CFT is deployed to Production.
+
+Continuous Deployment
+
+Same process, but no manual approval before Production.
+Pipeline automatically deploys to Production after successful validation.
+
